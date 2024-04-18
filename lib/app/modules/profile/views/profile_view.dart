@@ -1,0 +1,261 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mekanik/app/data/data_endpoint/profile.dart';
+import 'package:mekanik/app/data/endpoint.dart';
+
+import '../../../componen/ButtonSubmitWidget.dart';
+import '../../../componen/color.dart';
+import '../controllers/profile_controller.dart';
+
+class ProfileView extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _ProfileViewState();
+  }
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  Color theme1 = Colors.white;
+  Color theme2 = Color(0xff2E324F);
+  Color black = Colors.black;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(ProfileController());
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0.0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            _profilePic(),
+            FutureBuilder<Profile>(
+              future: API.profile,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  if (snapshot.data != null) {
+                    final nama = snapshot.data!.data?.namaKaryawan ?? "";
+                    final cabang = snapshot.data!.data?.cabang ?? "";
+                    final email = snapshot.data!.data?.email ?? "";
+                    final hp = snapshot.data!.data?.hp ?? "";
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 4.0),
+                          child: Text(
+                            "$nama",
+                            style: TextStyle(
+                              color: black,
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                          child: Text(
+                            "$cabang",
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "$email",
+                          style: TextStyle(
+                            color: black,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        Text(
+                          "$hp",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Text('Tidak ada data');
+                  }
+                }
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(40.0, 8.0, 40.0, 0.0),
+              child: Divider(
+                color: Color(0xff78909c),
+                height: 50.0,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                Text('Edit Profile'),
+                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
+              ],),),
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Pengaturan'),
+                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
+                ],),),
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Ubah Password'),
+                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
+                ],),),
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.all(30),
+                      height: 245,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Continue To Logout?",
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Are you sure to logout from this device?",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ButtonSubmitWidget1(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                title: "No, cancel",
+                                bgColor: Colors.white,
+                                textColor: MyColors.appPrimaryColor,
+                                fontWeight: FontWeight.normal,
+                                width: 70,
+                                height: 50,
+                                borderSide: Colors.transparent,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              ButtonSubmitWidget2(
+                                onPressed: controller.logout,
+                                title: "Yes, Continue",
+                                bgColor: MyColors.appPrimaryColor,
+                                textColor: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                width: 100,
+                                height: 50,
+                                borderSide: Colors.transparent,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child:
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(left: 20,right: 20, top: 30),
+              decoration: const BoxDecoration(
+                  color: Colors.redAccent,
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Logout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                  Icon(Icons.logout_rounded,color: Colors.white,)
+                ],),),),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container _profilePic() => Container(
+    child:  Padding(
+      padding: EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
+      child: Stack(
+        alignment: Alignment(0.9, 0.9),
+        children: <Widget>[
+          const CircleAvatar(
+            backgroundImage: AssetImage("assets/avatar.png"),
+            radius: 50.0,
+          ),
+          Container(
+            height: 30.0,
+            width: 30.0,
+            child: Image.asset("assets/success_logo.png"),
+            alignment: Alignment.bottomRight,
+          ),
+        ],
+      ),
+    ),
+  );
+}

@@ -1,11 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import '../common/common.dart';
 
 class CustomTextFormField extends StatefulWidget {
@@ -13,11 +10,11 @@ class CustomTextFormField extends StatefulWidget {
   final bool obsecuretext;
   final TextEditingController? controller;
   const CustomTextFormField({
-    Key? key,
+    super.key,
     required this.hinttext,
     required this.obsecuretext,
     this.controller,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -30,10 +27,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       controller: widget.controller,
       obscureText: widget.obsecuretext,
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(18),
+          contentPadding: const EdgeInsets.all(18),
           // border: InputBorder.none,
           border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
+              borderSide: const BorderSide(color: Colors.black),
               borderRadius: BorderRadius.circular(12)),
           hintText: widget.hinttext,
           hintStyle: Common().hinttext),
@@ -46,11 +43,11 @@ class CustomElevatedButton extends StatefulWidget {
   final FutureOr<void> Function() function;
   final Color? color;
   const CustomElevatedButton({
-    Key? key,
+    super.key,
     required this.message,
     required this.function,
     this.color = Colors.white,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomElevatedButton> createState() => _CustomElevatedButtonState();
@@ -65,20 +62,18 @@ class _CustomElevatedButtonState extends State<CustomElevatedButton> {
         setState(() {
           loading = true;
         });
-        if (widget.function != null) {
-          await widget.function!();
-        }
+        await widget.function!();
 
         setState(() {
           loading = false;
         });
       },
       style: ButtonStyle(
-          side: MaterialStatePropertyAll(BorderSide(color: Colors.black)),
+          side: const MaterialStatePropertyAll(BorderSide(color: Colors.black)),
           shape: MaterialStatePropertyAll(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
           fixedSize: const MaterialStatePropertyAll(Size.fromWidth(370)),
-          padding: MaterialStatePropertyAll(
+          padding: const MaterialStatePropertyAll(
             EdgeInsets.symmetric(vertical: 20),
           ),
           backgroundColor: MaterialStatePropertyAll(widget.color)),

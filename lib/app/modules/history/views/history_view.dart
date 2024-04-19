@@ -8,7 +8,7 @@ import '../componen/card_history.dart';
 import '../controllers/history_controller.dart';
 
 class HistoryView extends GetView<HistoryController> {
-  const HistoryView({Key? key}) : super(key: key);
+  const HistoryView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,12 @@ class HistoryView extends GetView<HistoryController> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('History'),
+              const Text('History'),
               FutureBuilder<Profile>(
                 future: API.profile,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
@@ -34,7 +34,7 @@ class HistoryView extends GetView<HistoryController> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "$cabang",
+                            cabang,
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 15.0,
@@ -44,13 +44,13 @@ class HistoryView extends GetView<HistoryController> {
                         ],
                       );
                     } else {
-                      return Text('Tidak ada data');
+                      return const Text('Tidak ada data');
                     }
                   }
                 },
               ),
             ],),
-          bottom: TabBar(
+          bottom: const TabBar(
             isScrollable: true, // Membuat tab dapat digulir
             tabs: [
               Tab(text: 'Semua'),
@@ -66,16 +66,16 @@ class HistoryView extends GetView<HistoryController> {
             // Konten untuk tab Info
             ProfileApp(),
             // Konten untuk tab Settings
-            Center(
+            const Center(
               child: Text('Pengaturan Profil'),
             ),
-            Center(
+            const Center(
               child: Text('Pengaturan Profil'),
             ),
-            Center(
+            const Center(
               child: Text('Pengaturan Profil'),
             ),
-            Center(
+            const Center(
               child: Text('Pengaturan Profil'),
             ),
           ],

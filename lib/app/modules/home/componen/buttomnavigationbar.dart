@@ -11,13 +11,15 @@ import '../../chat/views/chat_view.dart';
 import '../views/home_view.dart';
 
 class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
   int _page = 0;
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   final _pageController = PageController();
 
   @override
@@ -80,10 +82,10 @@ class _HomeViewState extends State<HomeView> {
           });
         },
         children:  <Widget>[
-          HomePage(),
+          const HomePage(),
           ChatView(),
-          BokingView(),
-          HistoryView(),
+          const BokingView(),
+          const HistoryView(),
           ProfileView(),
         ],
       ),

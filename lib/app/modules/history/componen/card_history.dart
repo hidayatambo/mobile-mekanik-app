@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:get/get.dart';
-
-import '../../../routes/app_pages.dart';
 
 class ProfileApp extends StatelessWidget {
+  const ProfileApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ProfileScreen();
@@ -57,6 +56,8 @@ class ProfileScreen extends StatelessWidget {
     ),
   ];
 
+   ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AnimationLimiter(
@@ -82,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                     child:
                     Container(
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -91,7 +92,7 @@ class ProfileScreen extends StatelessWidget {
                             color: Colors.grey.withOpacity(0.15),
                             spreadRadius: 5,
                             blurRadius: 10,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -101,8 +102,8 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.car_repair_rounded, color: Colors.blue),
-                                SizedBox(width: 10),
+                                const Icon(Icons.car_repair_rounded, color: Colors.blue),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,18 +113,18 @@ class ProfileScreen extends StatelessWidget {
                                         children: [
                                           Text('${job.title} - ${job.vehicle}'),
                                           Text(
-                                            '${job.status}',
-                                            style: TextStyle(color: Colors.green),
+                                            job.status,
+                                            style: const TextStyle(color: Colors.green),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 5),
+                                      const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             '${job.client} - ${job.date}',
-                                            style: TextStyle(fontSize: 12),
+                                            style: const TextStyle(fontSize: 12),
                                           ),
                                           Text('Mekanik: ${job.mechanic}'),
                                         ],

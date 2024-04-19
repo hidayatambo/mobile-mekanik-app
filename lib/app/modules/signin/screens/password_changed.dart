@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-
 import '../common/common.dart';
 import '../router/router.dart';
 import '../widgets/custom_widget.dart';

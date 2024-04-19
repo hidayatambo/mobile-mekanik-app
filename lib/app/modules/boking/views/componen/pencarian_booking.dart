@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:search_page/search_page.dart';
@@ -15,8 +16,6 @@ class SearchBoking extends StatefulWidget {
 }
 
 class _SearchBokingState extends State<SearchBoking> {
-  final TextEditingController _cityTextEditingController =
-  TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +77,9 @@ class _SearchBokingState extends State<SearchBoking> {
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.search),
                           onPressed: () {
-                            print('search');
+                            if (kDebugMode) {
+                              print('search');
+                            }
                           },
                         ),
                         filled: true,

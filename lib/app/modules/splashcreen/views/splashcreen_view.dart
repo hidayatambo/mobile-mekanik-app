@@ -1,14 +1,14 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-
 import '../../../data/localstorage.dart';
 import '../../home/componen/buttomnavigationbar.dart';
 import '../../signin/views/signin_view.dart';
 
 class SplashcreenView extends StatefulWidget {
+  const SplashcreenView({super.key});
+
   @override
   _SplashcreenViewState createState() => _SplashcreenViewState();
 }
@@ -24,27 +24,27 @@ class _SplashcreenViewState extends State<SplashcreenView> {
   void initState() {
     super.initState();
     _checkTokenAndNavigate();
-    Timer(Duration(milliseconds: 400), () {
+    Timer(const Duration(milliseconds: 400), () {
       setState(() {
         _a = true;
       });
     });
-    Timer(Duration(milliseconds: 400), () {
+    Timer(const Duration(milliseconds: 400), () {
       setState(() {
         _b = true;
       });
     });
-    Timer(Duration(milliseconds: 1300), () {
+    Timer(const Duration(milliseconds: 1300), () {
       setState(() {
         _c = true;
       });
     });
-    Timer(Duration(milliseconds: 1700), () {
+    Timer(const Duration(milliseconds: 1700), () {
       setState(() {
         _e = true;
       });
     });
-    Timer(Duration(milliseconds: 3400), () {
+    Timer(const Duration(milliseconds: 3400), () {
       setState(() {
         _d = true;
       });
@@ -52,7 +52,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
   }
   Future<void> _checkTokenAndNavigate() async {
     bool hasToken = await LocalStorages.hasToken();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     if (hasToken) {
       _navigateToHomeView();
     } else {
@@ -72,7 +72,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
           );
         },
         pageBuilder: (context, animation, secondaryAnimation) {
-          return HomeView();
+          return const HomeView();
         },
       ),
     );
@@ -90,7 +90,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
           );
         },
         pageBuilder: (context, animation, secondaryAnimation) {
-          return SigninView();
+          return const SigninView();
         },
       ),
     );
@@ -98,8 +98,8 @@ class _SplashcreenViewState extends State<SplashcreenView> {
 
   @override
   Widget build(BuildContext context) {
-    double _h = MediaQuery.of(context).size.height;
-    double _w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
+    double w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -117,17 +117,17 @@ class _SplashcreenViewState extends State<SplashcreenView> {
             AnimatedContainer(
               duration: Duration(milliseconds: _d ? 900 : 2500),
               curve: _d ? Curves.fastLinearToSlowEaseIn : Curves.elasticOut,
-              height: _d ? 0 : _a ? _h / 3 : 7,
+              height: _d ? 0 : _a ? h / 3 : 7,
               width: 20,
             ),
             AnimatedContainer(
               duration: Duration(seconds: _d ? 1 : _c ? 2 : 0),
               curve: Curves.fastLinearToSlowEaseIn,
-              height: _d ? _h : _c ? 80 : 20,
-              width: _d ? _w : _c ? 200 : 20,
+              height: _d ? h : _c ? 80 : 20,
+              width: _d ? w : _c ? 200 : 20,
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: AssetImage("assets/logo.png"),
                   fit: BoxFit.contain,
                 ),
@@ -136,11 +136,11 @@ class _SplashcreenViewState extends State<SplashcreenView> {
             AnimatedContainer(
               duration: Duration(seconds: _d ? 1 : _c ? 2 : 0),
               curve: Curves.fastLinearToSlowEaseIn,
-              height: _d ? _h : _c ? 80 : 20,
-              width: _d ? _w : _c ? 200 : 20,
+              height: _d ? h : _c ? 80 : 20,
+              width: _d ? w : _c ? 200 : 20,
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
-                image: DecorationImage(
+                image: const DecorationImage(
                   image: AssetImage("assets/ic_launcher.png"),
                   fit: BoxFit.contain,
                 ),

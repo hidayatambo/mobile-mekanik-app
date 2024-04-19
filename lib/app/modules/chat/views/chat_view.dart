@@ -6,11 +6,13 @@ class ChatView extends StatelessWidget {
     User(name: 'Dayat', profileImage: 'https://example.com/bob.jpg'),
   ];
 
+   ChatView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User List'),
+        title: const Text('User List'),
       ),
       body: ListView.builder(
         itemCount: users.length,
@@ -37,7 +39,7 @@ class ChatView extends StatelessWidget {
 class ChatScreen extends StatefulWidget {
   final User user;
 
-  const ChatScreen({Key? key, required this.user}) : super(key: key);
+  const ChatScreen({super.key, required this.user});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -56,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
             CircleAvatar(
               backgroundImage: NetworkImage(widget.user.profileImage),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(widget.user.name),
           ],
         ),
@@ -82,13 +84,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type your message...',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     if (_controller.text.isNotEmpty) {
                       setState(() {
@@ -125,7 +127,7 @@ class MessageBubble extends StatelessWidget {
   final Message message;
   final bool isMe;
 
-  const MessageBubble({Key? key, required this.message, required this.isMe}) : super(key: key);
+  const MessageBubble({super.key, required this.message, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +141,7 @@ class MessageBubble extends StatelessWidget {
               color: isMe ? Colors.blue : Colors.grey[300],
               borderRadius: BorderRadius.circular(10),
             ),
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Text(
               message.text,
               style: TextStyle(

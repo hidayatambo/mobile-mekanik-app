@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:go_router/go_router.dart';
-
 import '../common/common.dart';
 import '../widgets/custom_widget.dart';
 import 'fade_animationtest.dart';
@@ -22,9 +18,9 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF7EBE1),
+      backgroundColor: const Color(0xffF7EBE1),
       appBar: AppBar(
-        backgroundColor: Color(0xffF7EBE1).withAlpha(200),
+        backgroundColor: const Color(0xffF7EBE1).withAlpha(200),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,9 +57,9 @@ class _SignupPageState extends State<SignupPage> {
                   child: Form(
                     child: Column(
                       children: [
-                        FadeInAnimation(
+                        const FadeInAnimation(
                           delay: 1.5,
-                          child: const CustomTextFormField(
+                          child: CustomTextFormField(
                             hinttext: 'Nama Lengkap',
                             obsecuretext: false,
                           ),
@@ -71,9 +67,9 @@ class _SignupPageState extends State<SignupPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        FadeInAnimation(
+                        const FadeInAnimation(
                           delay: 1.8,
-                          child: const CustomTextFormField(
+                          child: CustomTextFormField(
                             hinttext: 'Email',
                             obsecuretext: false,
                           ),
@@ -190,7 +186,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Get.to(LoginPage());
+                              Get.to(const LoginPage());
                             },
                             child: Text(
                               "Login Sekarang",

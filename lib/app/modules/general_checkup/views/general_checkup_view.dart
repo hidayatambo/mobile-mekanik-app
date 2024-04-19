@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import '../../../componen/color.dart';
 
 class GeneralCheckupView extends StatefulWidget {
+  const GeneralCheckupView({super.key});
+
   @override
   _GeneralCheckupViewState createState() => _GeneralCheckupViewState();
 }
@@ -32,11 +34,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
 
   void handleSubmit() {
     showModalBottomSheet(
-      showDragHandle: true,
+      enableDrag: true,
       context: context,
       builder: (BuildContext context) {
         return Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
               for (String checkupItem in status.keys)
@@ -61,7 +63,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           statusBarBrightness: Brightness.light,
           systemNavigationBarColor: Colors.white,
         ),
-        title: Text('General Checkup'),
+        title: const Text('General Checkup'),
       ),
       body: ListView(
         children: [
@@ -70,7 +72,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               title: Text(checkupItem),
               trailing: DropdownButton<String>(
                 value: status[checkupItem],
-                hint: Text('Select Status'),
+                hint: const Text('Select Status'),
                 onChanged: (String? newValue) {
                   updateStatus(checkupItem, newValue);
                 },
@@ -82,12 +84,12 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 }).toList(),
               ),
             ),
-          Padding(padding: EdgeInsets.all(10),child:
+          Padding(padding: const EdgeInsets.all(10),child:
           ElevatedButton(
             style : ElevatedButton.styleFrom(
               backgroundColor: MyColors.appPrimaryColor,),
             onPressed: handleSubmit,
-            child: Text('Submit', style: TextStyle(color: Colors.white),),
+            child: const Text('Submit', style: TextStyle(color: Colors.white),),
           ),),
         ],
       ),

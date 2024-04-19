@@ -63,9 +63,9 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 child: Form(
                   child: Column(
                     children: [
-                      FadeInAnimation(
+                      const FadeInAnimation(
                         delay: 1.9,
-                        child: const CustomTextFormField(
+                        child: CustomTextFormField(
                           hinttext: 'New password',
                           obsecuretext: false,
                         ),
@@ -73,14 +73,14 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       const SizedBox(
                         height: 15,
                       ),
-                      FadeInAnimation(
+                      const FadeInAnimation(
                         delay: 2.1,
-                        child: const CustomTextFormField(
+                        child: CustomTextFormField(
                           hinttext: 'Confirm password',
                           obsecuretext: false,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       FadeInAnimation(
@@ -98,7 +98,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               FadeInAnimation(
                 delay: 2.5,
                 child: Padding(

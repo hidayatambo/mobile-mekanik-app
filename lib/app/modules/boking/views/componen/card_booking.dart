@@ -7,11 +7,11 @@ import '../../../../routes/app_pages.dart';
 class BokingList extends StatelessWidget {
   final DataBooking items;
 
-  const BokingList({Key? key, required this.items}) : super(key: key);
+  const BokingList({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
-    Color statusColor = StatusColor.getColor(items.status!); // Mengambil status dari items
+    Color statusColor = StatusColor.getColor(items.status!);
 
     return InkWell(
       onTap: () async {
@@ -24,13 +24,13 @@ class BokingList extends StatelessWidget {
             break;
           case 'estimasi':
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Harus Diproses/Dikerjakan dahulu untuk melanjutkan proses GENERAL CHECKUP', style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                 );
@@ -39,13 +39,13 @@ class BokingList extends StatelessWidget {
             break;
           case 'selesai dikerjakan':
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Sudah Selesai dikerjakan tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 );
@@ -54,13 +54,13 @@ class BokingList extends StatelessWidget {
             break;
           case 'invoice':
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Sudah Invoice tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 );
@@ -69,13 +69,13 @@ class BokingList extends StatelessWidget {
             break;
           case 'ditolak':
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Sudah Ditolak tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 );
@@ -84,13 +84,13 @@ class BokingList extends StatelessWidget {
             break;
           case 'ditolak by sistem':
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Sudah ditolak by sistem tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 );
@@ -99,13 +99,13 @@ class BokingList extends StatelessWidget {
             break;
           default:
             showModalBottomSheet(
-              showDragHandle: true,
+              enableDrag: true,
               context: context,
               builder: (context) {
                 return Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   height: 100,
-                  child: Center(
+                  child: const Center(
                     child: Text('Harus Diproses dahulu untuk melanjutkan proses GENERAL CHECKUP', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 );
@@ -116,8 +116,8 @@ class BokingList extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -126,7 +126,7 @@ class BokingList extends StatelessWidget {
               color: Colors.grey.withOpacity(0.15),
               spreadRadius: 5,
               blurRadius: 10,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -140,15 +140,15 @@ class BokingList extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Jenis Service'),
-                    Text(items.namaJenissvc!.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Jenis Service'),
+                    Text(items.namaJenissvc!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(
                   children: [
-                    Text('Jam Booking :'),
+                    const Text('Jam Booking :'),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: MyColors.appPrimaryColor,
                         borderRadius: BorderRadius.circular(10),
@@ -157,7 +157,7 @@ class BokingList extends StatelessWidget {
                         children: [
                           Text(
                             items.jamBooking!.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -169,7 +169,7 @@ class BokingList extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,14 +178,14 @@ class BokingList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Merek :'),
-                    Text(items.namaMerk!.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text('Type :'),
-                    Text(items.namaTipe!.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text('NoPol :'),
-                    Text(items.noPolisi!.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text('Pemilik :'),
-                    Text(items.nama!.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Merek :'),
+                    Text(items.namaMerk!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Type :'),
+                    Text(items.namaTipe!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('NoPol :'),
+                    Text(items.noPolisi!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Pemilik :'),
+                    Text(items.nama!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(
@@ -196,14 +196,14 @@ class BokingList extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
-                        children: [
+                        children: const [
                           Text('Status :'),
                         ],
                       ),
                     ),
-                    SizedBox(height: 5,),
+                    const SizedBox(height: 5,),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: statusColor,
                         borderRadius: BorderRadius.circular(10),
@@ -212,7 +212,7 @@ class BokingList extends StatelessWidget {
                         children: [
                           Text(
                             items.status!.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),

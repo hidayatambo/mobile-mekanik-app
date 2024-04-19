@@ -8,12 +8,10 @@ import '../../../data/data_endpoint/boking.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
-import '../controllers/boking_controller.dart';
 import 'componen/card_booking.dart';
-import 'componen/pencarian_booking.dart';
 
 class BokingView extends StatefulWidget {
-  const BokingView({Key? key}) : super(key: key);
+  const BokingView({super.key});
   @override
   State<BokingView> createState() => _BokingViewState();
 }
@@ -29,7 +27,6 @@ class _BokingViewState extends State<BokingView> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BokingController());
     return DefaultTabController(
       length: 7,
       child: Scaffold(
@@ -38,12 +35,12 @@ class _BokingViewState extends State<BokingView> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          Text('Booking'),
+          const Text('Booking'),
             FutureBuilder<Profile>(
               future: API.profile,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -53,7 +50,7 @@ class _BokingViewState extends State<BokingView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "$cabang",
+                          cabang,
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 15.0,
@@ -63,7 +60,7 @@ class _BokingViewState extends State<BokingView> {
                         ],
                     );
                   } else {
-                    return Text('Tidak ada data');
+                    return const Text('Tidak ada data');
                   }
                 }
               },
@@ -159,60 +156,58 @@ class _BokingViewState extends State<BokingView> {
     return SmartRefresher(
       controller: _refreshControllers[_getStatusIndex(status)],
       enablePullDown: true,
-      header: WaterDropHeader(),
+      header: const WaterDropHeader(),
       onRefresh: () => _onRefresh(status),
       onLoading: () => _onLoading(status),
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              child: FutureBuilder<Boking>(
-                future: API.bokingid(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+            FutureBuilder<Boking>(
+              future: API.bokingid(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else if (snapshot.hasData) {
+                  Boking getDataAcc = snapshot.data!;
+                  if (getDataAcc.message == 'Invalid token: Expired') {
+                    Get.offAllNamed(Routes.SIGNIN);
+                    return const SizedBox.shrink();
+                  }
+                  List<DataBooking> filteredList = status != null
+                      ? getDataAcc.dataBooking!
+                      .where((item) => item.status!.toLowerCase() == status)
+                      .toList()
+                      : getDataAcc.dataBooking!;
+                  if (filteredList.isEmpty) {
                     return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (snapshot.hasData) {
-                    Boking getDataAcc = snapshot.data!;
-                    if (getDataAcc.message == 'Invalid token: Expired') {
-                      Get.offAllNamed(Routes.SIGNIN);
-                      return const SizedBox.shrink();
-                    }
-                    List<DataBooking> filteredList = status != null
-                        ? getDataAcc.dataBooking!
-                        .where((item) => item.status!.toLowerCase() == status)
-                        .toList()
-                        : getDataAcc.dataBooking!;
-                    if (filteredList.isEmpty) {
-                      return const Center(
-                        child: Text('Tidak ada data'),
-                      );
-                    }
-                    return Column(
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: const Duration(milliseconds: 475),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          child: FadeInAnimation(
-                            child: widget,
-                          ),
-                        ),
-                        children: filteredList
-                            .map((e) => BokingList(items: e))
-                            .toList(),
-                      ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text('No data'),
+                      child: Text('Tidak ada data'),
                     );
                   }
-                },
-              ),
+                  return Column(
+                    children: AnimationConfiguration.toStaggeredList(
+                      duration: const Duration(milliseconds: 475),
+                      childAnimationBuilder: (widget) => SlideAnimation(
+                        child: FadeInAnimation(
+                          child: widget,
+                        ),
+                      ),
+                      children: filteredList
+                          .map((e) => BokingList(items: e))
+                          .toList(),
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text('No data'),
+                  );
+                }
+              },
             ),
           ],
         ),

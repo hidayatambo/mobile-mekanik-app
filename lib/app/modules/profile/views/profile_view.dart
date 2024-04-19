@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/data/data_endpoint/profile.dart';
 import 'package:mekanik/app/data/endpoint.dart';
-
 import '../../../componen/ButtonSubmitWidget.dart';
 import '../../../componen/color.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _ProfileViewState();
@@ -18,7 +17,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   Color theme1 = Colors.white;
-  Color theme2 = Color(0xff2E324F);
+  Color theme2 = const Color(0xff2E324F);
   Color black = Colors.black;
 
   @override
@@ -37,7 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
               future: API.profile,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -52,7 +51,7 @@ class _ProfileViewState extends State<ProfileView> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 4.0),
                           child: Text(
-                            "$nama",
+                            nama,
                             style: TextStyle(
                               color: black,
                               fontSize: 26.0,
@@ -61,9 +60,9 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                          padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                           child: Text(
-                            "$cabang",
+                            cabang,
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 15.0,
@@ -72,7 +71,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Text(
-                          "$email",
+                          email,
                           style: TextStyle(
                             color: black,
                             fontSize: 15.0,
@@ -80,8 +79,8 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Text(
-                          "$hp",
-                          style: TextStyle(
+                          hp,
+                          style: const TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.normal,
                           ),
@@ -89,7 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ],
                     );
                   } else {
-                    return Text('Tidak ada data');
+                    return const Text('Tidak ada data');
                   }
                 }
               },
@@ -108,10 +107,10 @@ class _ProfileViewState extends State<ProfileView> {
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(10))
               ),
-              child: const Row(
+              child:  Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                 Text('Edit Profile'),
                   Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
               ],),),
@@ -122,10 +121,10 @@ class _ProfileViewState extends State<ProfileView> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
-              child: const Row(
+              child:  Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Text('Pengaturan'),
                   Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
                 ],),),
@@ -136,10 +135,10 @@ class _ProfileViewState extends State<ProfileView> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
-              child: const Row(
+              child:  Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Text('Ubah Password'),
                   Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
                 ],),),
@@ -154,15 +153,15 @@ class _ProfileViewState extends State<ProfileView> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.all(30),
+                      padding: const EdgeInsets.all(30),
                       height: 245,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Column(
+                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                            children: const [
                               Text(
                                 "Continue To Logout?",
                                 style: TextStyle(
@@ -177,7 +176,7 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Row(
@@ -196,7 +195,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 height: 50,
                                 borderSide: Colors.transparent,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               ButtonSubmitWidget2(
@@ -225,10 +224,10 @@ class _ProfileViewState extends State<ProfileView> {
                   color: Colors.redAccent,
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
-              child: const Row(
+              child:  Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: const [
                   Text('Logout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                   Icon(Icons.logout_rounded,color: Colors.white,)
                 ],),),),
@@ -238,24 +237,22 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Container _profilePic() => Container(
-    child:  Padding(
-      padding: EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
-      child: Stack(
-        alignment: Alignment(0.9, 0.9),
-        children: <Widget>[
-          const CircleAvatar(
-            backgroundImage: AssetImage("assets/avatar.png"),
-            radius: 50.0,
-          ),
-          Container(
-            height: 30.0,
-            width: 30.0,
-            child: Image.asset("assets/success_logo.png"),
-            alignment: Alignment.bottomRight,
-          ),
-        ],
-      ),
+  Padding _profilePic() => Padding(
+    padding: const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
+    child: Stack(
+      alignment: const Alignment(0.9, 0.9),
+      children: <Widget>[
+        const CircleAvatar(
+          backgroundImage: AssetImage("assets/avatar.png"),
+          radius: 50.0,
+        ),
+        Container(
+          height: 30.0,
+          width: 30.0,
+          alignment: Alignment.bottomRight,
+          child: Image.asset("assets/success_logo.png"),
+        ),
+      ],
     ),
   );
 }

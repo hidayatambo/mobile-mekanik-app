@@ -1,21 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mekanik/app/componen/color.dart';
-
 import '../../../data/data_endpoint/login.dart';
 import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
 import '../common/common.dart';
-import '../controllers/signin_controller.dart';
 import '../widgets/custom_widget.dart';
 import 'fade_animationtest.dart';
 import 'forget_password.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -50,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SigninController());
     return Scaffold(
 
       appBar: AppBar(

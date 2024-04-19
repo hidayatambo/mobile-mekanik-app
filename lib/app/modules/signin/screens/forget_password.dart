@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mekanik/app/modules/signin/screens/signup_page.dart';
 
@@ -21,9 +19,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF7EBE1),
+      backgroundColor: const Color(0xffF7EBE1),
       appBar: AppBar(
-        backgroundColor: Color(0xffF7EBE1).withAlpha(200),
+        backgroundColor: const Color(0xffF7EBE1).withAlpha(200),
       ),
       body: SafeArea(
         child: Padding(
@@ -58,14 +56,14 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 child: Form(
                   child: Column(
                     children: [
-                      FadeInAnimation(
+                      const FadeInAnimation(
                         delay: 1.9,
-                        child: const CustomTextFormField(
+                        child: CustomTextFormField(
                           hinttext: 'Masukkan email Anda',
                           obsecuretext: false,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       FadeInAnimation(
@@ -83,7 +81,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               FadeInAnimation(
                 delay: 2.8,
                 child: Padding(
@@ -97,7 +95,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Get.to(SignupPage());
+                            Get.to(const SignupPage());
                           },
                           child: Text(
                             "Daftar sekarang",

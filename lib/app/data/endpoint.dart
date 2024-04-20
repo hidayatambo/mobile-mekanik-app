@@ -100,6 +100,9 @@ class API {
   }
 //beda
   static Boking? _cachedBoking;
+  static void clearCachedBoking() {
+    _cachedBoking = null;
+  }
   static Future<Boking> bokingid() async {
     if (_cachedBoking != null) {
       return _cachedBoking!;

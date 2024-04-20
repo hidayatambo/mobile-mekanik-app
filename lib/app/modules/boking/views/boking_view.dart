@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:search_page/search_page.dart';
+
 import '../../../data/data_endpoint/boking.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
@@ -11,12 +12,35 @@ import '../../../routes/app_pages.dart';
 import 'componen/card_booking.dart';
 
 class BokingView extends StatefulWidget {
-  const BokingView({super.key});
   @override
   State<BokingView> createState() => _BokingViewState();
 }
 
 class _BokingViewState extends State<BokingView> {
+
+  void clearCachedBoking() {
+    setState(() {
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BokingView2(
+      clearCachedBoking: clearCachedBoking,
+    );
+  }
+}
+
+class BokingView2 extends StatefulWidget {
+  final VoidCallback clearCachedBoking; // Menggunakan VoidCallback untuk tipe fungsi tanpa parameter
+
+  const BokingView2({Key? key, required this.clearCachedBoking}) : super(key: key);
+
+  @override
+  State<BokingView2> createState() => _BokingView2State();
+}
+
+class _BokingView2State extends State<BokingView2> {
   late List<RefreshController> _refreshControllers;
 
   @override
@@ -35,37 +59,38 @@ class _BokingViewState extends State<BokingView> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          const Text('Booking'),
-            FutureBuilder<Profile>(
-              future: API.profile,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  if (snapshot.data != null) {
-                    final cabang = snapshot.data!.data?.cabang ?? "";
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          cabang,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        ],
-                    );
+              const Text('Booking'),
+              FutureBuilder<Profile>(
+                future: API.profile,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
                   } else {
-                    return const Text('Tidak ada data');
+                    if (snapshot.data != null) {
+                      final cabang = snapshot.data!.data?.cabang ?? "";
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            cabang,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const Text('Tidak ada data');
+                    }
                   }
-                }
-              },
-            ),
-          ],),
+                },
+              ),
+            ],
+          ),
           actions: [
             FutureBuilder(
               future: API.bokingid(),
@@ -83,7 +108,7 @@ class _BokingViewState extends State<BokingView> {
                         context: context,
                         delegate: SearchPage<DataBooking>(
                           items: data,
-                          searchLabel: 'Cari History Boking',
+                          searchLabel: 'Cari History Booking',
                           searchStyle: GoogleFonts.nunito(color: Colors.black),
                           showItemsOnEmpty: true,
                           failure: Center(
@@ -92,12 +117,12 @@ class _BokingViewState extends State<BokingView> {
                               style: GoogleFonts.nunito(),
                             ),
                           ),
-                          filter: (boking) => [
-                            boking.nama,
-                            boking.noPolisi,
-                            boking.status,
-                            boking.namaMerk,
-                            boking.namaTipe,
+                          filter: (booking) => [
+                            booking.nama,
+                            booking.noPolisi,
+                            booking.status,
+                            booking.namaMerk,
+                            booking.namaTipe,
                           ],
                           builder: (items) => BokingList(items: items),
                         ),
@@ -175,7 +200,7 @@ class _BokingViewState extends State<BokingView> {
                   );
                 } else if (snapshot.hasData) {
                   Boking getDataAcc = snapshot.data!;
-                  if (getDataAcc.status == false) { // Jika status false
+                  if (getDataAcc.status == false) {
                     return const Center(
                       child: Text('Tidak ada data booking untuk karyawan ini.'),
                     );
@@ -220,14 +245,12 @@ class _BokingViewState extends State<BokingView> {
   }
 
   void _onLoading(String? status) {
-    // Perform your loading operations here
-    // For now, just complete the load
     _refreshControllers[_getStatusIndex(status)].loadComplete();
   }
 
   void _onRefresh(String? status) {
-    // Perform your refresh operations here
-    // For now, just complete the refresh
+    API.clearCachedBoking();
+    widget.clearCachedBoking();
     _refreshControllers[_getStatusIndex(status)].refreshCompleted();
   }
 

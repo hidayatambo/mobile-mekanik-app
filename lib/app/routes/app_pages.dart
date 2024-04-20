@@ -45,7 +45,7 @@ class AppPages {
     GetPage(
       transition: Transition.rightToLeft,
       name: _Paths.BOKING,
-      page: () => const BokingView(),
+      page: () => BokingView(),
       binding: BokingBinding(),
     ),
     GetPage(

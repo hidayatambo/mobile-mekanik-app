@@ -6,6 +6,7 @@ import 'package:mekanik/app/componen/color.dart';
 import 'package:mekanik/app/modules/history/views/history_view.dart';
 import 'package:mekanik/app/modules/profile/views/profile_view.dart';
 
+import '../../../data/data_endpoint/boking.dart';
 import '../../boking/views/boking_view.dart';
 import '../../chat/views/chat_view.dart';
 import '../views/home_view.dart';
@@ -18,6 +19,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  Boking? _cachedBoking;
+
+  void clearCachedBoking() {
+    setState(() {
+      _cachedBoking = null;
+    });
+  }
   int _page = 0;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   final _pageController = PageController();
@@ -84,7 +92,7 @@ class _HomeViewState extends State<HomeView> {
         children:  <Widget>[
           const HomePage(),
           ChatView(),
-          const BokingView(),
+          BokingView(),
           const HistoryView(),
           ProfileView(),
         ],

@@ -175,7 +175,11 @@ class _BokingViewState extends State<BokingView> {
                   );
                 } else if (snapshot.hasData) {
                   Boking getDataAcc = snapshot.data!;
-                  if (getDataAcc.message == 'Invalid token: Expired') {
+                  if (getDataAcc.status == false) { // Jika status false
+                    return const Center(
+                      child: Text('Tidak ada data booking untuk karyawan ini.'),
+                    );
+                  } else if (getDataAcc.message == 'Invalid token: Expired') {
                     Get.offAllNamed(Routes.SIGNIN);
                     return const SizedBox.shrink();
                   }

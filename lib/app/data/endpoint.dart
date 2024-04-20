@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:ui';
-
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/data/publik.dart';
-
 import '../routes/app_pages.dart';
 import 'data_endpoint/boking.dart';
 import 'data_endpoint/login.dart';
@@ -14,6 +11,7 @@ import 'localstorage.dart';
 
 class API {
   static const _url = 'https://mobile.techthinkhub.id';
+  static const _urlbe = 'https://be.techthinkhub.id';
   static const _baseUrl = '$_url/api';
   static const _getLogin = '$_baseUrl/mekanik/login';
   static const _getTooking = '$_baseUrl/mekanik/booking';
@@ -67,7 +65,6 @@ class API {
   }
 //beda
   static Profile? _cachedProfile;
-
   static Future<Profile> get profile async {
     if (_cachedProfile != null) {
       return _cachedProfile!;
@@ -87,8 +84,6 @@ class API {
       );
 
       final obj = Profile.fromJson(response.data);
-
-      // Simpan profil ke dalam cache
       _cachedProfile = obj;
 
       if (obj.message == 'Invalid token: Expired') {
@@ -105,7 +100,6 @@ class API {
   }
 //beda
   static Boking? _cachedBoking;
-
   static Future<Boking> bokingid() async {
     if (_cachedBoking != null) {
       return _cachedBoking!;
@@ -124,9 +118,11 @@ class API {
         queryParameters: data,
       );
 
-      final obj = Boking.fromJson(response.data);
+      if (response.statusCode == 404) {
+        return Boking(status: false, message: "Tidak ada data booking untuk karyawan ini.");
+      }
 
-      // Simpan hasil boking ke dalam cache
+      final obj = Boking.fromJson(response.data);
       _cachedBoking = obj;
 
       if (obj.message == 'Invalid token: Expired') {
@@ -141,5 +137,4 @@ class API {
       throw e;
     }
   }
-
 }

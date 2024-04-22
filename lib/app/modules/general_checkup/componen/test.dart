@@ -1,7 +1,7 @@
 
 import 'package:fine_stepper/fine_stepper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import '../../../componen/color.dart';
@@ -25,7 +25,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
       onFinish: () => Future.delayed(const Duration(seconds: 2)),
       indicatorOptions: const IndicatorOptions(scrollable: true),
       steps: [
-        StepItem.icon(builder: buildColumnStep),
+        StepItem.icon(builder: buildMesinStep),
         StepItem.icon(builder: buildStackStep),
         StepItem.icon(builder: buildFormStep),
         StepItem.icon(builder: buildTanggalAcaraStep),
@@ -43,7 +43,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
         StepItem.linear(
           title: '',
           description: 'This is a desc',
-          builder: buildColumnStep,
+          builder: buildMesinStep,
         ),
         StepItem.linear(
           title: '',
@@ -98,69 +98,9 @@ class _DetailTemaViewState extends State<DetailTemaView> {
         ),
         );
   }
-  Widget buildSheetBack() {
-    return Container(
-        height: 130,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: Colors.transparent,
-        ),
-        child: Column(
-          children: [
-            const Column(
-              children: [
-                Text('Anda yakin ingin meninggalkan Pengisian Form Wdding ?',
-                    textAlign: TextAlign.center),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () async {
-                    // Get.toNamed(Routes.HOME);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.green),
-                    child: const Center(
-                      child: Text('Save sebagai Draf',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue),
-                    child: const Center(
-                      child: Text('Tetap di Sini',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ));
-  }
-  Widget buildColumnStep(BuildContext context,) {
-    String dropdownValue = 'Oke';
+
+  Widget buildMesinStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -172,16 +112,17 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Mesin'
-                      '',
+                      'Mesin',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -194,75 +135,73 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Mesin")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Mesin")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                            ),
-                                            DropdownButton<String>(
-                                              value: dropdownValue,
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  dropdownValue = newValue!; // perbarui nilai dropdownValue
-                                                });
-                                              },
-                                              items: <String>['Oke', 'Not Oke']
-                                                  .map<DropdownMenuItem<String>>((String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ],
-                                        ),
-                                        // Tampilkan TextField jika dropdownValue adalah 'Not Oke'
-                                        if (dropdownValue == 'Not Oke')
-                                          const TextField(
-                                            decoration: InputDecoration(
-                                              labelText: 'Keterangan', // Label untuk TextField
-                                              border: OutlineInputBorder(),
-                                            ),
-                                          ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
                     } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: const SingleChildScrollView(
-                          child: Column(
-                            children: [],
-                          ),
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
@@ -271,7 +210,6 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -280,9 +218,8 @@ class _DetailTemaViewState extends State<DetailTemaView> {
     );
   }
 
-
-
   Widget buildStackStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -294,20 +231,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Brake'
-                      '',
+                      'Brake',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -315,71 +254,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Brake")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Brake")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
                     } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
-                          ),
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -389,6 +338,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
   }
 
   Widget buildFormStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -400,20 +350,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Accel'
-                      '',
+                      'Accel',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -421,71 +373,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Accel")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Accel")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
                     } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
-                          ),
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -495,6 +457,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
   }
 
   Widget buildTanggalAcaraStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -506,20 +469,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Interior'
-                      '',
+                      'Interior',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -527,72 +492,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Interior")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
-                          ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Interior")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -602,6 +576,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
   }
 
   Widget buildGalleryStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -613,20 +588,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Exterior'
-                      '',
+                      'Exterior',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -634,72 +611,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Exterior")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
-                          ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Exterior")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -709,6 +695,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
   }
 
   Widget buildUcapamStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -720,20 +707,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Bawah Kendaraan'
-                      '',
+                      'Bawah Kendaraan',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -741,72 +730,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Bawah Kendaraan")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
-                          ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Bawah Kendaraan")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -815,6 +813,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
     );
   }
   Widget buildStallTestStep(BuildContext context) {
+    Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return StepBuilder(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -826,20 +825,22 @@ class _DetailTemaViewState extends State<DetailTemaView> {
               children: [
                 Text(
                   'Step ${FineStepper.of(context).stepIndex + 1}  '
-                      'Stall Test'
-                      '',
+                      'Stall Test',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 17,
+                  ),
                 ),
-                cardInfo(),
+                const SizedBox(height: 5),
+                const cardInfo(),
+                const SizedBox(height: 20),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -847,72 +848,81 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                         child: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      general_checkup? getDataAcc = snapshot.data as general_checkup?;
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      final generalData = snapshot.data;
+                      final getDataAcc = generalData?.data
+                          ?.where((e) => e.subHeading == "Stall Test")
+                          .toList();
+                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                        return Column(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 475),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
-                          ),
-                          children: getDataAcc?.data
-                              ?.where((e) => e.subHeading == "Stall Test")
-                              ?.map((e) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Step ${FineStepper.of(context).stepIndex + 1} - ${e.subHeading ?? ''}'),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: e.gcus?.map((gcus) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(gcus.gcu ?? ''), // Tampilkan gcu dari Gcus
-                                        ),
-                                        DropdownButton<String>(
-                                          value: 'Oke', // Nilai default dropdown
-                                          onChanged: (String? newValue) {
-                                            // Tambahkan logika untuk menangani perubahan nilai dropdown di sini
-                                          },
-                                          items: <String>['Oke', 'Not Oke'] // Opsi dropdown
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList() ?? [],
-                                ),
+                            children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
+                              final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(gcus.gcu ?? ''),
+                                      ),
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: dropdownValueNotifier,
+                                        builder: (context, value, _) {
+                                          return DropdownButton<String>(
+                                            value: value,
+                                            onChanged: (String? newValue) {
+                                              dropdownValueNotifier.value = newValue!;
+                                            },
+                                            items: <String>['Oke', 'Not Oke']
+                                                .map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
-                              ],
-                            );
-                          })
-                              ?.toList() ?? [],
-                        ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: Get.height - 250,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [],
+
+                                  TextFieldVisibility(
+                                    valueNotifier: dropdownValueNotifier,
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
+                        );
+                      } else {
+                        return const SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: Text('No data available'),
+                          ),
+                        );
+                      }
+                    } else {
+                      return const SizedBox(
+                        height: 150,
+                        child: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       );
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-
               ],
             ),
           ),
@@ -941,5 +951,52 @@ class StatusColor {
       default:
         return Colors.transparent;
     }
+  }
+}
+
+class TextFieldVisibility extends StatefulWidget {
+  final ValueNotifier<String> valueNotifier;
+
+  const TextFieldVisibility({
+    required this.valueNotifier,
+  });
+
+  @override
+  _TextFieldVisibilityState createState() => _TextFieldVisibilityState();
+}
+
+class _TextFieldVisibilityState extends State<TextFieldVisibility> {
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: widget.valueNotifier.value == 'Not Oke',
+      child: Column(
+        children: [
+          const SizedBox(height: 10), // Spasi untuk memisahkan dari DropdownButton
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Keterangan',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.valueNotifier.addListener(_updateState);
+  }
+
+  @override
+  void dispose() {
+    widget.valueNotifier.removeListener(_updateState);
+    super.dispose();
+  }
+
+  void _updateState() {
+    setState(() {});
   }
 }

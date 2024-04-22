@@ -1,4 +1,5 @@
-  import 'package:flutter/material.dart';
+  import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
   import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   import 'package:get/get.dart';
   import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,8 @@
   import 'componen/card_booking.dart';
 
   class BokingView extends StatefulWidget {
+  const BokingView({super.key});
+
     @override
     State<BokingView> createState() => _BokingViewState();
   }
@@ -34,7 +37,7 @@
   class BokingView2 extends StatefulWidget {
     final VoidCallback clearCachedBoking; // Menggunakan VoidCallback untuk tipe fungsi tanpa parameter
 
-    const BokingView2({Key? key, required this.clearCachedBoking}) : super(key: key);
+    const BokingView2({super.key, required this.clearCachedBoking});
 
     @override
     State<BokingView2> createState() => _BokingView2State();
@@ -209,17 +212,19 @@
                       Get.offAllNamed(Routes.SIGNIN);
                       return const SizedBox.shrink();
                     }
+
                     List<DataBooking> filteredList = status != null
                         ? getDataAcc.dataBooking!
                         .where((item) => item.status!.toLowerCase() == status)
                         .toList()
                         : getDataAcc.dataBooking!;
+
                     if (filteredList.isEmpty) {
                       return const Center(
                         child: Text('Tidak ada data'),
                       );
                     }
-                    selectedData = filteredList.first;
+
                     return Column(
                       children: AnimationConfiguration.toStaggeredList(
                         duration: const Duration(milliseconds: 475),
@@ -231,27 +236,29 @@
                         children: filteredList.map((e) => BokingList(
                           items: e,
                           onTap: () {
-                            selectedData = e;
-                            print('Data Booking yang dipilih: ${selectedData?.toJson()}');
-                            Get.toNamed(Routes.GENERAL_CHECKUP, arguments: {
-                              'id': e.id.toString(),
-                              'tgl_booking': e.tglBooking.toString(),
-                              'jam_booking': e.jamBooking.toString(),
-                              'nama': e.nama.toString(),
-                              'nama_jenissvc': e.namaJenissvc.toString(),
-                              'no_polisi': e.noPolisi.toString(),
-                              'nama_merk': e.namaMerk.toString(),
-                              'nama_tipe': e.namaTipe.toString(),
-                              'status': e.status.toString(),
-
-                            });
-                            switch (e.status!.toLowerCase()) {
+                            print('Nilai e.namaJenissvc: ${e.namaJenissvc}');
+                            if (e.status!.toLowerCase() == 'invoice' && e.namaJenissvc!.toLowerCase() != 'repair & maintenance') {
+                              Get.toNamed(
+                                Routes.GENERAL_CHECKUP,
+                                arguments: {
+                                  'id': e.id.toString(),
+                                  'tgl_booking': e.tglBooking.toString(),
+                                  'jam_booking': e.jamBooking.toString(),
+                                  'nama': e.nama.toString(),
+                                  'nama_jenissvc': e.namaJenissvc.toString(),
+                                  'no_polisi': e.noPolisi.toString(),
+                                  'nama_merk': e.namaMerk.toString(),
+                                  'nama_tipe': e.namaTipe.toString(),
+                                  'status': e.status.toString(),
+                                },
+                              );
+                            } else {
+                              Get.snackbar('Info', 'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
                             }
-                          },
+                          }
                         )).toList(),
                       ),
                     );
-
                   } else {
                     return const Center(
                       child: Text('No data'),
@@ -259,6 +266,7 @@
                   }
                 },
               ),
+
             ],
           ),
         ),
@@ -285,7 +293,7 @@
           return 3;
         case 'selesai dikerjakan':
           return 4;
-        case 'invoice':
+        case 'Invoice':
           return 5;
         case 'ditolak':
           return 6;

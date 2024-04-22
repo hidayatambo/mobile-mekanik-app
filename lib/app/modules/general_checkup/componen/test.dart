@@ -4,15 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-
 import '../../../componen/color.dart';
-import '../../../data/data_endpoint/boking.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
-import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
-import '../../../routes/app_pages.dart';
-import '../../boking/views/componen/card_booking.dart';
-import 'card_general.dart';
+import 'card_info.dart';
 
 class DetailTemaView extends StatefulWidget {
   const DetailTemaView({super.key});
@@ -112,13 +107,13 @@ class _DetailTemaViewState extends State<DetailTemaView> {
         ),
         child: Column(
           children: [
-            Column(
+            const Column(
               children: [
                 Text('Anda yakin ingin meninggalkan Pengisian Form Wdding ?',
                     textAlign: TextAlign.center),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
@@ -165,16 +160,6 @@ class _DetailTemaViewState extends State<DetailTemaView> {
         ));
   }
   Widget buildColumnStep(BuildContext context,) {
-    final Map args = Get.arguments;
-    final String bookingId = args['id'];
-    final String tgl_booking = args['tgl_booking'];
-    final String jam_booking = args['jam_booking'];
-    final String nama = args['nama'];
-    final String nama_jenissvc = args['nama_jenissvc'];
-    final String no_polisi = args['no_polisi'];
-    final String nama_merk = args['nama_merk'];
-    final String nama_tipe = args['nama_tipe'];
-    final String status = args['status'];
     String dropdownValue = 'Oke';
     return StepBuilder(
       child: SingleChildScrollView(
@@ -190,161 +175,18 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       'Mesin'
                       '',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 17),
                 ),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.15),
-                        spreadRadius: 5,
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const SizedBox(height: 5,),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: StatusColor.getColor(status),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '$status',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Jenis Service'),
-                              Text('$nama_jenissvc', style: const TextStyle(fontWeight: FontWeight.bold),),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: MyColors.appPrimaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    children: const [
-                                      Text('tgl booking :', style: TextStyle(color: Colors.white),),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  '$tgl_booking ',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Merek :'),
-                              Text('$nama_merk', style: const TextStyle(fontWeight: FontWeight.bold),),
-                              Divider(color: Colors.grey,),
-                              const Text('Type :'),
-                              Text('$nama_tipe', style: const TextStyle(fontWeight: FontWeight.bold),),
-                              Divider(color: Colors.grey,),
-
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: MyColors.appPrimaryColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Column(
-                                  children: [
-                                    const Text('Jam Booking :',style: TextStyle(color: Colors.white),),
-                                    SizedBox(height: 10,),
-                                    Text(
-                                      '$jam_booking',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('NoPol :'),
-                          Text('$no_polisi', style: const TextStyle(fontWeight: FontWeight.bold),),
-                          Divider(color: Colors.grey,),
-                          const Text('Pemilik :'),
-                          Text('$nama', style: const TextStyle(fontWeight: FontWeight.bold),),
-                        ],),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20,),
+                cardInfo(),
+                const SizedBox(height: 20,),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapshot.hasError) {
@@ -398,7 +240,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                                         ),
                                         // Tampilkan TextField jika dropdownValue adalah 'Not Oke'
                                         if (dropdownValue == 'Not Oke')
-                                          TextField(
+                                          const TextField(
                                             decoration: InputDecoration(
                                               labelText: 'Keterangan', // Label untuk TextField
                                               border: OutlineInputBorder(),
@@ -417,7 +259,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                     } else {
                       return SizedBox(
                         height: Get.height - 250,
-                        child: SingleChildScrollView(
+                        child: const SingleChildScrollView(
                           child: Column(
                             children: [],
                           ),
@@ -426,7 +268,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                     }
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
 
@@ -460,6 +302,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -565,6 +408,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -670,6 +514,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -776,6 +621,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -882,6 +728,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -987,6 +834,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       color: Colors.black,
                       fontSize: 17),
                 ),
+                cardInfo(),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {

@@ -1,11 +1,8 @@
 
 import 'package:fine_stepper/fine_stepper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:get/get.dart';
 import '../../../componen/color.dart';
-import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/endpoint.dart';
 import 'card_info.dart';
 
@@ -957,7 +954,7 @@ class StatusColor {
 class TextFieldVisibility extends StatefulWidget {
   final ValueNotifier<String> valueNotifier;
 
-  const TextFieldVisibility({
+  const TextFieldVisibility({super.key,
     required this.valueNotifier,
   });
 
@@ -970,9 +967,9 @@ class _TextFieldVisibilityState extends State<TextFieldVisibility> {
   Widget build(BuildContext context) {
     return Visibility(
       visible: widget.valueNotifier.value == 'Not Oke',
-      child: Column(
+      child: const Column(
         children: [
-          const SizedBox(height: 10), // Spasi untuk memisahkan dari DropdownButton
+          SizedBox(height: 10), // Spasi untuk memisahkan dari DropdownButton
           TextField(
             decoration: InputDecoration(
               labelText: 'Keterangan',

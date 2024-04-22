@@ -339,8 +339,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                     ],
                   ),
                 ),
-                Text('Booking ID: $bookingId'),
-
+                SizedBox(height: 20,),
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {

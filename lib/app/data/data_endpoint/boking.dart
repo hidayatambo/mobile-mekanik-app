@@ -28,6 +28,7 @@ class Boking {
 }
 
 class DataBooking {
+  int? id;
   String? kodeBooking;
   String? tglBooking;
   String? jamBooking;
@@ -39,7 +40,8 @@ class DataBooking {
   String? status;
 
   DataBooking(
-      {this.kodeBooking,
+      {this.id,
+        this.kodeBooking,
         this.tglBooking,
         this.jamBooking,
         this.nama,
@@ -50,6 +52,7 @@ class DataBooking {
         this.status});
 
   DataBooking.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     kodeBooking = json['kode_booking'];
     tglBooking = json['tgl_booking'];
     jamBooking = json['jam_booking'];
@@ -63,6 +66,7 @@ class DataBooking {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['kode_booking'] = this.kodeBooking;
     data['tgl_booking'] = this.tglBooking;
     data['jam_booking'] = this.jamBooking;

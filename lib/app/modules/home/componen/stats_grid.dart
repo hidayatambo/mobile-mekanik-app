@@ -6,7 +6,7 @@ class StatsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.27,
+      height: MediaQuery.of(context).size.height * 0.30,
       child: Column(
         children: <Widget>[
           Flexible(

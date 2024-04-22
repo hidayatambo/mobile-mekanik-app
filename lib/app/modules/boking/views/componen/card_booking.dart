@@ -6,115 +6,16 @@ import '../../../../routes/app_pages.dart';
 
 class BokingList extends StatelessWidget {
   final DataBooking items;
+  final VoidCallback onTap;
 
-  const BokingList({super.key, required this.items});
+  const BokingList({Key? key, required this.items, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     Color statusColor = StatusColor.getColor(items.status!);
 
     return InkWell(
-      onTap: () async {
-        switch (items.status!.toLowerCase()) {
-          case 'diproses':
-            Get.toNamed(Routes.GENERAL_CHECKUP);
-            break;
-          case 'dikerjakan':
-            Get.toNamed(Routes.GENERAL_CHECKUP);
-            break;
-          case 'estimasi':
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Harus Diproses/Dikerjakan dahulu untuk melanjutkan proses GENERAL CHECKUP', style: TextStyle(fontWeight: FontWeight.bold),),
-                  ),
-                );
-              },
-            );
-            break;
-          case 'selesai dikerjakan':
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Sudah Selesai dikerjakan tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                );
-              },
-            );
-            break;
-          case 'invoice':
-            Get.toNamed(Routes.GENERAL_CHECKUP);
-            // showModalBottomSheet(
-            //   enableDrag: true,
-            //   context: context,
-            //   builder: (context) {
-            //     return Container(
-            //       padding: const EdgeInsets.all(10),
-            //       height: 100,
-            //       child: const Center(
-            //         child: Text('Sudah Invoice tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
-            //       ),
-            //     );
-            //   },
-            // );
-            break;
-          case 'ditolak':
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Sudah Ditolak tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                );
-              },
-            );
-            break;
-          case 'ditolak by sistem':
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Sudah ditolak by sistem tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                );
-              },
-            );
-            break;
-          default:
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Harus Diproses dahulu untuk melanjutkan proses GENERAL CHECKUP', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                );
-              },
-            );
-            break;
-        }
-      },
+      onTap: onTap, // Menggunakan onTap yang diterima dari luar
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),

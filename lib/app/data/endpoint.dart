@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
 import 'data_endpoint/boking.dart';
+import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/profile.dart';
 import 'localstorage.dart';
@@ -13,9 +14,11 @@ class API {
   static const _url = 'https://mobile.techthinkhub.id';
   static const _urlbe = 'https://be.techthinkhub.id';
   static const _baseUrl = '$_url/api';
+  static const _getProfile = '$_baseUrl/mekanik/profile-karyawan';
   static const _getLogin = '$_baseUrl/mekanik/login';
   static const _getTooking = '$_baseUrl/mekanik/booking';
-  static const _getProfile = '$_baseUrl/mekanik/profile-karyawan';
+  static const _getGeneral = '$_baseUrl/mekanik/general-checkup';
+
 
   static Future<Token> login({required String email, required String password}) async {
     final data = {
@@ -135,6 +138,47 @@ class API {
           obj.message.toString(),
         );
       }
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+  //Beda
+  static general_checkup? _cachedGeneral;
+
+  static void clearCacheGeneral() {
+    _cachedGeneral = null;
+  }
+
+  static Future<general_checkup> GeneralID() async {
+    if (_cachedGeneral != null) {
+      return _cachedGeneral!;
+    }
+
+    final token = Publics.controller.getToken.value;
+    var data = {"token": token};
+    try {
+      var response = await Dio().get(
+        _getGeneral,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = general_checkup.fromJson(response.data);
+      _cachedGeneral = obj;
+
+      if (obj.data == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
       return obj;
     } catch (e) {
       throw e;

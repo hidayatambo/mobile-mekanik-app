@@ -16,6 +16,8 @@ dependencies:
   particles_flutter: ^0.1.4
   launch_review: ^3.0.1
   smartrefresh: ^0.0.2
+  fine_stepper: ^0.3.0
+  webview_flutter: ^3.0.0
   dropdown_button2: ^2.1.2
   package_info: ^2.0.2
   in_app_update: ^4.2.1

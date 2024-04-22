@@ -53,19 +53,20 @@ class BokingList extends StatelessWidget {
             );
             break;
           case 'invoice':
-            showModalBottomSheet(
-              enableDrag: true,
-              context: context,
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 100,
-                  child: const Center(
-                    child: Text('Sudah Invoice tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                );
-              },
-            );
+            Get.toNamed(Routes.GENERAL_CHECKUP);
+            // showModalBottomSheet(
+            //   enableDrag: true,
+            //   context: context,
+            //   builder: (context) {
+            //     return Container(
+            //       padding: const EdgeInsets.all(10),
+            //       height: 100,
+            //       child: const Center(
+            //         child: Text('Sudah Invoice tidak bisa GENERAL CHECKUP lagi', style: TextStyle(fontWeight: FontWeight.bold)),
+            //       ),
+            //     );
+            //   },
+            // );
             break;
           case 'ditolak':
             showModalBottomSheet(

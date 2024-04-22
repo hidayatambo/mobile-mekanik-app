@@ -214,8 +214,13 @@ class _BokingView2State extends State<BokingView2> {
                       .toList()
                       : getDataAcc.dataBooking!;
                   if (filteredList.isEmpty) {
-                    return const Center(
-                      child: Text('Tidak ada data'),
+                    return const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Center(
+                    child: Text('Tidak ada data'),)
+                    ],
                     );
                   }
                   return Column(

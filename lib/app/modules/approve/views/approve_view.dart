@@ -54,80 +54,50 @@ class ApproveView extends StatelessWidget {
                         // Tampilkan pesan jika tidak ada data yang diterima
                         return Text('Tidak ada data yang diterima dari server');
                       }
-                      List<DataBooking> filteredList = bookings.where((booking) =>
-                      booking.status != null &&
-                          booking.namaJenissvc != null &&
-                          booking.status!.toLowerCase() == 'diproses' &&
-                          !(booking.namaJenissvc!.toLowerCase() == 'Repair & Maintenance' ||
-                              booking.namaJenissvc!.toLowerCase() == 'General Check UP/P2H')
-                      ).toList();
 
-                      print('Data setelah penyaringan: $filteredList');
+                      // Tambahkan variabel untuk menunjukkan apakah ada data yang sesuai
+                      bool dataFound = false;
 
-                      if (filteredList.isNotEmpty) {
-                        DataBooking bookingData = filteredList.first;
-                        String routeName = '';
-                        if (bookingData.namaJenissvc!.toLowerCase() == 'repair & maintenance') {
-                          routeName = Routes.GENERAL_CHECKUP;
-                        } else if (bookingData.namaJenissvc!.toLowerCase() == 'general check up/p2h') {
-                          routeName = Routes.HOME;
-                        } else {
-                          Get.snackbar('Info', 'Jenis layanan tidak valid');
-                          return SizedBox();
+                      for (DataBooking e in bookings) {
+                        if (e.status != null && e.namaJenissvc != null) {
+                          if (e.status!.toLowerCase() == 'diproses' &&
+                              e.namaJenissvc!.toLowerCase() != 'general check up/p2h') {
+                            // Lakukan navigasi jika ada data yang sesuai
+                            Get.toNamed(
+                              Routes.APPROVE,
+                              arguments: {
+                                'id': e.id.toString(),
+                                'tgl_booking': e.tglBooking.toString(),
+                                'jam_booking': e.jamBooking.toString(),
+                                'nama': e.nama.toString(),
+                                'nama_jenissvc': e.namaJenissvc.toString(),
+                                'no_polisi': e.noPolisi.toString(),
+                                'nama_merk': e.namaMerk.toString(),
+                                'nama_tipe': e.namaTipe.toString(),
+                                'status': e.status.toString(),
+                              },
+                            );
+                            // Set dataFound menjadi true karena ada data yang sesuai
+                            dataFound = true;
+                            // Keluar dari loop karena sudah menemukan data yang sesuai
+                            break;
+                          }
                         }
-                        if (bookingData.id != null &&
-                            bookingData.tglBooking != null &&
-                            bookingData.jamBooking != null &&
-                            bookingData.nama != null &&
-                            bookingData.namaJenissvc != null &&
-                            bookingData.noPolisi != null &&
-                            bookingData.namaMerk != null &&
-                            bookingData.namaTipe != null &&
-                            bookingData.status != null) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              Get.toNamed(
-                                routeName,
-                                arguments: {
-                                  'id': bookingData.id.toString(), // Mengonversi int menjadi String
-                                  'tgl_booking': bookingData.tglBooking.toString(), // Mengonversi int menjadi String
-                                  'jam_booking': bookingData.jamBooking.toString(), // Mengonversi int menjadi String
-                                  'nama': bookingData.nama.toString(),
-                                  'nama_jenissvc': bookingData.namaJenissvc.toString(),
-                                  'no_polisi': bookingData.noPolisi.toString(),
-                                  'nama_merk': bookingData.namaMerk.toString(),
-                                  'nama_tipe': bookingData.namaTipe.toString(),
-                                  'status': bookingData.status.toString(),
-                                },
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              elevation: 4.0,
-                            ),
-                            child: const Text(
-                              'Approve',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          );
-                        } else {
-                          // Lakukan penanganan jika data tidak lengkap
-                          print('Data tidak lengkap');
-                          return SizedBox();
-                        }
-                      } else {
-                        // Pastikan bahwa pesan ini muncul ketika tidak ada data yang sesuai
+                      }
+
+                      if (!dataFound) {
+                        // Tampilkan pesan jika tidak ada data yang sesuai
                         return Text('Tidak ada data yang sesuai');
+                      } else {
+                        // Jika ada data yang sesuai, tidak perlu menampilkan widget apa pun di sini
+                        // Karena navigasi telah dilakukan di dalam loop
+                        return SizedBox();
                       }
                     }
                   },
                 ),
+
+
 
                 const SizedBox(width: 10,),
             ElevatedButton(

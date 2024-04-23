@@ -58,6 +58,7 @@ import 'package:flutter/material.dart';
         length: 7,
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: false,
             toolbarHeight: 60,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

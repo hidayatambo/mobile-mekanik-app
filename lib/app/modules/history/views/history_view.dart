@@ -16,6 +16,7 @@ class HistoryView extends GetView<HistoryController> {
       length: 5, // Jumlah tab
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

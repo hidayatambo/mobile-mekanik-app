@@ -234,12 +234,16 @@ import 'package:flutter/material.dart';
                             child: widget,
                           ),
                         ),
-                        children: filteredList.map((e) => BokingList(
-                          items: e,
+                        children: filteredList
+                            .map(
+                              (e) => BokingList(
+                            items: e,
                             onTap: () {
                               print('Nilai e.namaJenissvc: ${e.namaJenissvc}');
                               if (e.status != null && e.namaJenissvc != null) {
-                                if (e.status!.toLowerCase() == 'diproses' && e.namaJenissvc!.toLowerCase() != 'repair & maintenance') {
+                                if (e.status!.toLowerCase() == 'diproses' &&
+                                    e.namaJenissvc!.toLowerCase() !=
+                                        'repair & maintenance') {
                                   Get.toNamed(
                                     Routes.APPROVE,
                                     arguments: {
@@ -254,7 +258,9 @@ import 'package:flutter/material.dart';
                                       'status': e.status.toString(),
                                     },
                                   );
-                                } else if (e.status!.toLowerCase() == 'diproses' && e.namaJenissvc!.toLowerCase() != 'general check up/p2h') {
+                                } else if (e.status!.toLowerCase() == 'diproses' &&
+                                    e.namaJenissvc!.toLowerCase() !=
+                                        'general check up/p2h') {
                                   Get.toNamed(
                                     Routes.APPROVE,
                                     arguments: {
@@ -270,15 +276,17 @@ import 'package:flutter/material.dart';
                                     },
                                   );
                                 } else {
-                                  Get.snackbar('Info', 'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
+                                  Get.snackbar('Info',
+                                      'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
                                 }
                               } else {
                                 // Lakukan penanganan jika status atau namaJenissvc bernilai null
                                 print('Status atau namaJenissvc bernilai null');
                               }
-                            }
-
-                        )).toList(),
+                            },
+                          ),
+                        )
+                            .toList(),
                       ),
                     );
                   } else {
@@ -287,7 +295,8 @@ import 'package:flutter/material.dart';
                     );
                   }
                 },
-              ),
+              )
+
 
             ],
           ),

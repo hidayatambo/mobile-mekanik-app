@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/approve/bindings/approve_binding.dart';
+import '../modules/approve/views/approve_view.dart';
 import '../modules/boking/bindings/boking_binding.dart';
 import '../modules/boking/views/boking_view.dart';
 import '../modules/chat/bindings/chat_binding.dart';
@@ -13,6 +15,8 @@ import '../modules/home/componen/buttomnavigationbar.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/repair_maintenen/bindings/repair_maintenen_binding.dart';
+import '../modules/repair_maintenen/views/repair_maintenen_view.dart';
 import '../modules/signin/bindings/signin_binding.dart';
 import '../modules/signin/views/signin_view.dart';
 import '../modules/splashcreen/bindings/splashcreen_binding.dart';
@@ -27,7 +31,6 @@ class AppPages {
 
   static final routes = [
     GetPage(
-      transition: Transition.zoom,
       name: _Paths.HOME,
       page: () => HomeView(),
       binding: HomeBinding(),
@@ -69,6 +72,18 @@ class AppPages {
       name: _Paths.SPLASHCREEN,
       page: () => SplashcreenView(),
       binding: SplashcreenBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeft,
+      name: _Paths.REPAIR_MAINTENEN,
+      page: () => const RepairMaintenenView(),
+      binding: RepairMaintenenBinding(),
+    ),
+    GetPage(
+      transition: Transition.downToUp,
+      name: _Paths.APPROVE,
+      page: () => const ApproveView(),
+      binding: ApproveBinding(),
     ),
   ];
 }

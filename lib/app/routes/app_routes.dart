@@ -11,6 +11,8 @@ abstract class Routes {
   static const HISTORY = _Paths.HISTORY;
   static const GENERAL_CHECKUP = _Paths.GENERAL_CHECKUP;
   static const SPLASHCREEN = _Paths.SPLASHCREEN;
+  static const REPAIR_MAINTENEN = _Paths.REPAIR_MAINTENEN;
+  static const APPROVE = _Paths.APPROVE;
 }
 
 abstract class _Paths {
@@ -23,4 +25,6 @@ abstract class _Paths {
   static const HISTORY = '/history';
   static const GENERAL_CHECKUP = '/general-checkup';
   static const SPLASHCREEN = '/splashcreen';
+  static const REPAIR_MAINTENEN = '/repair-maintenen';
+  static const APPROVE = '/approve';
 }

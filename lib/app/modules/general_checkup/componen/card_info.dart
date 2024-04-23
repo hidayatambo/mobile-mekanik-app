@@ -44,31 +44,6 @@ class _cardInfoState extends State<cardInfo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Column(
-          //   crossAxisAlignment: CrossAxisAlignment.end,
-          //   children: [
-          //     const SizedBox(height: 5,),
-          //     Container(
-          //       width: double.infinity,
-          //       padding: const EdgeInsets.all(10),
-          //       decoration: BoxDecoration(
-          //         color: StatusColor.getColor(status),
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //       child: Column(
-          //         children: [
-          //           Text(
-          //             '$status',
-          //             style: const TextStyle(
-          //               color: Colors.white,
-          //               fontWeight: FontWeight.bold,
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
           const SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

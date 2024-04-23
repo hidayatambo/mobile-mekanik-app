@@ -235,27 +235,48 @@ import 'package:flutter/material.dart';
                         ),
                         children: filteredList.map((e) => BokingList(
                           items: e,
-                          onTap: () {
-                            print('Nilai e.namaJenissvc: ${e.namaJenissvc}');
-                            if (e.status!.toLowerCase() == 'invoice' && e.namaJenissvc!.toLowerCase() != 'repair & maintenance') {
-                              Get.toNamed(
-                                Routes.GENERAL_CHECKUP,
-                                arguments: {
-                                  'id': e.id.toString(),
-                                  'tgl_booking': e.tglBooking.toString(),
-                                  'jam_booking': e.jamBooking.toString(),
-                                  'nama': e.nama.toString(),
-                                  'nama_jenissvc': e.namaJenissvc.toString(),
-                                  'no_polisi': e.noPolisi.toString(),
-                                  'nama_merk': e.namaMerk.toString(),
-                                  'nama_tipe': e.namaTipe.toString(),
-                                  'status': e.status.toString(),
-                                },
-                              );
-                            } else {
-                              Get.snackbar('Info', 'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
+                            onTap: () {
+                              print('Nilai e.namaJenissvc: ${e.namaJenissvc}');
+                              if (e.status != null && e.namaJenissvc != null) {
+                                if (e.status!.toLowerCase() == 'diproses' && e.namaJenissvc!.toLowerCase() != 'repair & maintenance') {
+                                  Get.toNamed(
+                                    Routes.APPROVE,
+                                    arguments: {
+                                      'id': e.id.toString(),
+                                      'tgl_booking': e.tglBooking.toString(),
+                                      'jam_booking': e.jamBooking.toString(),
+                                      'nama': e.nama.toString(),
+                                      'nama_jenissvc': e.namaJenissvc.toString(),
+                                      'no_polisi': e.noPolisi.toString(),
+                                      'nama_merk': e.namaMerk.toString(),
+                                      'nama_tipe': e.namaTipe.toString(),
+                                      'status': e.status.toString(),
+                                    },
+                                  );
+                                } else if (e.status!.toLowerCase() == 'diproses' && e.namaJenissvc!.toLowerCase() != 'general check up/p2h') {
+                                  Get.toNamed(
+                                    Routes.APPROVE,
+                                    arguments: {
+                                      'id': e.id.toString(),
+                                      'tgl_booking': e.tglBooking.toString(),
+                                      'jam_booking': e.jamBooking.toString(),
+                                      'nama': e.nama.toString(),
+                                      'nama_jenissvc': e.namaJenissvc.toString(),
+                                      'no_polisi': e.noPolisi.toString(),
+                                      'nama_merk': e.namaMerk.toString(),
+                                      'nama_tipe': e.namaTipe.toString(),
+                                      'status': e.status.toString(),
+                                    },
+                                  );
+                                } else {
+                                  Get.snackbar('Info', 'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
+                                }
+                              } else {
+                                // Lakukan penanganan jika status atau namaJenissvc bernilai null
+                                print('Status atau namaJenissvc bernilai null');
+                              }
                             }
-                          }
+
                         )).toList(),
                       ),
                     );

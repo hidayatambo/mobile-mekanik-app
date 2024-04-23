@@ -56,6 +56,9 @@ dependencies:
   fl_chart: ^0.67.0
   animated_text_kit: ^4.2.2
   animations: ^2.0.1
+  progress_state_button: ^1.0.4
+  quickalert: ^1.1.0
+  awesome_dialog: ^3.2.0
   bubble_tab_indicator: ^0.1.4
 
 dev_dependencies: 
@@ -77,7 +80,6 @@ flutter:
     - assets/tenant_dummy/dapur_nafara/
     - assets/tenant_dummy/raja_sate/
     - assets/produk/
-    - assets/228a/
     - assets/319b/
     - assets/379a/
     - assets/389b/

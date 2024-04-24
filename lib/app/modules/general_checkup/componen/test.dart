@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import '../../../componen/color.dart';
 import '../../../data/endpoint.dart';
+import '../../approve/componen/card_consument.dart';
 import 'card_info.dart';
 
 class DetailTemaView extends StatefulWidget {
@@ -118,8 +119,26 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+          Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  spreadRadius: 5,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child:
                 FutureBuilder(
                   future: API.GeneralID(),
                   builder: (context, snapshot) {
@@ -138,20 +157,21 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                           .toList();
                       if (getDataAcc != null && getDataAcc.isNotEmpty) {
                         return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
+                              Container(
+                              decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              margin: const EdgeInsets.all(5),
+                              padding: EdgeInsets.all(5),
+                              child:
+                              Row(
                                     children: [
                                       Expanded(
                                         child: Text(gcus.gcu ?? ''),
@@ -175,16 +195,13 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                                         },
                                       ),
                                     ],
-                                  ),
-
-
+                                  ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
                         );
                       } else {
                         return const SizedBox(
@@ -203,7 +220,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                       );
                     }
                   },
-                ),
+                ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -237,92 +254,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Brake")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Brake")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -356,92 +389,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Accel")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Accel")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -475,92 +524,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Interior")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Interior")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -594,92 +659,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Exterior")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Exterior")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -713,92 +794,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Bawah Kendaraan")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Bawah Kendaraan")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -831,92 +928,108 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const cardInfo(),
+                const CardConsument(),
                 const SizedBox(height: 20),
-                FutureBuilder(
-                  future: API.GeneralID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      final generalData = snapshot.data;
-                      final getDataAcc = generalData?.data
-                          ?.where((e) => e.subHeading == "Stall Test")
-                          .toList();
-                      if (getDataAcc != null && getDataAcc.isNotEmpty) {
-                        return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
-                            ),
+                Text('General Checkup'),
+                SizedBox(height: 10,),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  FutureBuilder(
+                    future: API.GeneralID(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else if (snapshot.hasData) {
+                        final generalData = snapshot.data;
+                        final getDataAcc = generalData?.data
+                            ?.where((e) => e.subHeading == "Stall Test")
+                            .toList();
+                        if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                          return Column(
                             children: getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                               final dropdownValueNotifier = dropdownValueNotifiers.putIfAbsent(gcus.gcu!, () => ValueNotifier<String>('Oke'));
                               return Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(gcus.gcu ?? ''),
-                                      ),
-                                      ValueListenableBuilder<String>(
-                                        valueListenable: dropdownValueNotifier,
-                                        builder: (context, value, _) {
-                                          return DropdownButton<String>(
-                                            value: value,
-                                            onChanged: (String? newValue) {
-                                              dropdownValueNotifier.value = newValue!;
-                                            },
-                                            items: <String>['Oke', 'Not Oke']
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-
-
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    margin: const EdgeInsets.all(5),
+                                    padding: EdgeInsets.all(5),
+                                    child:
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(gcus.gcu ?? ''),
+                                        ),
+                                        ValueListenableBuilder<String>(
+                                          valueListenable: dropdownValueNotifier,
+                                          builder: (context, value, _) {
+                                            return DropdownButton<String>(
+                                              value: value,
+                                              onChanged: (String? newValue) {
+                                                dropdownValueNotifier.value = newValue!;
+                                              },
+                                              items: <String>['Oke', 'Not Oke']
+                                                  .map<DropdownMenuItem<String>>((String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),),
                                   TextFieldVisibility(
                                     valueNotifier: dropdownValueNotifier,
                                   ),
                                 ],
                               );
                             }).toList(),
-                          ),
-                        );
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text('No data available'),
+                            ),
+                          );
+                        }
                       } else {
                         return const SizedBox(
                           height: 150,
                           child: Center(
-                            child: Text('No data available'),
+                            child: CircularProgressIndicator(),
                           ),
                         );
                       }
-                    } else {
-                      return const SizedBox(
-                        height: 150,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                    },
+                  ),),
                 const SizedBox(
                   height: 10,
                 ),

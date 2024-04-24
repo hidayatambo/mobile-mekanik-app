@@ -50,7 +50,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           statusBarBrightness: Brightness.light,
           systemNavigationBarColor: Colors.white,
         ),
-        title: const Text('General Checkup'),
+        title: const Text('Edit P2H'),
       ),
       body: DetailTemaView()
     );

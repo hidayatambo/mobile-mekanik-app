@@ -28,54 +28,98 @@ class Boking {
 }
 
 class DataBooking {
-  int? id;
+  int? bookingId;
   String? kodeBooking;
-  String? tglBooking;
+  int? idJenissvc;
+  String? bookingStatus;
   String? jamBooking;
-  String? nama;
-  String? namaJenissvc;
+  String? tglBooking;
+  String? pic;
+  String? hpPic;
+  String? namaService;
+  String? namaCabang;
   String? noPolisi;
-  String? namaMerk;
+  String? tahun;
+  String? warna;
+  String? transmisi;
+  String? noRangka;
+  String? noMesin;
   String? namaTipe;
-  String? status;
+  String? namaMerk;
+  String? namaPelanggan;
+  String? alamatpelanggan;
+  String? hpPelanggan;
 
   DataBooking(
-      {this.id,
+      {this.bookingId,
         this.kodeBooking,
-        this.tglBooking,
+        this.idJenissvc,
+        this.bookingStatus,
         this.jamBooking,
-        this.nama,
-        this.namaJenissvc,
+        this.tglBooking,
+        this.pic,
+        this.hpPic,
+        this.namaService,
+        this.namaCabang,
         this.noPolisi,
-        this.namaMerk,
+        this.tahun,
+        this.warna,
+        this.transmisi,
+        this.noRangka,
+        this.noMesin,
         this.namaTipe,
-        this.status});
+        this.namaMerk,
+        this.namaPelanggan,
+        this.alamatpelanggan,
+        this.hpPelanggan});
 
   DataBooking.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    bookingId = json['booking_id'];
     kodeBooking = json['kode_booking'];
-    tglBooking = json['tgl_booking'];
+    idJenissvc = json['id_jenissvc'];
+    bookingStatus = json['booking_status'];
     jamBooking = json['jam_booking'];
-    nama = json['nama'];
-    namaJenissvc = json['nama_jenissvc'];
+    tglBooking = json['tgl_booking'];
+    pic = json['pic'];
+    hpPic = json['hp_pic'];
+    namaService = json['nama_service'];
+    namaCabang = json['nama_cabang'];
     noPolisi = json['no_polisi'];
-    namaMerk = json['nama_merk'];
+    tahun = json['tahun'];
+    warna = json['warna'];
+    transmisi = json['transmisi'];
+    noRangka = json['no_rangka'];
+    noMesin = json['no_mesin'];
     namaTipe = json['nama_tipe'];
-    status = json['status'];
+    namaMerk = json['nama_merk'];
+    namaPelanggan = json['nama'];
+    alamatpelanggan = json['alamat'];
+    hpPelanggan = json['hp'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+    data['booking_id'] = this.bookingId;
     data['kode_booking'] = this.kodeBooking;
-    data['tgl_booking'] = this.tglBooking;
+    data['id_jenissvc'] = this.idJenissvc;
+    data['booking_status'] = this.bookingStatus;
     data['jam_booking'] = this.jamBooking;
-    data['nama'] = this.nama;
-    data['nama_jenissvc'] = this.namaJenissvc;
+    data['tgl_booking'] = this.tglBooking;
+    data['pic'] = this.pic;
+    data['hp_pic'] = this.hpPic;
+    data['nama_service'] = this.namaService;
+    data['nama_cabang'] = this.namaCabang;
     data['no_polisi'] = this.noPolisi;
-    data['nama_merk'] = this.namaMerk;
+    data['tahun'] = this.tahun;
+    data['warna'] = this.warna;
+    data['transmisi'] = this.transmisi;
+    data['no_rangka'] = this.noRangka;
+    data['no_mesin'] = this.noMesin;
     data['nama_tipe'] = this.namaTipe;
-    data['status'] = this.status;
+    data['nama_merk'] = this.namaMerk;
+    data['nama'] = this.namaPelanggan;
+    data['alamat'] = this.alamatpelanggan;
+    data['hp'] = this.hpPelanggan;
     return data;
   }
 }

@@ -58,7 +58,7 @@ class _SearchBokingState extends State<SearchBoking> {
                             ),
                           ),
                           filter: (boking) => [
-                            boking.nama,
+                            boking.namaPelanggan,
                             boking.noPolisi,
                             boking.kodeBooking,
                           ],

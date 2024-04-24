@@ -117,14 +117,14 @@ import 'package:flutter/material.dart';
                             showItemsOnEmpty: true,
                             failure: Center(
                               child: Text(
-                                'Pasien Tidak Terdaftar :(',
+                                'Booking Tidak Dtemukan :(',
                                 style: GoogleFonts.nunito(),
                               ),
                             ),
                             filter: (booking) => [
-                              booking.nama,
+                              booking.namaPelanggan,
                               booking.noPolisi,
-                              booking.status,
+                              booking.bookingStatus,
                               booking.namaMerk,
                               booking.namaTipe,
                             ],
@@ -216,7 +216,7 @@ import 'package:flutter/material.dart';
 
                     List<DataBooking> filteredList = status != null
                         ? getDataAcc.dataBooking!
-                        .where((item) => item.status!.toLowerCase() == status)
+                        .where((item) => item.bookingStatus!.toLowerCase() == status)
                         .toList()
                         : getDataAcc.dataBooking!;
 
@@ -239,45 +239,105 @@ import 'package:flutter/material.dart';
                               (e) => BokingList(
                             items: e,
                             onTap: () {
-                              print('Nilai e.namaJenissvc: ${e.namaJenissvc}');
-                              if (e.status != null && e.namaJenissvc != null) {
-                                if (e.status!.toLowerCase() == 'diproses' &&
-                                    e.namaJenissvc!.toLowerCase() !=
+                              if (kDebugMode) {
+                                print('Nilai e.namaJenissvc: ${e.namaService??''}');
+                              }
+                              if (e.bookingStatus != null && e.namaService != null) {
+                                if (e.bookingStatus!.toLowerCase() == 'diproses' &&
+                                    e.namaService!.toLowerCase() !=
                                         'repair & maintenance') {
                                   Get.toNamed(
                                     Routes.APPROVE,
                                     arguments: {
-                                      'id': e.id.toString(),
-                                      'tgl_booking': e.tglBooking.toString(),
-                                      'jam_booking': e.jamBooking.toString(),
-                                      'nama': e.nama.toString(),
-                                      'nama_jenissvc': e.namaJenissvc.toString(),
-                                      'no_polisi': e.noPolisi.toString(),
-                                      'nama_merk': e.namaMerk.toString(),
-                                      'nama_tipe': e.namaTipe.toString(),
-                                      'status': e.status.toString(),
+                                      // 'id': e.id??'',
+                                      'tgl_booking': e.tglBooking??'',
+                                      'jam_booking': e.jamBooking??'',
+                                      'nama': e.namaPelanggan??'',
+                                      'nama_jenissvc': e.namaService??'',
+                                      'no_polisi': e.noPolisi??'',
+                                      'nama_merk': e.namaMerk??'',
+                                      'tahun': e.tahun??'',
+                                      'warna': e.warna??'',
+                                      'nama_tipe': e.namaTipe??'',
+                                      'alamat': e.alamatpelanggan??'',
+                                      'hp': e.hpPelanggan??'',
+                                      'status': e.bookingStatus??'',
                                     },
                                   );
-                                } else if (e.status!.toLowerCase() == 'diproses' &&
-                                    e.namaJenissvc!.toLowerCase() !=
+                                } else if (e.bookingStatus!.toLowerCase() == 'diproses' &&
+                                    e.namaService!.toLowerCase() !=
                                         'general check up/p2h') {
                                   Get.toNamed(
                                     Routes.APPROVE,
                                     arguments: {
-                                      'id': e.id.toString(),
-                                      'tgl_booking': e.tglBooking.toString(),
-                                      'jam_booking': e.jamBooking.toString(),
-                                      'nama': e.nama.toString(),
-                                      'nama_jenissvc': e.namaJenissvc.toString(),
-                                      'no_polisi': e.noPolisi.toString(),
-                                      'nama_merk': e.namaMerk.toString(),
-                                      'nama_tipe': e.namaTipe.toString(),
-                                      'status': e.status.toString(),
+                                      // 'id': e.id??'',
+                                      'tgl_booking': e.tglBooking??'',
+                                      'jam_booking': e.jamBooking??'',
+                                      'nama': e.namaPelanggan??'',
+                                      'nama_jenissvc': e.namaService??'',
+                                      'no_polisi': e.noPolisi??'',
+                                      'tahun': e.tahun??'',
+                                      'warna': e.warna??'',
+                                      'ho': e.hpPelanggan??'',
+                                      'nama_merk': e.namaMerk??'',
+                                      'nama_tipe': e.namaTipe??'',
+                                      'alamat': e.alamatpelanggan??'',
+                                      'status': e.bookingStatus??'',
                                     },
                                   );
                                 } else {
-                                  Get.snackbar('Info',
-                                      'Anda hanya dapat proses selanjutnya setelah status berubah menjadi "Diproses"');
+                                }
+                              } else {
+                                // Lakukan penanganan jika status atau namaJenissvc bernilai null
+                                print('Status atau namaJenissvc bernilai null');
+                              }
+                              if (kDebugMode) {
+                                print('Nilai e.namaJenissvc: ${e.namaService??''}');
+                              }
+                              if (e.bookingStatus != null && e.namaService != null) {
+                                if (e.bookingStatus!.toLowerCase() == 'dikerjakan' &&
+                                    e.namaService!.toLowerCase() !=
+                                        'repair & maintenance') {
+                                  Get.toNamed(
+                                    Routes.GENERAL_CHECKUP,
+                                    arguments: {
+                                      // 'id': e.id??'',
+                                      'tgl_booking': e.tglBooking??'',
+                                      'jam_booking': e.jamBooking??'',
+                                      'nama': e.namaPelanggan??'',
+                                      'nama_jenissvc': e.namaService??'',
+                                      'no_polisi': e.noPolisi??'',
+                                      'nama_merk': e.namaMerk??'',
+                                      'tahun': e.tahun??'',
+                                      'warna': e.warna??'',
+                                      'nama_tipe': e.namaTipe??'',
+                                      'alamat': e.alamatpelanggan??'',
+                                      'hp': e.hpPelanggan??'',
+                                      'status': e.bookingStatus??'',
+                                    },
+                                  );
+                                } else if (e.bookingStatus!.toLowerCase() == 'dikerjakan' &&
+                                    e.namaService!.toLowerCase() !=
+                                        'general check up/p2h') {
+                                  Get.toNamed(
+                                    Routes.REPAIR_MAINTENEN,
+                                    arguments: {
+                                      // 'id': e.??'',
+                                      'tgl_booking': e.tglBooking??'',
+                                      'jam_booking': e.jamBooking??'',
+                                      'nama': e.namaPelanggan??'',
+                                      'nama_jenissvc': e.namaService??'',
+                                      'no_polisi': e.noPolisi??'',
+                                      'tahun': e.tahun??'',
+                                      'warna': e.warna??'',
+                                      'ho': e.hpPelanggan??'',
+                                      'nama_merk': e.namaMerk??'',
+                                      'nama_tipe': e.namaTipe??'',
+                                      'alamat': e.alamatpelanggan??'',
+                                      'status': e.bookingStatus??'',
+                                    },
+                                  );
+                                } else {
                                 }
                               } else {
                                 // Lakukan penanganan jika status atau namaJenissvc bernilai null

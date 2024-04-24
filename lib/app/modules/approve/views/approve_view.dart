@@ -11,6 +11,7 @@ import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
 import '../../general_checkup/componen/card_info.dart';
 import '../../general_checkup/views/general_checkup_view.dart';
+import '../componen/card_consument.dart';
 import '../controllers/approve_controller.dart';
 
 class ApproveView extends GetView<GetxController> {
@@ -21,9 +22,6 @@ class ApproveView extends GetView<GetxController> {
     String id = arguments['id'];
     String tglBooking = arguments['tgl_booking'];
     String nama_jenissvc = arguments['nama_jenissvc'];
-    // Dan seterusnya untuk argumen lainnya
-
-    // Contoh tindakan:
     print('Menyetujui booking dengan ID: $id, Tanggal: $tglBooking, nama_jenissvc: $nama_jenissvc');
   }
   @override
@@ -47,112 +45,110 @@ class ApproveView extends GetView<GetxController> {
           child: Padding(padding: const EdgeInsets.all(10),child:
           Column(
             children: [
-            const cardInfo(),
-            const SizedBox(width: 10,),
-            const SizedBox(height: 20,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Map<String, dynamic>? arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-
-                    if (arguments != null) {
-                      // Periksa jenis layanan, jika "General Check UP/P2H", arahkan ke GeneralCheckupView()
-                      if (arguments['nama_jenissvc'] == 'General Check UP/P2H') {
-                        ApproveController controller = Get.put(ApproveController());
-                        controller.setData(
-                          id: arguments['id'],
-                          tglBooking: arguments['tgl_booking'],
-                          jamBooking: arguments['jam_booking'],
-                          nama: arguments['nama'],
-                          namaJenissvc: arguments['nama_jenissvc'],
-                          noPolisi: arguments['no_polisi'],
-                          namaMerk: arguments['nama_merk'],
-                          namaTipe: arguments['nama_tipe'],
-                          status: arguments['status'],
-                        );
-                        _showBottomSheet(context, arguments);
-                        // Navigator.pushNamed(
-                        //   context,
-                        //   Routes.GENERAL_CHECKUP,
-                        //   arguments: {
-                        //     'id': arguments['id'],
-                        //     'tgl_booking': arguments['tgl_booking'],
-                        //     'jam_booking': arguments['jam_booking'],
-                        //     'nama': arguments['nama'],
-                        //     'nama_jenissvc': arguments['nama_jenissvc'],
-                        //     'no_polisi': arguments['no_polisi'],
-                        //     'nama_merk': arguments['nama_merk'],
-                        //     'nama_tipe': arguments['nama_tipe'],
-                        //     'status': arguments['status'],
-                        //   },
-                        // );
+              const CardConsument(),
+              const SizedBox(width: 10,),
+              const SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Map<String, dynamic>? arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+                      if (arguments != null) {
+                        if (arguments['nama_jenissvc'] == 'General Check UP/P2H') {
+                          ApproveController controller = Get.put(ApproveController());
+                          controller.setData(
+                            id: arguments['id'],
+                            tglBooking: arguments['tgl_booking'],
+                            jamBooking: arguments['jam_booking'],
+                            nama: arguments['nama'],
+                            namaJenissvc: arguments['nama_jenissvc'],
+                            noPolisi: arguments['no_polisi'],
+                            namaMerk: arguments['nama_merk'],
+                            namaTipe: arguments['nama_tipe'],
+                            status: arguments['status'],
+                          );
+                          _showBottomSheet(context, arguments);
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   Routes.GENERAL_CHECKUP,
+                          //   arguments: {
+                          //     'id': arguments['id'],
+                          //     'tgl_booking': arguments['tgl_booking'],
+                          //     'jam_booking': arguments['jam_booking'],
+                          //     'nama': arguments['nama'],
+                          //     'nama_jenissvc': arguments['nama_jenissvc'],
+                          //     'no_polisi': arguments['no_polisi'],
+                          //     'nama_merk': arguments['nama_merk'],
+                          //     'nama_tipe': arguments['nama_tipe'],
+                          //     'status': arguments['status'],
+                          //   },
+                          // );
+                        } else {
+                          // Jika bukan "General Check UP/P2H", lakukan logika persetujuan yang lain
+                          // Get.toNamed(Routes.HOME);
+                          Navigator.pop(context);
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   Routes.HOME,
+                          //   arguments: {
+                          //     'id': arguments['id'],
+                          //     'tgl_booking': arguments['tgl_booking'],
+                          //     'jam_booking': arguments['jam_booking'],
+                          //     'nama': arguments['nama'],
+                          //     'nama_jenissvc': arguments['nama_jenissvc'],
+                          //     'no_polisi': arguments['no_polisi'],
+                          //     'nama_merk': arguments['nama_merk'],
+                          //     'nama_tipe': arguments['nama_tipe'],
+                          //     'status': arguments['status'],
+                          //   },
+                          // );
+                        }
                       } else {
-                        // Jika bukan "General Check UP/P2H", lakukan logika persetujuan yang lain
-                        // Get.toNamed(Routes.HOME);
-                        Navigator.pop(context);
-                        // Navigator.pushNamed(
-                        //   context,
-                        //   Routes.HOME,
-                        //   arguments: {
-                        //     'id': arguments['id'],
-                        //     'tgl_booking': arguments['tgl_booking'],
-                        //     'jam_booking': arguments['jam_booking'],
-                        //     'nama': arguments['nama'],
-                        //     'nama_jenissvc': arguments['nama_jenissvc'],
-                        //     'no_polisi': arguments['no_polisi'],
-                        //     'nama_merk': arguments['nama_merk'],
-                        //     'nama_tipe': arguments['nama_tipe'],
-                        //     'status': arguments['status'],
-                        //   },
-                        // );
+                        // Handle kasus ketika arguments null
+                        print('Error: Arguments tidak diterima');
+                        // Atau lakukan tindakan lain sesuai kebutuhan aplikasi Anda
                       }
-                    } else {
-                      // Handle kasus ketika arguments null
-                      print('Error: Arguments tidak diterima');
-                      // Atau lakukan tindakan lain sesuai kebutuhan aplikasi Anda
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    elevation: 4.0,
-                  ),
-                  child: const Text(
-                    'Approve',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      elevation: 4.0,
+                    ),
+                    child: const Text(
+                      'Approve',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
 
 
-                const SizedBox(width: 10,),
-            ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  elevation: 4.0,
-                ),
-                child: const Text('Unapprove',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
-            const SizedBox(width: 10,),
-            ElevatedButton(
-                onPressed: () {
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  elevation: 4.0,
-                ),
-                child: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),],),
-          ],),),
+                  const SizedBox(width: 10,),
+                  ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        elevation: 4.0,
+                      ),
+                      child: const Text('Unapprove',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                  const SizedBox(width: 10,),
+                  ElevatedButton(
+                      onPressed: () {
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        elevation: 4.0,
+                      ),
+                      child: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),],),
+            ],),),
         )
     );
   }
@@ -187,22 +183,22 @@ class ApproveView extends GetView<GetxController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('Tanggal Booking'),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.only(left: 25, right: 20),
-                      margin: const EdgeInsets.fromLTRB(10,10,10,10),
-                      child: TextField(
-                        controller:  bottomSheetController.tglBookingController,
-                        decoration: InputDecoration(
-                          hintText: "Tanggal Booking",
-                          border: InputBorder.none,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.only(left: 25, right: 20),
+                          margin: const EdgeInsets.fromLTRB(10,10,10,10),
+                          child: TextField(
+                            controller:  bottomSheetController.tglBookingController,
+                            decoration: InputDecoration(
+                              hintText: "Tanggal Booking",
+                              border: InputBorder.none,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    ],),
+                      ],),
                   ),
                 ),
                 GestureDetector(
@@ -211,45 +207,46 @@ class ApproveView extends GetView<GetxController> {
                   },
                   child: AbsorbPointer(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                        Text('Tanggal Booking'),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.only(left: 25, right: 20),
-                      margin: const EdgeInsets.fromLTRB(10,10,10,10),
-                      child: TextField(
-                        controller: bottomSheetController.jamBookingController,
-                        decoration: InputDecoration(
-                          hintText: "Jam Booking",
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),]),
+                          Text('Tanggal Booking'),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            padding: const EdgeInsets.only(left: 25, right: 20),
+                            margin: const EdgeInsets.fromLTRB(10,10,10,10),
+                            child: TextField(
+                              controller: bottomSheetController.jamBookingController,
+                              decoration: InputDecoration(
+                                hintText: "Jam Booking",
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ]),
                   ),
                 ),
                 SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              child:
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _showBottomSheetApprove(context, arguments);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: MyColors.appPrimaryColor,
+                Container(
+                  width: double.infinity,
+                  child:
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _showBottomSheetApprove(context, arguments);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyColors.appPrimaryColor,
 
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      elevation: 4.0,
+                    ),
+                    child: const Text('Simpan',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                   ),
-                  child: const Text('Simpan',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                ),
                 ),
               ],
             ),
@@ -384,7 +381,4 @@ class ApproveView extends GetView<GetxController> {
       },
     );
   }
-
-
-
 }

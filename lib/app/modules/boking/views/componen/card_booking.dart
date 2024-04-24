@@ -12,7 +12,7 @@ class BokingList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color statusColor = StatusColor.getColor(items.status!);
+    Color statusColor = StatusColor.getColor(items.bookingStatus??'');
 
     return InkWell(
       onTap: onTap, // Menggunakan onTap yang diterima dari luar
@@ -43,7 +43,7 @@ class BokingList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Jenis Service'),
-                    Text(items.namaJenissvc!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaService?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(
@@ -58,7 +58,7 @@ class BokingList extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            items.jamBooking!.toString(),
+                            items.jamBooking.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -81,13 +81,13 @@ class BokingList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Merek :'),
-                    Text(items.namaMerk!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaMerk??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('Type :'),
-                    Text(items.namaTipe!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaTipe??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('NoPol :'),
-                    Text(items.noPolisi!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('Pemilik :'),
-                    Text(items.nama!.toString(), style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaPelanggan??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(
@@ -113,7 +113,7 @@ class BokingList extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            items.status!.toString(),
+                            items.bookingStatus.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

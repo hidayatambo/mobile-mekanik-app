@@ -1,8 +1,13 @@
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
+import 'package:search_choices/search_choices.dart';
+import '../../../data/data_endpoint/mekanik.dart';
+import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
 import '../../general_checkup/componen/card_info.dart';
 import '../../general_checkup/views/general_checkup_view.dart';
@@ -86,21 +91,23 @@ class ApproveView extends GetView<GetxController> {
                         // );
                       } else {
                         // Jika bukan "General Check UP/P2H", lakukan logika persetujuan yang lain
-                        Navigator.pushNamed(
-                          context,
-                          Routes.REPAIR_MAINTENEN,
-                          arguments: {
-                            'id': arguments['id'],
-                            'tgl_booking': arguments['tgl_booking'],
-                            'jam_booking': arguments['jam_booking'],
-                            'nama': arguments['nama'],
-                            'nama_jenissvc': arguments['nama_jenissvc'],
-                            'no_polisi': arguments['no_polisi'],
-                            'nama_merk': arguments['nama_merk'],
-                            'nama_tipe': arguments['nama_tipe'],
-                            'status': arguments['status'],
-                          },
-                        );
+                        // Get.toNamed(Routes.HOME);
+                        Navigator.pop(context);
+                        // Navigator.pushNamed(
+                        //   context,
+                        //   Routes.HOME,
+                        //   arguments: {
+                        //     'id': arguments['id'],
+                        //     'tgl_booking': arguments['tgl_booking'],
+                        //     'jam_booking': arguments['jam_booking'],
+                        //     'nama': arguments['nama'],
+                        //     'nama_jenissvc': arguments['nama_jenissvc'],
+                        //     'no_polisi': arguments['no_polisi'],
+                        //     'nama_merk': arguments['nama_merk'],
+                        //     'nama_tipe': arguments['nama_tipe'],
+                        //     'status': arguments['status'],
+                        //   },
+                        // );
                       }
                     } else {
                       // Handle kasus ketika arguments null
@@ -152,16 +159,10 @@ class ApproveView extends GetView<GetxController> {
   // Fungsi untuk menampilkan BottomSheet
   void _showBottomSheet(BuildContext context, Map<String, dynamic> arguments) {
     ApproveController bottomSheetController = Get.put(ApproveController());
-
-    bottomSheetController.idController.text = arguments['id'] ?? '';
     bottomSheetController.tglBookingController.text = arguments['tgl_booking'] ?? '';
     bottomSheetController.jamBookingController.text = arguments['jam_booking'] ?? '';
-    bottomSheetController.namaController.text = arguments['nama'] ?? '';
-    bottomSheetController.namaJenissvcController.text = arguments['nama_jenissvc'] ?? '';
-    bottomSheetController.noPolisiController.text = arguments['no_polisi'] ?? '';
-    bottomSheetController.namaMerkController.text = arguments['nama_merk'] ?? '';
-    bottomSheetController.namaTipeController.text = arguments['nama_tipe'] ?? '';
-    bottomSheetController.statusController.text = arguments['status'] ?? '';
+    bottomSheetController.tanggalController.text;
+    bottomSheetController.jamController.text;
 
     showModalBottomSheet(
       context: context,
@@ -170,144 +171,220 @@ class ApproveView extends GetView<GetxController> {
       builder: (BuildContext context) {
         return SingleChildScrollView(
           child: Container(
-            height: 700,
             padding: EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('Ingin ubah tanggal dan jam booking ?',style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 20,),
-                TextField(
-                  controller: bottomSheetController.tglBookingController,
-                  decoration: InputDecoration(
-                    labelText: 'Tanggal Booking',
+                GestureDetector(
+                  onTap: () {
+                    _showDatePicker(context, bottomSheetController); // Panggil fungsi untuk menampilkan bottom picker
+                  },
+                  child: AbsorbPointer(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Tanggal Booking'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.only(left: 25, right: 20),
+                      margin: const EdgeInsets.fromLTRB(10,10,10,10),
+                      child: TextField(
+                        controller:  bottomSheetController.tglBookingController,
+                        decoration: InputDecoration(
+                          hintText: "Tanggal Booking",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    ],),
                   ),
                 ),
-                TextField(
-                  controller: bottomSheetController.jamBookingController,
-                  decoration: InputDecoration(
-                    labelText: 'Jam Booking',
+                GestureDetector(
+                  onTap: () {
+                    _showTimePicker(context, bottomSheetController); // Panggil fungsi untuk menampilkan bottom picker
+                  },
+                  child: AbsorbPointer(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                        Text('Tanggal Booking'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.only(left: 25, right: 20),
+                      margin: const EdgeInsets.fromLTRB(10,10,10,10),
+                      child: TextField(
+                        controller: bottomSheetController.jamBookingController,
+                        decoration: InputDecoration(
+                          hintText: "Jam Booking",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),]),
                   ),
                 ),
                 SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              child:
                 ElevatedButton(
-                    onPressed: () {
-                      // Lakukan sesuatu dengan nilai yang dimasukkan
-                      String id = bottomSheetController.idController.text;
-                      String tglBooking = bottomSheetController.tglBookingController.text;
-                      String jamBooking = bottomSheetController.jamBookingController.text;
-                      String nama = bottomSheetController.namaController.text;
-                      String namaJenissvc = bottomSheetController.namaJenissvcController.text;
-                      String noPolisi = bottomSheetController.noPolisiController.text;
-                      String namaMerk = bottomSheetController.namaMerkController.text;
-                      String namaTipe = bottomSheetController.namaTipeController.text;
-                      String status = bottomSheetController.statusController.text;
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _showBottomSheetApprove(context, arguments);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: MyColors.appPrimaryColor,
 
-                      // Tutup BottomSheet
-                      Navigator.of(context).pop();
-                      showModalBottomSheet(
-                        context: context,
-                        enableDrag: true,
-                        showDragHandle: true,
-                        builder: (BuildContext context) {
-                          return SingleChildScrollView(
-                            child: Container(
-                              height: 700,
-                              padding: EdgeInsets.all(16),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text('Ingin ubah tanggal dan jam booking ?',style: TextStyle(fontWeight: FontWeight.bold),),
-                                  SizedBox(height: 20,),
-                                  TextField(
-                                    controller: bottomSheetController.tglBookingController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Tanggal Booking',
-                                    ),
-                                  ),
-                                  SizedBox(height: 16),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.GENERAL_CHECKUP,
-                                          arguments: {
-                                            'id': arguments['id'],
-                                            'tgl_booking': arguments['tgl_booking'],
-                                            'jam_booking': arguments['jam_booking'],
-                                            'nama': arguments['nama'],
-                                            'nama_jenissvc': arguments['nama_jenissvc'],
-                                            'no_polisi': arguments['no_polisi'],
-                                            'nama_merk': arguments['nama_merk'],
-                                            'nama_tipe': arguments['nama_tipe'],
-                                            'status': arguments['status'],
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: MyColors.appPrimaryColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20)),
-                                        elevation: 4.0,
-                                      ),
-                                      child: const Text('Konfirmasi',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
-                                  // ElevatedButton(
-                                  //   onPressed: () {
-                                  //     // Lakukan sesuatu dengan nilai yang dimasukkan
-                                  //     String id = bottomSheetController.idController.text;
-                                  //     String tglBooking = bottomSheetController.tglBookingController.text;
-                                  //     String jamBooking = bottomSheetController.jamBookingController.text;
-                                  //     String nama = bottomSheetController.namaController.text;
-                                  //     String namaJenissvc = bottomSheetController.namaJenissvcController.text;
-                                  //     String noPolisi = bottomSheetController.noPolisiController.text;
-                                  //     String namaMerk = bottomSheetController.namaMerkController.text;
-                                  //     String namaTipe = bottomSheetController.namaTipeController.text;
-                                  //     String status = bottomSheetController.statusController.text;
-                                  //
-                                  //     // Tutup BottomSheet
-                                  //     Navigator.of(context).pop();
-                                  //   },
-                                  //   child: Text('Simpan'),
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MyColors.appPrimaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      elevation: 4.0,
-                    ),
-                    child: const Text('Simpan',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     // Lakukan sesuatu dengan nilai yang dimasukkan
-                //     String id = bottomSheetController.idController.text;
-                //     String tglBooking = bottomSheetController.tglBookingController.text;
-                //     String jamBooking = bottomSheetController.jamBookingController.text;
-                //     String nama = bottomSheetController.namaController.text;
-                //     String namaJenissvc = bottomSheetController.namaJenissvcController.text;
-                //     String noPolisi = bottomSheetController.noPolisiController.text;
-                //     String namaMerk = bottomSheetController.namaMerkController.text;
-                //     String namaTipe = bottomSheetController.namaTipeController.text;
-                //     String status = bottomSheetController.statusController.text;
-                //
-                //     // Tutup BottomSheet
-                //     Navigator.of(context).pop();
-                //   },
-                //   child: Text('Simpan'),
-                // ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    elevation: 4.0,
+                  ),
+                  child: const Text('Simpan',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                ),
+                ),
               ],
             ),
           ),
         );
       },
     );
-
   }
+  // Fungsi untuk menampilkan BottomSheet
+  void _showBottomSheetApprove (BuildContext context, Map<String, dynamic> arguments) {
+    ApproveController bottomSheetController = Get.put(ApproveController());
+    bottomSheetController.tglBookingController.text = arguments['tgl_booking'] ?? '';
+    bottomSheetController.jamBookingController.text = arguments['jam_booking'] ?? '';
+    bottomSheetController.tanggalController.text;
+    bottomSheetController.jamController.text;
+
+    showModalBottomSheet(
+      context: context,
+      enableDrag: true,
+      showDragHandle: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('Pilih Mekanik',style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(height: 20,),
+                //simpan sini dropdownnya
+                FutureBuilder<Mekanik>(
+                  future: API.Mekanikid(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final mekanik = snapshot.data!;
+                      return SearchChoices.single(
+                        items: mekanik.dataMekanik!
+                            .map((e) => DropdownMenuItem(
+                          value: e.nama,
+                          child: Text(e.nama!),
+                        ))
+                            .toList(),
+                        value: mekanik.dataMekanik!.first.nama,
+                        hint: "Pilih Mekanik",
+                        searchHint: null,
+                        onChanged: (value) {
+                          mekanik.dataMekanik!.first.nama = value;
+                        },
+                        isExpanded: true,
+                        displayClearIcon: false,
+                        underline: Container(),
+                      );
+                    }
+                  },
+                ),
+
+                SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  child:
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      elevation: 4.0,
+                    ),
+                    child: const Text('Approve',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+// Fungsi untuk menampilkan bottom picker tanggal
+  void _showDatePicker(BuildContext context, ApproveController controller) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          ),
+          child: CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            onDateTimeChanged: (DateTime newDate) {
+              String dateOnly = '${newDate.day}-${newDate.month}-${newDate.year}';
+              controller.tglBooking = dateOnly;
+            },
+            mode: CupertinoDatePickerMode.date,
+          ),
+        );
+      },
+    );
+  }
+
+
+// Fungsi untuk menampilkan bottom picker jam
+  void _showTimePicker(BuildContext context, ApproveController controller) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 300,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+          ),
+          child: CupertinoDatePicker(
+            // initialDateTime: DateTime.now(),
+            onDateTimeChanged: (DateTime newTime) {
+              final selectedTime = TimeOfDay.fromDateTime(newTime);
+              controller.jamBooking = selectedTime.format(context); // Set nilai jam yang dipilih ke dalam controller
+            },
+            mode: CupertinoDatePickerMode.time,
+          ),
+        );
+      },
+    );
+  }
+
+
+
 }

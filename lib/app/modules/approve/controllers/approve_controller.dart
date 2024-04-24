@@ -44,6 +44,8 @@ class ApproveController extends GetxController {
   late TextEditingController namaMerkController;
   late TextEditingController namaTipeController;
   late TextEditingController statusController;
+  late TextEditingController tanggalController;
+  late TextEditingController jamController;
 
   @override
   void onInit() {
@@ -57,6 +59,8 @@ class ApproveController extends GetxController {
   namaMerkController = TextEditingController();
   namaTipeController = TextEditingController();
   statusController = TextEditingController();
+  tanggalController = TextEditingController();
+  jamController = TextEditingController();
   }
 
   @override

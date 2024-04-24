@@ -7,6 +7,7 @@ import '../routes/app_pages.dart';
 import 'data_endpoint/boking.dart';
 import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/login.dart';
+import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
 import 'localstorage.dart';
 
@@ -18,6 +19,7 @@ class API {
   static const _getLogin = '$_baseUrl/mekanik/login';
   static const _getTooking = '$_baseUrl/mekanik/booking';
   static const _getGeneral = '$_baseUrl/mekanik/general-checkup';
+  static const _getMekanik = '$_baseUrl/mekanik/get-mekanik';
 
 
   static Future<Token> login({required String email, required String password}) async {
@@ -179,6 +181,48 @@ class API {
         throw Exception("Data general checkup kosong.");
       }
 
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+  //Beda
+  static Mekanik? _cachedMekanik;
+  static void clearCachedMekanik() {
+    _cachedMekanik = null;
+  }
+  static Future<Mekanik>? Mekanikid() async {
+    if (_cachedMekanik != null) {
+      return _cachedMekanik!;
+    }
+
+    final token = Publics.controller.getToken.value;
+    var data = {"token": token};
+    try {
+      var response = await Dio().get(
+        _getMekanik,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        return Mekanik(status: false, message: "Tidak ada data booking untuk karyawan ini.");
+      }
+
+      final obj = Mekanik.fromJson(response.data);
+      _cachedMekanik = obj;
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
       return obj;
     } catch (e) {
       throw e;

@@ -120,6 +120,7 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
+                        margin: EdgeInsets.only(right: 210, left: 210),
                         width: double.infinity,
                         child:
                       ElevatedButton(

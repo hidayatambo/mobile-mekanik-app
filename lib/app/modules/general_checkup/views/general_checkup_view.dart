@@ -51,6 +51,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           systemNavigationBarColor: Colors.white,
         ),
         title: const Text('Edit P2H'),
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: DetailTemaView()
     );

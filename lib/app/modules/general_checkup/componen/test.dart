@@ -121,7 +121,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
           Container(
             padding: EdgeInsets.all(10),
@@ -256,7 +256,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -391,7 +391,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -526,7 +526,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -661,7 +661,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -796,7 +796,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),
@@ -930,7 +930,7 @@ class _DetailTemaViewState extends State<DetailTemaView> {
                 const SizedBox(height: 5),
                 const CardConsument(),
                 const SizedBox(height: 20),
-                Text('General Checkup'),
+                Text('General Checkup', style: TextStyle(fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 Container(
                   padding: EdgeInsets.all(10),

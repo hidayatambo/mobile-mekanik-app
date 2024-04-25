@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
+import 'data_endpoint/approve.dart';
 import 'data_endpoint/boking.dart';
 import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
+import 'data_endpoint/unapprove.dart';
 import 'localstorage.dart';
 
 class API {
@@ -20,6 +23,8 @@ class API {
   static const _getTooking = '$_baseUrl/mekanik/booking';
   static const _getGeneral = '$_baseUrl/mekanik/general-checkup';
   static const _getMekanik = '$_baseUrl/mekanik/get-mekanik';
+  static const _getApprovek = '$_baseUrl/mekanik/approve-booking';
+  static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
 
 
   static Future<Token> login({required String email, required String password}) async {
@@ -187,34 +192,63 @@ class API {
     }
   }
   //Beda
-  static Mekanik? _cachedMekanik;
-  static void clearCachedMekanik() {
-    _cachedMekanik = null;
-  }
-  static Future<Mekanik>? Mekanikid() async {
-    if (_cachedMekanik != null) {
-      return _cachedMekanik!;
-    }
+  static Future<Approve> approveId({
+    required String email,
+    required String kodeBooking,
+    required String tglBooking,
+    required String jamBooking,
+    required String odometer,
+    required String pic,
+    required String hpPic,
+    required String kodeMembership,
+    required String kodePaketmember,
+    required String tipeSvc,
+    required String tipePelanggan,
+    required String referensi,
+    required String referensiTmn,
+    required String paketSvc,
+    required String keluhan,
+    required String perintahKerja,
+    required int ppn,
+  }) async {
+    final data = {
+      "email": email,
+      "kode_booking": kodeBooking,
+      "tgl_booking": tglBooking,
+      "jam_booking": jamBooking,
+      "odometer": odometer,
+      "pic": pic,
+      "hp_pic": hpPic,
+      "kode_membership": kodeMembership,
+      "kode_paketmember": kodePaketmember,
+      "tipe_svc": tipeSvc,
+      "tipe_pelanggan": tipePelanggan,
+      "referensi": referensi,
+      "referensi_teman": referensiTmn,
+      "paket_svc": paketSvc,
+      "keluhan": keluhan,
+      "perintah_kerja": perintahKerja,
+      "ppn": ppn,
+    };
 
-    final token = Publics.controller.getToken.value;
-    var data = {"token": token};
     try {
-      var response = await Dio().get(
-        _getMekanik,
+      final token = await Publics.controller.getToken.value;
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _getApprovek,
+        data: data,
         options: Options(
           headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
           },
         ),
-        queryParameters: data,
       );
 
-      if (response.statusCode == 404) {
-        return Mekanik(status: false, message: "Tidak ada data booking untuk karyawan ini.");
-      }
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
 
-      final obj = Mekanik.fromJson(response.data);
-      _cachedMekanik = obj;
+      final obj = Approve.fromJson(response.data);
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
@@ -225,6 +259,7 @@ class API {
       }
       return obj;
     } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
       throw e;
     }
   }

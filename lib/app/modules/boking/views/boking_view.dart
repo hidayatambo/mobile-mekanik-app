@@ -256,11 +256,13 @@ import 'package:flutter/material.dart';
                                       'nama_jenissvc': e.namaService??'',
                                       'no_polisi': e.noPolisi??'',
                                       'nama_merk': e.namaMerk??'',
+                                      'kode_booking': e.kodeBooking??'',
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
                                       'nama_tipe': e.namaTipe??'',
                                       'alamat': e.alamatpelanggan??'',
                                       'hp': e.hpPelanggan??'',
+                                      'transmisi': e.transmisi??'',
                                       'status': e.bookingStatus??'',
                                     },
                                   );
@@ -279,10 +281,14 @@ import 'package:flutter/material.dart';
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
                                       'ho': e.hpPelanggan??'',
+                                      'kode_booking': e.kodeBooking??'',
                                       'nama_merk': e.namaMerk??'',
+                                      'transmisi': e.transmisi??'',
                                       'nama_tipe': e.namaTipe??'',
                                       'alamat': e.alamatpelanggan??'',
                                       'status': e.bookingStatus??'',
+                                      'status': e.bookingStatus??'',
+
                                     },
                                   );
                                 } else {

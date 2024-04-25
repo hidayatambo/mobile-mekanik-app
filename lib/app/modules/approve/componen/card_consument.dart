@@ -36,7 +36,7 @@ class _CardConsumentState extends State<CardConsument> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -81,7 +81,7 @@ class _CardConsumentState extends State<CardConsument> {
                   }
                 },
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -90,8 +90,8 @@ class _CardConsumentState extends State<CardConsument> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Tipe Service',
-                          style: const TextStyle(
+                      const Text('Tipe Service',
+                          style: TextStyle(
                               fontWeight: FontWeight.normal, fontSize: 12)),
                       Container(
                         decoration: BoxDecoration(
@@ -99,7 +99,7 @@ class _CardConsumentState extends State<CardConsument> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         margin: const EdgeInsets.all(5),
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         child: Text(
                          '$nama_jenissvc',
                           style: const TextStyle(
@@ -113,8 +113,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Tanggal',
-                            style: const TextStyle(
+                        const Text('Tanggal',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           decoration: BoxDecoration(
@@ -122,7 +122,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$tgl_booking',
                             style: const TextStyle(
@@ -139,8 +139,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Jam',
-                            style: const TextStyle(
+                        const Text('Jam',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           decoration: BoxDecoration(
@@ -148,7 +148,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$jam_booking',
                             style: const TextStyle(
@@ -162,13 +162,13 @@ class _CardConsumentState extends State<CardConsument> {
                   ),
                 ],
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
               ),
-              Text('Detail Kendaraan',
-                  style: const TextStyle(
+              const Text('Detail Kendaraan',
+                  style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 12)),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -178,8 +178,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('No Polisi *',
-                            style: const TextStyle(
+                        const Text('No Polisi *',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -188,7 +188,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$no_polisi',
                             style: const TextStyle(
@@ -205,8 +205,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Merk',
-                            style: const TextStyle(
+                        const Text('Merk',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -215,7 +215,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$nama_merk',
                             style: const TextStyle(
@@ -238,8 +238,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Tipe',
-                            style: const TextStyle(
+                        const Text('Tipe',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -248,7 +248,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$nama_tipe',
                             style: const TextStyle(
@@ -265,8 +265,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Tahun',
-                            style: const TextStyle(
+                        const Text('Tahun',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -275,7 +275,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                            '$tahun',
                             style: const TextStyle(
@@ -298,8 +298,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Warna',
-                            style: const TextStyle(
+                        const Text('Warna',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -308,7 +308,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                            ' $warna',
                             style: const TextStyle(
@@ -325,8 +325,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Transmisi',
-                            style: const TextStyle(
+                        const Text('Transmisi',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -335,10 +335,10 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            '',
-                            style: const TextStyle(
+                          padding: const EdgeInsets.all(5),
+                          child:  Text(
+                            '$transmisi',
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
                             ),
@@ -358,8 +358,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('No Rangka',
-                            style: const TextStyle(
+                        const Text('No Rangka',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -368,7 +368,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                            '$norangka',
                             style: const TextStyle(
@@ -385,8 +385,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('No Mesin',
-                            style: const TextStyle(
+                        const Text('No Mesin',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -395,7 +395,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                            '$nomesin',
                             style: const TextStyle(
@@ -418,25 +418,51 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Odometer',
-                            style: const TextStyle(
+                        const Text('Odometer',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
+                          height: 25,
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.only(left: 10,),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            '',
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 15),
+                         width: double.infinity,
+                         child:  TextFormField( // Membuat teks berada di tengah vertikal
+                            maxLines: 1,
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                              fontSize: 12, // Ukuran font
+                              color: Colors.black, // Warna teks
+                              fontWeight: FontWeight.bold, // Ketebalan font
                             ),
-                          ),
+                            decoration: const InputDecoration(
+                              hintText: '',
+                              hintStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                              border: InputBorder.none,
+                            ),
+                          ),),
                         ),
+                        // Container(
+                        //   width: double.infinity,
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.grey[200],
+                        //     borderRadius: BorderRadius.circular(10),
+                        //   ),
+                        //   margin: const EdgeInsets.all(5),
+                        //   padding: EdgeInsets.all(5),
+                        //   child: Text(
+                        //     '',
+                        //     style: const TextStyle(
+                        //       fontWeight: FontWeight.bold,
+                        //       fontSize: 12,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -451,7 +477,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: null,
                         ),
                       ],
@@ -459,13 +485,13 @@ class _CardConsumentState extends State<CardConsument> {
                   ),
                 ],
               ),
-              Divider(
+              const Divider(
                 color: Colors.grey,
               ),
-              Text('Detail Pemilik',
-                  style: const TextStyle(
+              const Text('Detail Pemilik',
+                  style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 12)),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -475,8 +501,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Nama',
-                            style: const TextStyle(
+                        const Text('Nama',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -485,7 +511,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$nama',
                             style: const TextStyle(
@@ -502,8 +528,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Alamat',
-                            style: const TextStyle(
+                        const Text('Alamat',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                             width: double.infinity,
@@ -512,7 +538,7 @@ class _CardConsumentState extends State<CardConsument> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             margin: const EdgeInsets.all(5),
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Text(
                               '$alamat',
                               style: const TextStyle(
@@ -534,8 +560,8 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('HP',
-                            style: const TextStyle(
+                        const Text('HP',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
@@ -544,7 +570,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: Text(
                             '$hp',
                             style: const TextStyle(
@@ -561,24 +587,34 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('PIC',
-                            style: const TextStyle(
+                        const Text('PIC',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
+                          height: 25,
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.only(left: 10,),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 15),
+                            width: double.infinity,
+                            child:  TextFormField( // Membuat teks berada di tengah vertikal
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 12, // Ukuran font
+                                color: Colors.black, // Warna teks
+                                fontWeight: FontWeight.bold, // Ketebalan font
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: '',
+                                hintStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                border: InputBorder.none,
+                              ),
+                            ),),
                         ),
                       ],
                     ),
@@ -594,24 +630,34 @@ class _CardConsumentState extends State<CardConsument> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('HP PIC',
-                            style: const TextStyle(
+                        const Text('HP PIC',
+                            style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 12)),
                         Container(
                           width: double.infinity,
+                          height: 25,
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.only(left: 10,),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 15),
+                            width: double.infinity,
+                            child:  TextFormField( // Membuat teks berada di tengah vertikal
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 12, // Ukuran font
+                                color: Colors.black, // Warna teks
+                                fontWeight: FontWeight.bold, // Ketebalan font
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: '',
+                                hintStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                border: InputBorder.none,
+                              ),
+                            ),),
                         ),
                       ],
                     ),
@@ -627,7 +673,7 @@ class _CardConsumentState extends State<CardConsument> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           margin: const EdgeInsets.all(5),
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           child: null,
                         ),
                       ],

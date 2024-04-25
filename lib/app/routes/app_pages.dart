@@ -62,7 +62,7 @@ class AppPages {
       binding: HistoryBinding(),
     ),
     GetPage(
-      transition: Transition.rightToLeft,
+      transition: Transition.downToUp,
       name: _Paths.GENERAL_CHECKUP,
       page: () => GeneralCheckupView(),
       binding: GeneralCheckupBinding(),
@@ -74,7 +74,7 @@ class AppPages {
       binding: SplashcreenBinding(),
     ),
     GetPage(
-      transition: Transition.rightToLeft,
+      transition: Transition.downToUp,
       name: _Paths.REPAIR_MAINTENEN,
       page: () => const RepairMaintenenView(),
       binding: RepairMaintenenBinding(),

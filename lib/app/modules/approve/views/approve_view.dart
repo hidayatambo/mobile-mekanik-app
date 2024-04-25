@@ -9,10 +9,11 @@ import 'package:search_choices/search_choices.dart';
 import '../../../data/data_endpoint/approve.dart';
 import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
+import '../../home/controllers/home_controller.dart';
 import '../componen/card_consument.dart';
 import '../controllers/approve_controller.dart';
 
-class ApproveView extends GetView<GetxController> {
+class ApproveView extends GetView<ApproveController> {
   const ApproveView({super.key});
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class ApproveView extends GetView<GetxController> {
     final String referensiTmn = arguments?['referensi_teman'] ?? '';
     final String paketSvc = arguments?['paket_svc'] ?? '';
     final String keluhan = arguments?['keluhan'] ?? '';
+    final String catatan = arguments?['catatan'] ?? '';
     final String perintahKerja = arguments?['perintah_kerja'] ?? '';
 
     return Scaffold(
@@ -76,11 +78,21 @@ class ApproveView extends GetView<GetxController> {
                             cancelBtnText: 'Kembali',
                             confirmBtnColor: Colors.green,
                             onConfirmBtnTap: () async {
+                              Navigator.pop(Get.context!);
                               try {
                                 print('Email: $email');
                                 print('kode_booking: $kodeBooking');
                                 print('tgl_booking: $tglBooking');
 
+                                // Tampilkan indikator loading
+                                QuickAlert.show(
+                                  barrierDismissible: false,
+                                  context: Get.context!,
+                                  type: QuickAlertType.loading,
+                                  headerBackgroundColor: Colors.yellow,
+                                  text: 'Approving...',
+                                );
+                                // Panggil API untuk menyetujui booking
                                 await API.approveId(
                                   email: email,
                                   kodeBooking: kodeBooking,
@@ -100,28 +112,17 @@ class ApproveView extends GetView<GetxController> {
                                   ppn: 10,
                                   tipePelanggan: tipePelanggan,
                                 );
-
-                                Navigator.pop(Get.context!);
-
-                                QuickAlert.show(
-                                  context: Get.context!,
-                                  type: QuickAlertType.success,
-                                  headerBackgroundColor: Colors.yellow,
-                                  text: 'Booking has been approved',
-                                  confirmBtnText: 'Kembali',
-                                  cancelBtnText: 'Kembali',
-                                  confirmBtnColor: Colors.red,
-                                );
                               } catch (e) {
-                                Navigator.pop(Get.context!);
+                                Navigator.of(context).popUntil((route) => route.isFirst);
                                 QuickAlert.show(
+                                  barrierDismissible: false,
                                   context: Get.context!,
                                   type: QuickAlertType.success,
                                   headerBackgroundColor: Colors.yellow,
                                   text: 'Booking has been approved',
                                   confirmBtnText: 'Kembali',
                                   cancelBtnText: 'Kembali',
-                                  confirmBtnColor: Colors.red,
+                                  confirmBtnColor: Colors.green,
                                 );
                               }
                             },
@@ -149,9 +150,73 @@ class ApproveView extends GetView<GetxController> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          var message = '';
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.warning,
+                              barrierDismissible: true,
+                              confirmBtnText: 'Konfirmasi',
+                              widget: TextFormField(
+                                controller: controller.catatan,
+                                decoration: const InputDecoration(
+                                  alignLabelWithHint: true,
+                                  hintText: 'catatan',
+                                  prefixIcon: Icon(
+                                    Icons.mail_lock_rounded,
+                                  ),
+                                ),
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.phone,
+                                onChanged: (value) => message = value,
+                              ),
+                              onConfirmBtnTap: () async {
+                                Navigator.pop(Get.context!);
+                                try {
+                                  print('kode_booking: $kodeBooking');
+
+                                  // Tampilkan indikator loading
+                                  QuickAlert.show(
+                                    context: Get.context!,
+                                    type: QuickAlertType.loading,
+                                    headerBackgroundColor: Colors.yellow,
+                                    text: 'Unapproving...',
+                                    confirmBtnText: '',
+                                  );
+                                  // Panggil API untuk menyetujui booking
+                                  await API.unapproveId(
+                                    catatan: controller.catatan.text,
+                                    kodeBooking: kodeBooking,
+                                  );
+                                  Navigator.of(context).popUntil((route) => route.isFirst);
+                                  QuickAlert.show(
+                                    barrierDismissible: false,
+                                    context: Get.context!,
+                                    type: QuickAlertType.success,
+                                    headerBackgroundColor: Colors.yellow,
+                                    text: 'Booking has been Unapproving',
+                                    confirmBtnText: 'Kembali',
+                                    cancelBtnText: 'Kembali',
+                                    confirmBtnColor: Colors.green,
+                                  );
+                                } catch (e) {
+                                  Navigator.of(context).popUntil((route) => route.isFirst);
+                                  QuickAlert.show(
+                                    barrierDismissible: false,
+                                    context: Get.context!,
+                                    type: QuickAlertType.success,
+                                    headerBackgroundColor: Colors.yellow,
+                                    text: 'Booking has been Unapproving',
+                                    confirmBtnText: 'Kembali',
+                                    cancelBtnText: 'Kembali',
+                                    confirmBtnColor: Colors.green,
+                                  );
+                                }
+                              }
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
+                          backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)
                           ),
@@ -169,23 +234,6 @@ class ApproveView extends GetView<GetxController> {
                   ),
                   const SizedBox(width: 10,),
                 ],
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-                  elevation: 4.0,
-                ),
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
             ],
           ),

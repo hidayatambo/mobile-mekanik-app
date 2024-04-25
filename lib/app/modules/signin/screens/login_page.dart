@@ -161,7 +161,6 @@ class _LoginPageState extends State<LoginPage> {
 
                                   if (aksesPX.message == 200) {
                                     if (aksesPX.token != null) {
-                                      // Jika kode_perusahaan ada dalam respons dan bukan null, navigasi ke HOME
                                       Get.offAllNamed(Routes.HOME);
                                     }
                                   }

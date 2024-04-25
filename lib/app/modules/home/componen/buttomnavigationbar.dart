@@ -90,7 +90,7 @@ class _HomeViewState extends State<HomeView> {
           });
         },
         children:  <Widget>[
-          const HomePage(),
+           HomePage(),
           ChatView(),
           BokingView(),
           const HistoryView(),

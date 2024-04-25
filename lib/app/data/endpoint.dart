@@ -263,4 +263,46 @@ class API {
       throw e;
     }
   }
+  static Future<Unapprove> unapproveId({
+    required String catatan,
+    required String kodeBooking,
+  }) async {
+    final data = {
+      "catatan": catatan,
+      "kode_booking": kodeBooking,
+
+    };
+
+    try {
+      final token = await Publics.controller.getToken.value;
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _getUpprovek,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+
+      final obj = Unapprove.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
 }

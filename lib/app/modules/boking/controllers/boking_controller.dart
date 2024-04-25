@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class BokingController extends GetxController {
   //TODO: Implement BokingController
@@ -77,6 +78,28 @@ class BokingController extends GetxController {
     statusController.dispose();
     super.onClose();
   }
+  var isBookingApproved = false.obs;
 
+  void setBookingApproved(bool value) {
+    isBookingApproved.value = value;
+  }
+  List<RefreshController> refreshControllers = [];
+
+  // Metode untuk melakukan refresh
+  void refresh() {
+    // Lakukan refresh pada semua RefreshController
+    for (var controller in refreshControllers) {
+      controller.refreshCompleted();
+    }
+  }
+
+
+  void incrementCounter() {
+    count.value++;
+  }
+
+  void resetCounter() {
+    count.value = 0;
+  }
   void increment() => count.value++;
 }

@@ -12,6 +12,7 @@ class ApproveController extends GetxController {
   late String namaMerk;
   late String namaTipe;
   late String status;
+  final catatan = TextEditingController();
 
   void setData({
     required String id,
@@ -23,6 +24,7 @@ class ApproveController extends GetxController {
     required String namaMerk,
     required String namaTipe,
     required String status,
+    required String catatan,
   }) {
     this.id = id;
     this.tglBooking = tglBooking;
@@ -33,6 +35,7 @@ class ApproveController extends GetxController {
     this.namaMerk = namaMerk;
     this.namaTipe = namaTipe;
     this.status = status;
+    this.status = catatan;
   }
   final count = 0.obs;
   late TextEditingController idController;
@@ -74,6 +77,7 @@ class ApproveController extends GetxController {
   namaMerkController.dispose();
   namaTipeController.dispose();
   statusController.dispose();
+  catatan.dispose();
   super.onClose();
   }
 

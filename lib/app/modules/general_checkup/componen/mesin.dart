@@ -57,7 +57,7 @@ class _YourWidgetState extends State<YourWidget> {
                     fontSize: 17,
                   ),
                 ),
-                const cardInfo(),
+                const cardInfoGC(),
                 const SizedBox(height: 20,),
                 FutureBuilder(
                   future: API.GeneralID(),

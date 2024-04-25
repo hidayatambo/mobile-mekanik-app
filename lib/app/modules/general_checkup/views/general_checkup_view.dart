@@ -56,7 +56,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: DetailTemaView()
+      body: const DetailTemaView()
     );
   }
 }

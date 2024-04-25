@@ -116,7 +116,7 @@ class ApproveView extends GetView<ApproveController> {
                                     kodeBooking: kodeBooking,
                                     tglBooking: tglBooking,
                                     jamBooking: jamBooking,
-                                    odometer: controller.odometer.text,
+                                    odometer: odometer,
                                     pic: pic,
                                     hpPic: hpPic,
                                     kodeMembership: kodeMembership,
@@ -205,7 +205,7 @@ class ApproveView extends GetView<ApproveController> {
                                   );
                                   // Panggil API untuk menyetujui booking
                                   await API.approveId(
-                                    email: controller.mekanik.text,
+                                    email: email,
                                     kodeBooking: kodeBooking,
                                     tglBooking: tglBooking,
                                     jamBooking: jamBooking,

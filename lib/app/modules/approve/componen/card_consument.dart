@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,15 +8,9 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../componen/color.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
-
-class CardConsument extends StatefulWidget {
+import '../controllers/approve_controller.dart';
+class CardConsument extends GetView<ApproveController> {
   const CardConsument({super.key});
-
-  @override
-  State<CardConsument> createState() => _CardConsumentState();
-}
-
-class _CardConsumentState extends State<CardConsument> {
   @override
   Widget build(BuildContext context) {
     final Map args = Get.arguments;
@@ -433,7 +429,9 @@ class _CardConsumentState extends State<CardConsument> {
                           child: Container(
                             margin: const EdgeInsets.only(top: 15),
                          width: double.infinity,
-                         child:  TextFormField( // Membuat teks berada di tengah vertikal
+                         child:  TextFormField(
+                           controller: controller.odometer,
+                            keyboardType: TextInputType.number,
                             maxLines: 1,
                             style: const TextStyle(
                               fontSize: 12, // Ukuran font

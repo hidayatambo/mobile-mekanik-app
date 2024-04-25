@@ -12,7 +12,9 @@ class ApproveController extends GetxController {
   late String namaMerk;
   late String namaTipe;
   late String status;
-  final catatan = TextEditingController();
+  final TextEditingController odometer = TextEditingController(text: '');
+  final TextEditingController catatan = TextEditingController();
+  final TextEditingController mekanik = TextEditingController();
 
   void setData({
     required String id,

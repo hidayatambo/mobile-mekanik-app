@@ -61,6 +61,7 @@ dependencies:
   awesome_dialog: ^3.2.0
   bottom_picker: ^2.6.0
   search_choices: ^2.2.7
+  animated_custom_dropdown: ^3.0.0
   bubble_tab_indicator: ^0.1.4
 
 dev_dependencies: 

@@ -305,4 +305,45 @@ class API {
       throw e;
     }
   }
+  //Beda
+  static Mekanik? _cachedMekanik;
+
+  static void clearCacheMekanik() {
+    _cachedMekanik = null;
+  }
+
+  static Future<Mekanik> MekanikID() async {
+    if (_cachedMekanik != null) {
+      return _cachedMekanik!;
+    }
+
+    final token = Publics.controller.getToken.value;
+    var data = {"token": token};
+    try {
+      var response = await Dio().get(
+        _getMekanik,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = Mekanik.fromJson(response.data);
+      _cachedMekanik = obj;
+
+      if (obj.message == null) {
+        throw Exception("Data Mekanik kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

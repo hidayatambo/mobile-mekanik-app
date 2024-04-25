@@ -25,6 +25,7 @@ class API {
   static const _getMekanik = '$_baseUrl/mekanik/get-mekanik';
   static const _getApprovek = '$_baseUrl/mekanik/approve-booking';
   static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
+  static final _controller = Publics.controller;
 
 
   static Future<Token> login({required String email, required String password}) async {

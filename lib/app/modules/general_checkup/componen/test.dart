@@ -1082,7 +1082,7 @@ class _TextFieldVisibilityState extends State<TextFieldVisibility> {
       visible: widget.valueNotifier.value == 'Not Oke',
       child: const Column(
         children: [
-          SizedBox(height: 10), // Spasi untuk memisahkan dari DropdownButton
+          SizedBox(height: 10),
           TextField(
             decoration: InputDecoration(
               labelText: 'Keterangan',

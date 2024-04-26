@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../../componen/color.dart';
-import '../componen/step_gc.dart';
+import '../componen/step_gc_test.dart';
 
 class GeneralCheckupView extends StatefulWidget {
   const GeneralCheckupView({super.key});
@@ -56,7 +54,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: const DetailTemaView()
+      body:  MyHomePage()
     );
   }
 }

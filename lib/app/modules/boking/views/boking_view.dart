@@ -274,6 +274,7 @@ import 'package:flutter/material.dart';
                                     arguments: {
                                       // 'id': e.id??'',
                                       'tgl_booking': e.tglBooking??'',
+                                      'booking_id': e.tglBooking??'',
                                       'jam_booking': e.jamBooking??'',
                                       'nama': e.namaPelanggan??'',
                                       'nama_jenissvc': e.namaService??'',

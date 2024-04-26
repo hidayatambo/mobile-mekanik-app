@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../controllers/general_checkup_controller.dart';
 
 class TextFieldVisibilitykendaraan extends StatefulWidget {
   final ValueNotifier<String> valueNotifier;
@@ -13,14 +17,16 @@ class TextFieldVisibilitykendaraan extends StatefulWidget {
 }
 
 class _TextFieldVisibilitykendaraanState extends State<TextFieldVisibilitykendaraan> {
+  final controller = Get.put(GeneralCheckupController());
   @override
   Widget build(BuildContext context) {
     return Visibility(
       visible: widget.valueNotifier.value == 'Not Oke',
-      child: const Column(
+      child: Column(
         children: [
           SizedBox(height: 10),
           TextField(
+            controller: controller.kendaraanController,
             decoration: InputDecoration(
               labelText: 'Keterangan',
               border: OutlineInputBorder(),

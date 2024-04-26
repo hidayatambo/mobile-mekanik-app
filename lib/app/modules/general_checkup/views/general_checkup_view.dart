@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../componen/step_gc_test.dart';
 
 class GeneralCheckupView extends StatefulWidget {
@@ -40,6 +42,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
+    final String bookingid = arguments?['booking_id'] ?? '';
+    final String kodebooking = arguments?['kode_booking'] ?? '';
+    final String subheadingid = arguments?['sub_heading_id'] ?? '';
+
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(

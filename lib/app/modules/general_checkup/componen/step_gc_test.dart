@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Accel.dart';
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Bawah_Kendaraan.dart';
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Brake.dart';
@@ -6,6 +9,8 @@ import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Exterior
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Interior.dart';
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_Stall_Test.dart';
 import 'package:mekanik/app/modules/general_checkup/componen/Visibility_mesin.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/endpoint.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -37,6 +42,12 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
+    final String bookingid = arguments?['booking_id'] ?? '';
+    final String kodebooking = arguments?['kode_booking'] ?? '';
+    final String subheadingid = arguments?['sub_heading_id'] ?? '';
+    final String gcus = arguments?['gcus'] ?? '';
+    final String gcuid = arguments?['gcu_id'] ?? '';
     Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
     return Scaffold(
       appBar: AppBar(
@@ -667,6 +678,80 @@ class _MyHomePageState extends State<MyHomePage>
                 }
               },
             ),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              elevation: 4.0,
+            ),
+        onPressed: () async {
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.warning,
+            headerBackgroundColor: Colors.yellow,
+            text: 'Pastikan Kembali data Booking sudah sesuai ',
+            confirmBtnText: 'Submit',
+            cancelBtnText: 'Kembali',
+            confirmBtnColor: Colors.green,
+            onConfirmBtnTap: () async {
+              Navigator.pop(Get.context!);
+              try {
+                if (kDebugMode) {
+                  print('booking_id: $bookingid');
+                }
+                if (kDebugMode) {
+                  print('kode_booking: $kodebooking');
+                } if (kDebugMode) {
+                  print('sub_heading_id: $subheadingid');
+                }
+                if (kDebugMode) {
+                  print('gcus: $gcus');
+                } if (kDebugMode) {
+                  print('gcu_id: $gcuid');
+                }
+                // Tampilkan indikator loading
+                QuickAlert.show(
+                  barrierDismissible: false,
+                  context: Get.context!,
+                  type: QuickAlertType.loading,
+                  headerBackgroundColor: Colors.yellow,
+                  text: 'Submit General Chechup...',
+                );
+                // Panggil API untuk menyetujui booking
+                await API.submitGCID(
+                  bookingid: bookingid,
+                  kodebooking: kodebooking,
+                  subheadingid: subheadingid,
+                  gcus: gcus,
+                  gcuid : gcuid,
+                );
+              } catch (e) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                QuickAlert.show(
+                  barrierDismissible: false,
+                  context: Get.context!,
+                  type: QuickAlertType.success,
+                  headerBackgroundColor: Colors.yellow,
+                  text: 'Booking has been General Chechup',
+                  confirmBtnText: 'Kembali',
+                  cancelBtnText: 'Kembali',
+                  confirmBtnColor: Colors.green,
+                );
+              }
+
+            },
+          );
+        },
+          child: const Text(
+          'Submit',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+    ),
             IconButton(
               icon: Icon(Icons.arrow_forward),
               onPressed: _nextTab,

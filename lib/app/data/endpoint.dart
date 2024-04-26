@@ -11,6 +11,7 @@ import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
+import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
 import 'localstorage.dart';
 
@@ -25,6 +26,7 @@ class API {
   static const _getMekanik = '$_baseUrl/mekanik/get-mekanik';
   static const _getApprovek = '$_baseUrl/mekanik/approve-booking';
   static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
+  static const _getSubmitGC = '$_baseUrl/mekanik/submit-general-checkup';
   static final _controller = Publics.controller;
 
 
@@ -347,4 +349,52 @@ class API {
       throw e;
     }
   }
+  //Beda
+  static Future<SubmitGC> submitGCID({
+    required String bookingid,
+    required String kodebooking,
+    required String subheadingid,
+    required String gcus,
+    required String gcuid,
+  }) async {
+    final data = {
+    'booking_id': bookingid,
+    'sub_heading_id': subheadingid,
+    'gcus': gcus,
+    'gcuid': gcuid,
+    };
+
+    try {
+      final token = await Publics.controller.getToken.value;
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _getSubmitGC,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+
+      final obj = SubmitGC.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+  //Beda
 }

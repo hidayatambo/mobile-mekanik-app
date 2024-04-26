@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../componen/color.dart';
-import '../componen/test.dart';
+import '../componen/step_gc.dart';
 
 class GeneralCheckupView extends StatefulWidget {
   const GeneralCheckupView({super.key});

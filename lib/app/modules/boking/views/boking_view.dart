@@ -221,8 +221,8 @@ import 'package:flutter/material.dart';
                         : getDataAcc.dataBooking!;
 
                     if (filteredList.isEmpty) {
-                      return const Center(
-                        child: Text('Tidak ada data'),
+                      return Center(
+                        child: Text('No data available for Booking'),
                       );
                     }
 
@@ -259,6 +259,7 @@ import 'package:flutter/material.dart';
                                       'kode_booking': e.kodeBooking??'',
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
+                                      'booking_id': e.tglBooking??'',
                                       'nama_tipe': e.namaTipe??'',
                                       'alamat': e.alamatpelanggan??'',
                                       'hp': e.hpPelanggan??'',
@@ -310,16 +311,20 @@ import 'package:flutter/material.dart';
                                     arguments: {
                                       // 'id': e.id??'',
                                       'tgl_booking': e.tglBooking??'',
+                                      'booking_id': e.bookingId.toString(),
                                       'jam_booking': e.jamBooking??'',
                                       'nama': e.namaPelanggan??'',
                                       'nama_jenissvc': e.namaService??'',
                                       'no_polisi': e.noPolisi??'',
-                                      'nama_merk': e.namaMerk??'',
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
+                                      'ho': e.hpPelanggan??'',
+                                      'kode_booking': e.kodeBooking??'',
+                                      'nama_merk': e.namaMerk??'',
+                                      'transmisi': e.transmisi??'',
                                       'nama_tipe': e.namaTipe??'',
                                       'alamat': e.alamatpelanggan??'',
-                                      'hp': e.hpPelanggan??'',
+                                      'status': e.bookingStatus??'',
                                       'status': e.bookingStatus??'',
                                     },
                                   );
@@ -331,6 +336,7 @@ import 'package:flutter/material.dart';
                                     arguments: {
                                       // 'id': e.??'',
                                       'tgl_booking': e.tglBooking??'',
+                                      'booking_id': e.bookingId.toString(),
                                       'jam_booking': e.jamBooking??'',
                                       'nama': e.namaPelanggan??'',
                                       'nama_jenissvc': e.namaService??'',
@@ -338,9 +344,12 @@ import 'package:flutter/material.dart';
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
                                       'ho': e.hpPelanggan??'',
+                                      'kode_booking': e.kodeBooking??'',
                                       'nama_merk': e.namaMerk??'',
+                                      'transmisi': e.transmisi??'',
                                       'nama_tipe': e.namaTipe??'',
                                       'alamat': e.alamatpelanggan??'',
+                                      'status': e.bookingStatus??'',
                                       'status': e.bookingStatus??'',
                                     },
                                   );

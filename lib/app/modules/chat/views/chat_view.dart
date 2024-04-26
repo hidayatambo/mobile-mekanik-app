@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../main.dart';
+import '../../general_checkup/componen/test.dart';
+
 class ChatView extends StatelessWidget {
   final List<User> users = [
     User(name: 'Irwan', profileImage: 'https://example.com/alice.jpg'),
@@ -15,24 +18,26 @@ class ChatView extends StatelessWidget {
         centerTitle: false,
         title: const Text('User List'),
       ),
-      body: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          final user = users[index];
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(user.profileImage),
-            ),
-            title: Text(user.name),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatScreen(user: user)),
-              );
-            },
-          );
-        },
-      ),
+      body: null
+
+      // ListView.builder(
+      //   itemCount: users.length,
+      //   itemBuilder: (context, index) {
+      //     final user = users[index];
+      //     return ListTile(
+      //       leading: CircleAvatar(
+      //         backgroundImage: NetworkImage(user.profileImage),
+      //       ),
+      //       title: Text(user.name),
+      //       onTap: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(builder: (context) => ChatScreen(user: user)),
+      //         );
+      //       },
+      //     );
+      //   },
+      // ),
     );
   }
 }

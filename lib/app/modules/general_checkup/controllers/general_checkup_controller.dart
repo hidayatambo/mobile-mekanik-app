@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 
 class GeneralCheckupController extends GetxController {
   //TODO: Implement ApproveController
-  // final TextEditingController mesin = TextEditingController();
-  // final TextEditingController interior = TextEditingController();
-  // final TextEditingController brake = TextEditingController();
-  // final TextEditingController accel = TextEditingController();
-  // final TextEditingController stell = TextEditingController();
-  // final TextEditingController exterior = TextEditingController();
-  // final TextEditingController kendaraab = TextEditingController();
+  final TextEditingController mesin = TextEditingController();
+  final TextEditingController interior = TextEditingController();
+  final TextEditingController brake = TextEditingController();
+  final TextEditingController accel = TextEditingController();
+  final TextEditingController stell = TextEditingController();
+  final TextEditingController exterior = TextEditingController();
+  final TextEditingController kendaraab = TextEditingController();
+  // final TextEditingController deskripsi = TextEditingController();
   late String id;
   late String tglBooking;
   late String jamBooking;
@@ -19,14 +20,13 @@ class GeneralCheckupController extends GetxController {
   late String namaMerk;
   late String namaTipe;
   late String status;
-  late String mesin;
-  late String interior;
-  late String brake;
-  late String accel;
-  late String stell;
-  late String exterior;
+  // late String mesin;
+  // late String interior;
+  // late String brake;
+  // late String accel;
+  // late String stell;
+  // late String exterior;
   late String kendaraan;
-  late String catatan;
   final TextEditingController odometer = TextEditingController(text: '');
   final TextEditingController mekanik = TextEditingController();
 
@@ -58,13 +58,12 @@ class GeneralCheckupController extends GetxController {
     this.namaMerk = namaMerk;
     this.namaTipe = namaTipe;
     this.status = status;
-    this.catatan = catatan;
-    this.mesin = mesin;
-    this.interior = interior;
-    this.brake = brake;
-    this.accel = accel;
-    this.stell = stell;
-    this.exterior = exterior;
+    // this.mesin = mesin;
+    // this.interior = interior;
+    // this.brake = brake;
+    // this.accel = accel;
+    // this.stell = stell;
+    // this.exterior = exterior;
     this.kendaraan = kendaraan;
   }
   final count = 0.obs;
@@ -87,6 +86,7 @@ class GeneralCheckupController extends GetxController {
   late TextEditingController stellController;
   late TextEditingController exteriorController;
   late TextEditingController kendaraanController;
+  late TextEditingController deskripsiController;
 
   @override
   void onInit() {
@@ -122,14 +122,6 @@ class GeneralCheckupController extends GetxController {
     namaMerkController.dispose();
     namaTipeController.dispose();
     statusController.dispose();
-    mesinController.dispose();
-    catatanController.dispose();
-    interiorController.dispose();
-    brakeController.dispose();
-    accelController.dispose();
-    stellController.dispose();
-    exteriorController.dispose();
-    kendaraanController.dispose();
     super.onClose();
   }
 

@@ -112,6 +112,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                           return GcuItem(
                             gcu: gcus,
                             state: gcuItemState,
+                            dropdownValue: dropdownValue, // Pass the same dropdown value to each GcuItem
+                            onDropdownChanged: (value) {
+                              setState(() {
+                                dropdownValue = value; // Update the dropdown value
+                              });
+                            },
                           );
                         }).toList(),
                       );

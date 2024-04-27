@@ -10,8 +10,11 @@ import '../controllers/general_checkup_controller.dart';
 class GcuItem extends StatefulWidget {
   final Gcus gcu; // Adjust to your actual type
   final GcuItemState state;
+  final String? dropdownValue;
+  final ValueChanged<String?> onDropdownChanged;
 
-  const GcuItem({Key? key, required this.gcu, required this.state})
+
+  const GcuItem({Key? key, required this.gcu, required this.state, this.dropdownValue, required this.onDropdownChanged})
       : super(key: key);
 
   @override

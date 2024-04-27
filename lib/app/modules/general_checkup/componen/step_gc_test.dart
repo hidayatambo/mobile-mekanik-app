@@ -125,19 +125,8 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                 ),
                 onPressed: () async {
                   try {
-                    // Panggil fungsi GeneralID untuk mendapatkan data general_checkup
-                    if (kDebugMode) print('booking_id: $bookingid');
-                    for (var gcuItemState in gcuItemStates) {
-                      print('Status: ${gcuItemState.dropdownValue}');
-                      print('gcu_id: $gcuItemState');
-                      if (gcuItemState.dropdownValue == 'Not Oke') {
-                        print('Description: ${controller.deskripsi.text}');
-                      }
-                    }
-
                     // Mendapatkan data general checkup dari API
                     general_checkup generalData = await API.GeneralID();
-
                     // Ambil sub_heading_id
                     String subheadingid = generalData.data![0].subHeadingId.toString();
 
@@ -212,10 +201,6 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                   ),
                 ),
               ),
-              // IconButton(
-              //   icon: Icon(Icons.arrow_forward),
-              //   onPressed: _nextTab,
-              // ),
             ],
           ),
         ),

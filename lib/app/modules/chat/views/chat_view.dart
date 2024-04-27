@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../main.dart';
-import '../../general_checkup/componen/test.dart';
 
 class ChatView extends StatelessWidget {
   final List<User> users = [
@@ -14,6 +13,9 @@ class ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: BottomAppBar(
+          child: null
+        ),
       appBar: AppBar(
         centerTitle: false,
         title: const Text('User List'),

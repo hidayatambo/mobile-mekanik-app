@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 class GeneralCheckupController extends GetxController {
   //TODO: Implement ApproveController
+  var currentStep =0.obs;
   final TextEditingController mesin = TextEditingController();
   final TextEditingController interior = TextEditingController();
   final TextEditingController brake = TextEditingController();
@@ -10,7 +11,8 @@ class GeneralCheckupController extends GetxController {
   final TextEditingController stell = TextEditingController();
   final TextEditingController exterior = TextEditingController();
   final TextEditingController kendaraab = TextEditingController();
-  // final TextEditingController deskripsi = TextEditingController();
+  final TextEditingController deskripsi = TextEditingController();
+  final TextEditingController status = TextEditingController();
   late String id;
   late String tglBooking;
   late String jamBooking;
@@ -19,7 +21,6 @@ class GeneralCheckupController extends GetxController {
   late String noPolisi;
   late String namaMerk;
   late String namaTipe;
-  late String status;
   // late String mesin;
   // late String interior;
   // late String brake;
@@ -39,7 +40,6 @@ class GeneralCheckupController extends GetxController {
     required String noPolisi,
     required String namaMerk,
     required String namaTipe,
-    required String status,
     required String catatan,
     required String mesin,
     required String interior,
@@ -57,7 +57,6 @@ class GeneralCheckupController extends GetxController {
     this.noPolisi = noPolisi;
     this.namaMerk = namaMerk;
     this.namaTipe = namaTipe;
-    this.status = status;
     // this.mesin = mesin;
     // this.interior = interior;
     // this.brake = brake;
@@ -86,7 +85,6 @@ class GeneralCheckupController extends GetxController {
   late TextEditingController stellController;
   late TextEditingController exteriorController;
   late TextEditingController kendaraanController;
-  late TextEditingController deskripsiController;
 
   @override
   void onInit() {

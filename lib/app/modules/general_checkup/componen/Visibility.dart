@@ -24,22 +24,27 @@ class GcuItem extends StatefulWidget {
 class _GcuItemState extends State<GcuItem> {
   String? dropdownValue;
 
-  late TextEditingController textEditingController;
   @override
   void dispose() {
-    textEditingController.dispose();
     super.dispose();
   }
   @override
   void initState() {
     super.initState();
-    textEditingController = TextEditingController();
     widget.state.dropdownValue = dropdownValue??'';
-    widget.state.textEditingController = textEditingController;
   }
-
+  // void _handleSubmit() {
+  //   if (dropdownValue != null && dropdownValue!.isNotEmpty) {
+  //     Map<String, String> result = {
+  //       'gcu': widget.gcu.gcu ?? '',
+  //       'dropdown': dropdownValue ?? '',
+  //       // 'textField': contr.text,
+  //     };
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(GeneralCheckupController());
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Column(
@@ -66,9 +71,8 @@ class _GcuItemState extends State<GcuItem> {
                   hint: Text('Pilih'),
                   onChanged: (String? value) {
                     setState(() {
-                      _handleSubmit();
                       dropdownValue = value!;
-                      textEditingController.clear();
+                      controller.status.clear();
                       widget.state.dropdownValue = value;
                     });
                   },
@@ -84,7 +88,7 @@ class _GcuItemState extends State<GcuItem> {
           ),
           if (dropdownValue == 'Not Oke')
             TextField(
-              controller: textEditingController,
+              controller: controller.deskripsi,
               decoration: InputDecoration(
                 hintText: 'Keterangan',
               ),
@@ -92,17 +96,6 @@ class _GcuItemState extends State<GcuItem> {
         ],
       ),
     );
-  }
-
-
-  void _handleSubmit() {
-    if (dropdownValue != null && dropdownValue!.isNotEmpty) {
-      Map<String, String> result = {
-        'gcu': widget.gcu.gcu ?? '',
-        'dropdown': dropdownValue ?? '',
-        'textField': textEditingController.text,
-      };
-    }
   }
 }
 

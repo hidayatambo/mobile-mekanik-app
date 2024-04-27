@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,43 +8,16 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/endpoint.dart';
+import '../../approve/controllers/approve_controller.dart';
 import '../controllers/general_checkup_controller.dart';
 import 'Visibility.dart';
+class MyHomePage extends GetView<GeneralCheckupController> {
+   MyHomePage({super.key});
 
-class MyHomePage extends StatefulWidget {
-  late final GcuItemState state;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late TextEditingController textEditingController;
   List<GcuItemState> gcuItemStates = [];
   String? dropdownValue;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 7, vsync: this);
-    textEditingController = TextEditingController();
-    widget.state = GcuItemState(); // Initialize the state here
-    widget.state.dropdownValue = dropdownValue ?? '';
-    widget.state.textEditingController = textEditingController;
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    textEditingController.dispose();
-    super.dispose();
-  }
-
-  void _nextTab() {
-    if (_tabController.index < _tabController.length - 1) {
-      _tabController.animateTo(_tabController.index + 1);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +26,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     final String subheadingid = arguments?['sub_heading_id'] ?? '';
     final String gcus = arguments?['gcus'] ?? '';
     final String gcuid = arguments?['gcu_id'] ?? '';
-    final String status = arguments?['status'] ?? '';
-    final String description = arguments?['status'] ?? '';
     Map<String, ValueNotifier<String>> dropdownValueNotifiers = {};
-    final controller = Get.put(GeneralCheckupController());
-
     return DefaultTabController(
       length: 7,
       child: Scaffold(
@@ -72,16 +43,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               Tab(text: 'Bawah Kendaraan'),
               Tab(text: 'Stall Test'),
             ],
-            controller: _tabController,
+            // controller: _tabController,
           ),
         ),
         body: TabBarView(
-          controller: _tabController,
+          // controller: _tabController,
           children: List.generate(7, (index) {
             return PageStorage(
               bucket: PageStorageBucket(),
               key: PageStorageKey<String>('tab_$index'), // Unique key for each tab
-              child: FutureBuilder(
+              child: SingleChildScrollView(child:
+              FutureBuilder(
                 future: API.GeneralID(), // Panggil fungsi untuk mendapatkan data dari API
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -114,9 +86,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                             state: gcuItemState,
                             dropdownValue: dropdownValue, // Pass the same dropdown value to each GcuItem
                             onDropdownChanged: (value) {
-                              setState(() {
-                                dropdownValue = value; // Update the dropdown value
-                              });
+                              // setState(() {
+                              //   dropdownValue = value; // Update the dropdown value
+                              // });
                             },
                           );
                         }).toList(),
@@ -128,6 +100,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                     return Center(child: Text('No data available'));
                   }
                 },
+              ),
               ),
             );
           }),
@@ -151,57 +124,85 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   elevation: 4.0,
                 ),
                 onPressed: () async {
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.warning,
-                    headerBackgroundColor: Colors.yellow,
-                    text: 'Pastikan Kembali data Booking sudah sesuai ',
-                    confirmBtnText: 'Submit',
-                    cancelBtnText: 'Kembali',
-                    confirmBtnColor: Colors.green,
-                    onConfirmBtnTap: () async {
-                      Navigator.pop(Get.context!);
-                      try {
-                        if (kDebugMode) print('booking_id: $bookingid');
-                        if (kDebugMode) print('sub_heading_id: $subheadingid');
-                        if (kDebugMode) print('gcus: $gcus');
-                        if (kDebugMode) print('gcu_id: $gcuid');
-                        if (kDebugMode) print('status: $gcuid');
-                        if (kDebugMode) print('description: $gcuid');
-
-                        // Tampilkan indikator loading
-                        QuickAlert.show(
-                          barrierDismissible: false,
-                          context: Get.context!,
-                          type: QuickAlertType.loading,
-                          headerBackgroundColor: Colors.yellow,
-                          text: 'Submit General Chechup...',
-                        );
-                        collectAndPrintResults();
-                        // Panggil API untuk menyetujui booking
-                        await API.submitGCID(
-                          bookingid: bookingid,
-                          subheadingid: subheadingid,
-                          gcus: gcus,
-                          gcuid: gcuid,
-                          status: dropdownValue ?? '',
-                          description: textEditingController.text,
-                        );
-                      } catch (e) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        QuickAlert.show(
-                          barrierDismissible: false,
-                          context: Get.context!,
-                          type: QuickAlertType.success,
-                          headerBackgroundColor: Colors.yellow,
-                          text: 'Booking has been General Chechup',
-                          confirmBtnText: 'Kembali',
-                          cancelBtnText: 'Kembali',
-                          confirmBtnColor: Colors.green,
-                        );
+                  try {
+                    // Panggil fungsi GeneralID untuk mendapatkan data general_checkup
+                    if (kDebugMode) print('booking_id: $bookingid');
+                    for (var gcuItemState in gcuItemStates) {
+                      print('Status: ${gcuItemState.dropdownValue}');
+                      print('gcu_id: $gcuItemState');
+                      if (gcuItemState.dropdownValue == 'Not Oke') {
+                        print('Description: ${controller.deskripsi.text}');
                       }
-                    },
-                  );
+                    }
+
+                    // Mendapatkan data general checkup dari API
+                    general_checkup generalData = await API.GeneralID();
+
+                    // Ambil sub_heading_id
+                    String subheadingid = generalData.data![0].subHeadingId.toString();
+
+                    // Ambil gcu_id dan status dari setiap gcu
+                    List<Map<String, dynamic>> gcus = [];
+                    List<Data>? dataList = generalData.data;
+                    if (dataList != null && dataList.isNotEmpty) {
+                      for (var data in dataList) {
+                        if (data.gcus != null) {
+                          for (var gcu in data.gcus!) {
+                            gcus.add({
+                              "gcu_id": gcu.gcuId.toString(),
+                              "status": dropdownValue ?? '',
+                              "description": controller.deskripsi.text,
+                            });
+                            print('gcu_id: ${gcu.gcuId.toString()}'); // Tambahkan pernyataan print untuk mencetak gcu_id
+                          }
+                        }
+                      }
+                    }
+
+                    // Tampilkan indikator loading
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.loading,
+                      headerBackgroundColor: Colors.yellow,
+                      text: 'Submit General Checkup...',
+                    );
+
+                    // Panggil API submitGCID dengan data yang diperoleh
+                    var submitResponse = await API.submitGCID(
+                      bookingid: bookingid,
+                      subheadingid: subheadingid,
+                      gcuid: gcuid,
+                      status: dropdownValue ?? '',
+                      description: controller.deskripsi.text,
+                    );
+                    print('Submit Response: $submitResponse');
+
+                    // Jika berhasil, tampilkan pesan sukses
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.success,
+                      headerBackgroundColor: Colors.yellow,
+                      text: 'Booking has been General Checkup',
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  } catch (e) {
+                    // Jika terjadi kesalahan, tampilkan pesan error
+                    Navigator.pop(Get.context!);
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.error,
+                      headerBackgroundColor: Colors.red,
+                      text: 'Failed to submit General Checkup',
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.red,
+                    );
+                  }
                 },
                 child: const Text(
                   'Submit',
@@ -211,10 +212,15 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                   ),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: _nextTab,
-              ),
+
+
+
+
+
+              // IconButton(
+              //   icon: Icon(Icons.arrow_forward),
+              //   onPressed: _nextTab,
+              // ),
             ],
           ),
         ),
@@ -222,12 +228,4 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     );
   }
 
-  void collectAndPrintResults() {
-    for (var gcuItemState in gcuItemStates) {
-      print('Status: ${gcuItemState.dropdownValue}');
-      if (gcuItemState.dropdownValue == 'Not Oke') {
-        print('Description: ${gcuItemState.textEditingController.text}');
-      }
-    }
-  }
 }

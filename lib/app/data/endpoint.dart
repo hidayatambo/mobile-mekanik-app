@@ -353,7 +353,6 @@ class API {
   static Future<SubmitGC> submitGCID({
     required String bookingid,
     required String subheadingid,
-    required String gcus,
     required String gcuid,
     required String status,
     required String description,
@@ -361,8 +360,7 @@ class API {
     final data = {
     'booking_id': bookingid,
     'sub_heading_id': subheadingid,
-    'gcus': gcus,
-    'gcuid': gcuid,
+    'gcu_id': gcuid,
     'status': status,
     'description': description,
     };

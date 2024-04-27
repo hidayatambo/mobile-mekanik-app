@@ -46,8 +46,10 @@ class BokingList extends StatelessWidget {
                   ],
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text('Jam Booking :'),
+                    const Text('Kode Booking :'),
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -57,7 +59,7 @@ class BokingList extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            items.jamBooking.toString(),
+                            items.kodeBooking.toString(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -85,19 +87,38 @@ class BokingList extends StatelessWidget {
                     Text(items.namaTipe??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('NoPol :'),
                     Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
-                    const Text('Pemilik :'),
-                    Text(items.namaPelanggan??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    const Text('Jam Booking :'),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            items.jamBooking.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10,),
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
                           Text('Status :'),
                         ],
                       ),
@@ -125,6 +146,17 @@ class BokingList extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Pemilik :'),
+                      Text(items.namaPelanggan??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                    ]),
+              ],),
           ],
         ),
       ),

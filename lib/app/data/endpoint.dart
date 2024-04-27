@@ -352,7 +352,7 @@ class API {
   //Beda
   static Future<SubmitGC> submitGCID({
     required String status,
-    required String description,
+    required String description, required List<Map<String, dynamic>> generalCheckup,
   }) async {
     final data = {
     'status': status,

@@ -160,7 +160,6 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                         }
                       }
                     }
-
                     // Tampilkan indikator loading
                     QuickAlert.show(
                       barrierDismissible: false,
@@ -169,7 +168,6 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                       headerBackgroundColor: Colors.yellow,
                       text: 'Submit General Checkup...',
                     );
-
                     // Panggil API submitGCID dengan data yang diperoleh
                     var submitResponse = await API.submitGCID(
                       bookingid: bookingid,

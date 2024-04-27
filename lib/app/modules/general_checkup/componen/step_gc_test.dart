@@ -153,7 +153,9 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                               "status": dropdownValue ?? '',
                               "description": controller.deskripsi.text,
                             });
-                            print('gcu_id: ${gcu.gcuId.toString()}'); // Tambahkan pernyataan print untuk mencetak gcu_id
+                            print('gcu_id: ${gcu.gcuId.toString()}');
+                            print('status: ${dropdownValue ?? ''}');
+                            print('description: ${controller.deskripsi.text}');
                           }
                         }
                       }
@@ -212,11 +214,6 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                   ),
                 ),
               ),
-
-
-
-
-
               // IconButton(
               //   icon: Icon(Icons.arrow_forward),
               //   onPressed: _nextTab,

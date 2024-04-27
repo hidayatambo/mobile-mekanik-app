@@ -11,13 +11,26 @@ import '../../../data/endpoint.dart';
 import '../../approve/controllers/approve_controller.dart';
 import '../controllers/general_checkup_controller.dart';
 import 'Visibility.dart';
-class MyHomePage extends GetView<GeneralCheckupController> {
-   MyHomePage({super.key});
+
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
 
   late TabController _tabController;
   List<GcuItemState> gcuItemStates = [];
   String? dropdownValue;
-
+  TextEditingController deskripsiController = TextEditingController();
+  @override
+  void dispose() {
+    deskripsiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +97,13 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                           return GcuItem(
                             gcu: gcus,
                             state: gcuItemState,
-                            dropdownValue: dropdownValue, // Pass the same dropdown value to each GcuItem
+                            dropdownValue: dropdownValue, // Teruskan nilai dropdownValue ke widget GcuItem
                             onDropdownChanged: (value) {
-                              // setState(() {
-                              //   dropdownValue = value; // Update the dropdown value
-                              // });
+                              setState(() {
+                                dropdownValue = value; // Perbarui nilai dropdownValue di widget utama
+                              });
                             },
+                            deskripsiController: deskripsiController.text, // Teruskan nilai deskripsiController ke widget GcuItem
                           );
                         }).toList(),
                       );
@@ -129,22 +143,24 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                     general_checkup generalData = await API.GeneralID();
                     // Ambil sub_heading_id
                     String subheadingid = generalData.data![0].subHeadingId.toString();
-
                     // Ambil gcu_id dan status dari setiap gcu
                     List<Map<String, dynamic>> gcus = [];
                     List<Data>? dataList = generalData.data;
+                    String descriptionText = deskripsiController.text; // Perbarui nilai deskripsi di sini
                     if (dataList != null && dataList.isNotEmpty) {
                       for (var data in dataList) {
-                        if (data.gcus != null) {
+                        if (data.subHeading != null) {
                           for (var gcu in data.gcus!) {
                             gcus.add({
                               "gcu_id": gcu.gcuId.toString(),
+                              "gcu": gcu.gcu.toString(),
                               "status": dropdownValue ?? '',
-                              "description": controller.deskripsi.text,
+                              "description": descriptionText,
                             });
                             print('gcu_id: ${gcu.gcuId.toString()}');
+                            print('gcu: ${gcu.gcu.toString()}');
                             print('status: ${dropdownValue ?? ''}');
-                            print('description: ${controller.deskripsi.text}');
+                            print('description: $descriptionText'); // Menggunakan nilai terbaru dari deskripsi
                           }
                         }
                       }
@@ -159,11 +175,8 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                     );
                     // Panggil API submitGCID dengan data yang diperoleh
                     var submitResponse = await API.submitGCID(
-                      bookingid: bookingid,
-                      subheadingid: subheadingid,
-                      gcuid: gcuid,
                       status: dropdownValue ?? '',
-                      description: controller.deskripsi.text,
+                      description: descriptionText,
                     );
                     print('Submit Response: $submitResponse');
 
@@ -193,6 +206,7 @@ class MyHomePage extends GetView<GeneralCheckupController> {
                     );
                   }
                 },
+
                 child: const Text(
                   'Submit',
                   style: TextStyle(

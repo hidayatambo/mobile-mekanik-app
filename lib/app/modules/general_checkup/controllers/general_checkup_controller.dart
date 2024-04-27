@@ -85,6 +85,7 @@ class GeneralCheckupController extends GetxController {
   late TextEditingController stellController;
   late TextEditingController exteriorController;
   late TextEditingController kendaraanController;
+  late TextEditingController deskripsiController;
 
   @override
   void onInit() {
@@ -100,6 +101,7 @@ class GeneralCheckupController extends GetxController {
     statusController = TextEditingController();
     tanggalController = TextEditingController();
     jamController = TextEditingController();
+    deskripsiController = TextEditingController();
     mesinController = TextEditingController(text: '');
     interiorController = TextEditingController(text: '');
     brakeController = TextEditingController(text: '');
@@ -120,8 +122,17 @@ class GeneralCheckupController extends GetxController {
     namaMerkController.dispose();
     namaTipeController.dispose();
     statusController.dispose();
+    deskripsiController.dispose();
     super.onClose();
   }
-
+  @override
+  void dispose() {
+    deskripsiController.dispose();
+    super.dispose();
+  }
   void increment() => count.value++;
+}
+class GcuItemState {
+  late String dropdownValue;
+  late TextEditingController textEditingController;
 }

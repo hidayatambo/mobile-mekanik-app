@@ -11,10 +11,11 @@ class GcuItem extends StatefulWidget {
   final Gcus gcu; // Adjust to your actual type
   final GcuItemState state;
   final String? dropdownValue;
+  final String? deskripsiController;
   final ValueChanged<String?> onDropdownChanged;
 
 
-  const GcuItem({Key? key, required this.gcu, required this.state, this.dropdownValue, required this.onDropdownChanged})
+  const GcuItem({Key? key, required this.gcu, required this.state, this.dropdownValue, required this.onDropdownChanged, this.deskripsiController})
       : super(key: key);
 
   @override
@@ -23,9 +24,12 @@ class GcuItem extends StatefulWidget {
 
 class _GcuItemState extends State<GcuItem> {
   String? dropdownValue;
-
+  TextEditingController deskripsiController = TextEditingController();
+  TextEditingController statusController = TextEditingController();
   @override
   void dispose() {
+    deskripsiController.dispose();
+    statusController.dispose();
     super.dispose();
   }
   @override
@@ -33,18 +37,8 @@ class _GcuItemState extends State<GcuItem> {
     super.initState();
     widget.state.dropdownValue = dropdownValue??'';
   }
-  // void _handleSubmit() {
-  //   if (dropdownValue != null && dropdownValue!.isNotEmpty) {
-  //     Map<String, String> result = {
-  //       'gcu': widget.gcu.gcu ?? '',
-  //       'dropdown': dropdownValue ?? '',
-  //       // 'textField': contr.text,
-  //     };
-  //   }
-  // }
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(GeneralCheckupController());
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Column(
@@ -72,7 +66,7 @@ class _GcuItemState extends State<GcuItem> {
                   onChanged: (String? value) {
                     setState(() {
                       dropdownValue = value!;
-                      controller.status.clear();
+                      statusController.clear();
                       widget.state.dropdownValue = value;
                     });
                   },
@@ -88,7 +82,7 @@ class _GcuItemState extends State<GcuItem> {
           ),
           if (dropdownValue == 'Not Oke')
             TextField(
-              controller: controller.deskripsi,
+              controller: deskripsiController,
               decoration: InputDecoration(
                 hintText: 'Keterangan',
               ),
@@ -97,9 +91,4 @@ class _GcuItemState extends State<GcuItem> {
       ),
     );
   }
-}
-
-class GcuItemState {
-  late String dropdownValue;
-  late TextEditingController textEditingController;
 }

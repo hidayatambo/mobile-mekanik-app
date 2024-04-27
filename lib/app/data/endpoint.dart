@@ -351,16 +351,10 @@ class API {
   }
   //Beda
   static Future<SubmitGC> submitGCID({
-    required String bookingid,
-    required String subheadingid,
-    required String gcuid,
     required String status,
     required String description,
   }) async {
     final data = {
-    'booking_id': bookingid,
-    'sub_heading_id': subheadingid,
-    'gcu_id': gcuid,
     'status': status,
     'description': description,
     };

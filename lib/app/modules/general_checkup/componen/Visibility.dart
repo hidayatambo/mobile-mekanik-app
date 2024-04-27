@@ -19,15 +19,19 @@ class GcuItem extends StatefulWidget {
 }
 
 class _GcuItemState extends State<GcuItem> {
-  String dropdownValue = 'Oke'; // Default dropdown value
+  String? dropdownValue;
 
   late TextEditingController textEditingController;
-
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
   @override
   void initState() {
     super.initState();
     textEditingController = TextEditingController();
-    widget.state.dropdownValue = dropdownValue;
+    widget.state.dropdownValue = dropdownValue??'';
     widget.state.textEditingController = textEditingController;
   }
 
@@ -87,11 +91,7 @@ class _GcuItemState extends State<GcuItem> {
     );
   }
 
-  @override
-  void dispose() {
-    textEditingController.dispose();
-    super.dispose();
-  }
+
   void _handleSubmit() {
     if (dropdownValue != null && dropdownValue!.isNotEmpty) {
       Map<String, String> result = {

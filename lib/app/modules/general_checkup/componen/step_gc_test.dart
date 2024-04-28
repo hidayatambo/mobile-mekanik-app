@@ -201,17 +201,14 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                       "status": dropdownValue,
                       "description": deskripsiController.text,
                     });
-                    print('gcu_id: ${gcu.gcuId}');
-                    print('status: ${dropdownValue}');
-                    print('description: ${deskripsiController.text}');
 
                   }
                   gcus.add({
                     "sub_heading_id": data.subHeadingId,
                     "gcus": gcuList,
                   });
-                  print('sub_heading_id: ${data.subHeadingId}');
                   print('gcus: ${gcuList}');
+                  print('sub_heading_id: ${data.subHeadingId}');
                 }
               }
 
@@ -219,6 +216,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 item["booking_id"] = arguments?['booking_id'];
               });
               print('booking_id: ${arguments?['booking_id']}');
+
               SubmitGC submitResponse = await API.submitGCID(
                 generalCheckup: gcus,
               );
@@ -296,26 +294,29 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   for (var gcu in data.gcus!) {
                     gcuList.add({
                       "gcu_id": gcu.gcuId,
-                      "status": dropdownValue, // Menggunakan status dari objek gcu
-                      "description": descriptionText, // Menggunakan deskripsi dari objek gcu
+                      "status": dropdownValue,
+                      "description": deskripsiController.text,
                     });
-                    print('gcu_id: ${gcu.gcuId.toString()}');
+
                   }
                   gcus.add({
                     "sub_heading_id": data.subHeadingId,
                     "gcus": gcuList,
                   });
+                  print('gcus: ${gcuList}');
                   print('sub_heading_id: ${data.subHeadingId}');
                 }
               }
+
               gcus.forEach((item) {
-                item["booking_id"] = arguments!['booking_id']; // Menggunakan booking_id yang diberikan (77)
+                item["booking_id"] = arguments?['booking_id'];
               });
-              print('booking_id: ${arguments!['booking_id']}');
+              print('booking_id: ${arguments?['booking_id']}');
+
               SubmitGC submitResponse = await API.submitGCID(
                 generalCheckup: gcus,
               );
-
+              print('Response dari server: $submitResponse');
               QuickAlert.show(
                 barrierDismissible: false,
                 context: Get.context!,

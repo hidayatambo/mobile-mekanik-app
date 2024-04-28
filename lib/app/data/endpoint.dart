@@ -354,7 +354,7 @@ class API {
     required List<Map<String, dynamic>> generalCheckup,
   }) async {
     final data = {
-    'gsu': generalCheckup,
+      'gsu': generalCheckup,
     };
 
     try {
@@ -376,11 +376,11 @@ class API {
 
       final obj = SubmitGC.fromJson(response.data);
 
-      if (obj.obs == 'Invalid token: Expired') {
+      if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
         Get.snackbar(
-          obj.toString(),
-          obj.toString(),
+          obj.message.toString(),
+          obj.message.toString(),
         );
       }
       return obj;
@@ -389,5 +389,4 @@ class API {
       throw e;
     }
   }
-  //Beda
 }

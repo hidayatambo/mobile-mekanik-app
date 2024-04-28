@@ -10,6 +10,7 @@ import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/data_endpoint/submit_gc.dart';
 import '../../../data/endpoint.dart';
 import '../../approve/controllers/approve_controller.dart';
+import '../../repair_maintenen/componen/card_consument.dart';
 import '../controllers/general_checkup_controller.dart';
 import 'Visibility.dart';
 
@@ -120,7 +121,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   }
 
   Widget buildStepContent(String title) {
-    return FutureBuilder(
+    return Column(children: [
+      FutureBuilder(
       future: API.GeneralID(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -165,7 +167,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           return Center(child: Text('No data available'));
         }
       },
-    );
+    ), ],);
   }
 
   void submitForm(BuildContext context) async {
@@ -201,7 +203,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   for (var gcu in data.gcus!) {
                     gcuList.add({
                       "gcu_id": gcu.gcuId,
-                      "status": dropdownValue != null ? dropdownValue : "null",
+                      "status": dropdownValue != null ? dropdownValue : "",
                       "description": deskripsiController.text != null ? deskripsiController.text : "",
                     });
                   }
@@ -303,32 +305,33 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
               for (var data in dataList) {
                 if (data.gcus != null && data.gcus!.isNotEmpty) {
                   List<Map<String, dynamic>> gcuList = [];
-                  List<Map<String, dynamic>> gcuList2 = [];
                   for (var gcu in data.gcus!) {
                     gcuList.add({
                       "gcu_id": gcu.gcuId,
                       "status": dropdownValue,
                       "description": deskripsiController.text,
                     });
-                    gcuList2.add({
-                      "sub_heading_id": data.subHeadingId,
-                      "gcus": gcuList,
-                    });
                   }
+                  // Menyimpan data general checkup tanpa array
                   gcus.add({
                     "booking_id": arguments?["booking_id"],
-                    "general_checkup": gcuList2,
+                    "general_checkup": {
+                      "sub_heading_id": data.subHeadingId,
+                      "gcus": gcuList,
+                    },
                   });
                   print('booking_id: ${arguments?["booking_id"]}');
-                  print('sub_heading_id: ${gcuList2}');
+                  print('general_checkup: ${gcuList}');
                 }
               }
 
+              // Mengirim data general checkup ke API
               SubmitGC submitResponse = await API.submitGCID(
                 generalCheckup: gcus,
               );
 
-              print('Response dari server: $submitResponse');
+
+            print('Response dari server: $submitResponse');
               QuickAlert.show(
                 barrierDismissible: false,
                 context: Get.context!,

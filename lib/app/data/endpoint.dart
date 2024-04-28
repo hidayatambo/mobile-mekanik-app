@@ -351,12 +351,10 @@ class API {
   }
   //Beda
   static Future<SubmitGC> submitGCID({
-    required String status,
-    required String description, required List<Map<String, dynamic>> generalCheckup,
+    required List<Map<String, dynamic>> generalCheckup,
   }) async {
     final data = {
-    'status': status,
-    'description': description,
+    'gsu': generalCheckup,
     };
 
     try {
@@ -378,11 +376,11 @@ class API {
 
       final obj = SubmitGC.fromJson(response.data);
 
-      if (obj.message == 'Invalid token: Expired') {
+      if (obj.obs == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
         Get.snackbar(
-          obj.message.toString(),
-          obj.message.toString(),
+          obj.toString(),
+          obj.toString(),
         );
       }
       return obj;

@@ -61,7 +61,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body:  MyHomePage()
+      body:  MyStepperPage()
     );
   }
 }

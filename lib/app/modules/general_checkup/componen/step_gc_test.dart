@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../../../componen/color.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/data_endpoint/submit_gc.dart';
 import '../../../data/endpoint.dart';
@@ -46,7 +47,19 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+    ).copyWith(
+      background: Colors.white, // Warna latar belakang umum
+      onBackground: Colors.white, // Warna teks pada latar belakang
+      primary: MyColors.appPrimaryColor, // Warna teks dan ikon utama
+      onPrimary: Colors.white, // Warna teks pada teks dan ikon utama
+    ),
+    ),
+    home :
+    Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
         automaticallyImplyLeading: false,
@@ -116,6 +129,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
             isActive: currentStep >= 6,
           ),
         ],
+      ),
       ),
     );
   }
@@ -308,30 +322,32 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   for (var gcu in data.gcus!) {
                     gcuList.add({
                       "gcu_id": gcu.gcuId,
-                      "status": dropdownValue,
-                      "description": deskripsiController.text,
+                      "status": dropdownValue != null ? dropdownValue : "",
+                      "description": deskripsiController.text != null ? deskripsiController.text : "",
                     });
                   }
-                  // Menyimpan data general checkup tanpa array
+                  // Menambahkan data general checkup ke dalam gcus sebagai objek
+                  Map<String, dynamic> generalCheckupObj = {
+                    "sub_heading_id": data.subHeadingId,
+                    "gcus": gcuList,
+                  };
+
                   gcus.add({
                     "booking_id": arguments?["booking_id"],
-                    "general_checkup": {
-                      "sub_heading_id": data.subHeadingId,
-                      "gcus": gcuList,
-                    },
+                    "general_checkup": [generalCheckupObj],
                   });
                   print('booking_id: ${arguments?["booking_id"]}');
-                  print('general_checkup: ${gcuList}');
+                  print('general_checkup: ${gcus}');
                 }
               }
-
-              // Mengirim data general checkup ke API
+// Mengirim data general checkup ke API
               SubmitGC submitResponse = await API.submitGCID(
                 generalCheckup: gcus,
               );
 
 
-            print('Response dari server: $submitResponse');
+              // Tampilkan pesan loading saat menunggu respons dari server
+              Navigator.of(context).popUntil((route) => route.isFirst);
               QuickAlert.show(
                 barrierDismissible: false,
                 context: Get.context!,
@@ -340,15 +356,14 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 text: 'Submit General Checkup...',
               );
 
-              print('Response dari server: $submitResponse');
-
+              // Tampilkan pesan berdasarkan respons dari server
               if (submitResponse.status == true && submitResponse.message == 'Berhasil Menyimpan Data') {
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
                   type: QuickAlertType.success,
                   headerBackgroundColor: Colors.yellow,
-                  text: "submitResponse.....",
+                  text: "Success to submit General Checkup",
                   confirmBtnText: 'Kembali',
                   cancelBtnText: 'Kembali',
                   confirmBtnColor: Colors.green,
@@ -366,10 +381,11 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 );
               }
             } else {
+              // Tidak ada data general checkup yang ditemukan
               return;
             }
           } catch (e) {
-            Navigator.pop(Get.context!);
+            // Tangkap dan tampilkan error jika terjadi
             Navigator.of(context).popUntil((route) => route.isFirst);
             QuickAlert.show(
               barrierDismissible: false,
@@ -384,7 +400,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           }
         },
       );
-
     }
   }
 

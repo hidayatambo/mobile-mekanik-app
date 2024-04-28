@@ -62,18 +62,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     final String hp = args['hp'] ?? '';
     final String status = args['status'] ?? '';
 
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-    ).copyWith(
-      background: Colors.white, // Warna latar belakang umum
-      onBackground: Colors.white, // Warna teks pada latar belakang
-      primary: MyColors.appPrimaryColor, // Warna teks dan ikon utama
-      onPrimary: Colors.white, // Warna teks pada teks dan ikon utama
-    ),
-    ),
-     home : Scaffold(
+    return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -141,8 +130,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         ],
       ),
       body:  MyStepperPage()
-     ),
-    );
+     );
   }
   Widget _buildBottomSheet() {
     final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;

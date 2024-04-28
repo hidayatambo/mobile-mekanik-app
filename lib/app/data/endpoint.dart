@@ -266,6 +266,7 @@ class API {
       throw e;
     }
   }
+  //Beda
   static Future<Unapprove> unapproveId({
     required String catatan,
     required String kodeBooking,
@@ -350,11 +351,12 @@ class API {
     }
   }
   //Beda
+  //Beda
   static Future<SubmitGC> submitGCID({
     required List<Map<String, dynamic>> generalCheckup,
   }) async {
     final data = {
-      'gsu': generalCheckup,
+      generalCheckup,
     };
 
     try {

@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         ),
         body: TabBarView(
           controller: _tabController,
+            physics: NeverScrollableScrollPhysics(),
             children: [
               SingleChildScrollView(
                 child:
@@ -205,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                               return;
                             }
                           } catch (e) {
-                            // Tangani error yang terjadi selama proses submit
+                            // Tangani error yytrang terjadi selama proses submit
                             Navigator.pop(Get.context!);
                             _tabController.animateTo(_tabController.index + 1);
                             // _previousTabIndex = _tabController.index;

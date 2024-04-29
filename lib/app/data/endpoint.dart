@@ -360,6 +360,7 @@ class API {
     final data = {
       "booking_id": kodeBooking,
       "general_checkup": generalCheckup,
+
     };
     try {
       final token = await Publics.controller.getToken.value;

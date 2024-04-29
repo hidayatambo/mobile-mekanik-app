@@ -353,40 +353,6 @@ class API {
     }
   }
   //Beda
-  static Future<SubmitGC> submitGCID({
-    required Map<String, dynamic> generalCheckup,
-  }) async {
-    try {
-      final token = await Publics.controller.getToken.value;
-      print('Token: $token');
-
-      final response = await Dio().post(
-        _getSubmitGC,
-        data: generalCheckup,
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token",
-          },
-        ),
-      );
-
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
-
-      if (response.statusCode == 200) {
-        final data = response.data;
-        final submitGCData = SubmitGC.fromJson(data);
-        return submitGCData;
-      } else {
-        // Tangani respon yang tidak sesuai dengan harapan
-        throw Exception('Failed to submit general checkup');
-      }
-    } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
-      throw e;
-    }
-  }
-
 
 //Beda
   static Future<Estimasi> estimasiId({
@@ -457,6 +423,41 @@ class API {
         );
       }
       return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+
+
+  static Future<SubmitGC> submitGCID({
+    required Map<String, dynamic> generalCheckup,
+  }) async {
+    try {
+      final token = await Publics.controller.getToken.value;
+      print('Token: $token');
+
+      final response = await Dio().post(
+        _getSubmitGC,
+        data: generalCheckup,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final submitGCData = SubmitGC.fromJson(data);
+        return submitGCData;
+      } else {
+        // Tangani respon yang tidak sesuai dengan harapan
+        throw Exception('Failed to submit general checkup');
+      }
     } catch (e) {
       print('Error: $e'); // Cetak kesalahan jika terjadi
       throw e;

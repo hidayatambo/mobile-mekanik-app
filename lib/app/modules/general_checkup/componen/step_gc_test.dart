@@ -5,6 +5,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/endpoint.dart';
+import 'Visibility.dart';
 
 class MyStepperPage extends StatefulWidget {
   const MyStepperPage({Key? key}) : super(key: key);
@@ -321,80 +322,6 @@ class _MyStepperPageState extends State<MyStepperPage>
 
 
 
-
-
-
-  class GcuItem extends StatefulWidget {
-  final Gcus gcu;
-  final String? dropdownValue;
-  final TextEditingController deskripsiController;
-  final ValueChanged<String?> onDropdownChanged;
-  final ValueChanged<String?> onDescriptionChanged;
-
-  const GcuItem({
-    Key? key,
-    required this.gcu,
-    required this.dropdownValue,
-    required this.deskripsiController,
-    required this.onDropdownChanged,
-    required this.onDescriptionChanged,
-  }) : super(key: key);
-
-  @override
-  _GcuItemState createState() => _GcuItemState();
-}
-class _GcuItemState extends State<GcuItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                widget.gcu.gcu ?? '',
-                textAlign: TextAlign.start,
-                softWrap: true,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: DropdownButton<String>(
-                value: widget.dropdownValue,
-                hint: widget.dropdownValue == '' ? const Text('Pilih') : null,
-                onChanged: (String? value) {
-                  setState(() {
-                    widget.onDropdownChanged(value);
-                  });
-                },
-                items: <String>['', 'Oke', 'Not Oke'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
-        if (widget.dropdownValue == 'Not Oke')
-          TextField(
-            onChanged: (text) {
-              setState(() {
-                widget.onDescriptionChanged(text);
-              });
-            },
-            decoration: const InputDecoration(
-              hintText: 'Keterangan',
-            ),
-          ),
-      ],
-    );
-  }
-}
 
 
 

@@ -82,7 +82,7 @@ class AppPages {
     GetPage(
       transition: Transition.downToUp,
       name: _Paths.APPROVE,
-      page: () =>const ApproveView(),
+      page: () => ApproveView(),
       binding: ApproveBinding(),
     ),
   ];

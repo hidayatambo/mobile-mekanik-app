@@ -13,8 +13,8 @@ import '../componen/card_consument.dart';
 import '../controllers/approve_controller.dart';
 
 class ApproveView extends GetView<ApproveController> {
-  const ApproveView({super.key});
-
+  ApproveView({super.key});
+  String? selectedMechanic = '';
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
@@ -173,7 +173,7 @@ class ApproveView extends GetView<ApproveController> {
                                           items: namaMekanikList,
                                           excludeSelected: false,
                                           onChanged: (value) {
-                                            controller.mekanik.text = value ?? ''; // Set nilai controller saat nilai dropdown berubah
+                                            selectedMechanic = value;
                                             log('Mengubah nilai menjadi: $value');
                                           },
                                         ),
@@ -205,7 +205,7 @@ class ApproveView extends GetView<ApproveController> {
                                   );
                                   // Panggil API untuk menyetujui booking
                                   await API.approveId(
-                                    email: email,
+                                    email: selectedMechanic ?? '',
                                     kodeBooking: kodeBooking,
                                     tglBooking: tglBooking,
                                     jamBooking: jamBooking,

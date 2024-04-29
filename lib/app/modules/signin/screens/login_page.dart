@@ -138,10 +138,10 @@ class _LoginPageState extends State<LoginPage> {
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {
-                                  Get.to(const ForgetPasswordPage());
+                                  // Get.to(const ForgetPasswordPage());
                                 },
                                 child: Text(
-                                  "Lupa Password?",
+                                  "",
                                   style: Common().semiboldblack,
                                 ),
                               ),

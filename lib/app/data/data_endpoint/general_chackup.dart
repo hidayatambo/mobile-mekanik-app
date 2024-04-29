@@ -61,6 +61,7 @@ class Gcus {
     gcu = json['gcu'];
   }
 
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['gcu_id'] = this.gcuId;

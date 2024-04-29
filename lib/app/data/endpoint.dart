@@ -355,17 +355,13 @@ class API {
   static Future<SubmitGC> submitGCID({
     required List<Map<String, dynamic>> generalCheckup,
   }) async {
-    final data = {
-      generalCheckup,
-    };
-
     try {
       final token = await Publics.controller.getToken.value;
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
-      var response = await Dio().post(
+      final response = await Dio().post(
         _getSubmitGC,
-        data: data,
+        data: generalCheckup, // Mengirim data general checkup langsung tanpa objek tambahan
         options: Options(
           headers: {
             "Content-Type": "application/json",
@@ -391,4 +387,5 @@ class API {
       throw e;
     }
   }
+
 }

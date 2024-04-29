@@ -28,6 +28,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   int currentStep = 0;
   bool isSubmitting = false;
   String? dropdownValue;
+  bool isDataSent = false; // Tambahkan variabel boolean untuk memantau apakah data sudah dikirim
 
   final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
 
@@ -181,7 +182,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           return Center(child: Text('No data available'));
         }
       },
-    ), ],);
+    ),
+    ],);
   }
 
   void submitForm(BuildContext context) async {
@@ -192,8 +194,9 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
     if (currentStep < 6) {
       // Show the dialog first
+      // Variabel boolean untuk memastikan pengiriman data hanya dilakukan sekali
+      bool isDataSent = false;
       QuickAlert.show(
-        barrierDismissible: false,
         context: Get.context!,
         type: QuickAlertType.warning,
         headerBackgroundColor: Colors.yellow,
@@ -202,7 +205,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         confirmBtnColor: Colors.green,
         onConfirmBtnTap: () async {
           try {
-            // Mendapatkan data general checkup dari API
             general_checkup generalData = await API.GeneralID();
             List<Data>? dataList = generalData.data;
 
@@ -226,53 +228,59 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     "sub_heading_id": data.subHeadingId,
                     "gcus": gcuList,
                   };
-
                   gcus.add({
                     "booking_id": arguments?["booking_id"],
                     "general_checkup": [generalCheckupObj],
                   });
-                  print('booking_id: ${arguments?["booking_id"]}');
-                  print('general_checkup: ${gcus}');
                 }
               }
-// Mengirim data general checkup ke API
-              SubmitGC submitResponse = await API.submitGCID(
-                generalCheckup: gcus,
-              );
+              print('hasil print: $gcus');
+              // for (var item in gcus) {
+              //   print('hasil print: $item');
+              // }
+              // Cek apakah data sudah dikirim sebelumnya
+              if (!isDataSent) {
+                // Mengirim data general checkup ke API
+                SubmitGC submitResponse = await API.submitGCID(
+                  generalCheckup: gcus,
+                );
 
-
-              // Tampilkan pesan loading saat menunggu respons dari server
-              QuickAlert.show(
-                barrierDismissible: false,
-                context: Get.context!,
-                type: QuickAlertType.loading,
-                headerBackgroundColor: Colors.yellow,
-                text: 'Submit General Checkup...',
-              );
-
-              // Tampilkan pesan berdasarkan respons dari server
-              if (submitResponse.status == true && submitResponse.message == 'Berhasil Menyimpan Data') {
+                // Tampilkan pesan loading saat menunggu respons dari server
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
-                  type: QuickAlertType.success,
+                  type: QuickAlertType.loading,
                   headerBackgroundColor: Colors.yellow,
-                  text: "Success to submit General Checkup",
-                  confirmBtnText: 'Kembali',
-                  cancelBtnText: 'Kembali',
-                  confirmBtnColor: Colors.green,
+                  text: 'Submit General Checkup...',
                 );
-              } else {
-                QuickAlert.show(
-                  barrierDismissible: false,
-                  context: Get.context!,
-                  type: QuickAlertType.success,
-                  headerBackgroundColor: Colors.yellow,
-                  text: "Success to submit General Checkup",
-                  confirmBtnText: 'Kembali',
-                  cancelBtnText: 'Kembali',
-                  confirmBtnColor: Colors.green,
-                );
+
+                // Tampilkan pesan berdasarkan respons dari server
+                if (submitResponse.status == true && submitResponse.message == 'Berhasil Menyimpan Data') {
+                  QuickAlert.show(
+                    barrierDismissible: false,
+                    context: Get.context!,
+                    type: QuickAlertType.success,
+                    headerBackgroundColor: Colors.yellow,
+                    text: "Success to submit General Checkup",
+                    confirmBtnText: 'Kembali',
+                    cancelBtnText: 'Kembali',
+                    confirmBtnColor: Colors.green,
+                  );
+                } else {
+                  QuickAlert.show(
+                    barrierDismissible: false,
+                    context: Get.context!,
+                    type: QuickAlertType.error,
+                    headerBackgroundColor: Colors.yellow,
+                    text: "Failed to submit General Checkup",
+                    confirmBtnText: 'Kembali',
+                    cancelBtnText: 'Kembali',
+                    confirmBtnColor: Colors.green,
+                  );
+                }
+
+                // Set variabel isDataSent menjadi true setelah pengiriman data
+                isDataSent = true;
               }
             } else {
               // Tidak ada data general checkup yang ditemukan
@@ -284,9 +292,9 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
             QuickAlert.show(
               barrierDismissible: false,
               context: Get.context!,
-              type: QuickAlertType.success,
+              type: QuickAlertType.error,
               headerBackgroundColor: Colors.yellow,
-              text: "Success to submit General Checkup",
+              text: "Error: $e",
               confirmBtnText: 'Kembali',
               cancelBtnText: 'Kembali',
               confirmBtnColor: Colors.green,
@@ -294,7 +302,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           }
         },
       );
-
     } else {
       // If already at the last step, show a dialog
       QuickAlert.show(
@@ -336,11 +343,13 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     "booking_id": arguments?["booking_id"],
                     "general_checkup": [generalCheckupObj],
                   });
-                  print('booking_id: ${arguments?["booking_id"]}');
-                  print('general_checkup: ${gcus}');
                 }
               }
-// Mengirim data general checkup ke API
+
+// Pencetakan dilakukan di luar loop
+              print('booking_id: ${arguments?["booking_id"]}');
+              print('hasil: ${gcus}');
+
               SubmitGC submitResponse = await API.submitGCID(
                 generalCheckup: gcus,
               );

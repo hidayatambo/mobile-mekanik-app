@@ -131,6 +131,7 @@ class ApproveView extends GetView<ApproveController> {
                                     tipePelanggan: tipePelanggan,
                                   );
                                 } catch (e) {
+                                  Navigator.pop(Get.context!);
                                   Navigator.of(context).popUntil((route) => route.isFirst);
                                   QuickAlert.show(
                                     barrierDismissible: false,
@@ -143,7 +144,6 @@ class ApproveView extends GetView<ApproveController> {
                                     confirmBtnColor: Colors.green,
                                   );
                                 }
-
                               },
                             );
                           } else if (tipeSvc == 'General Check UP/P2H') {

@@ -63,13 +63,10 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         currentStep: currentStep,
         physics: const ScrollPhysics(),
         onStepContinue: () {
-
           submitForm(context);
           if (currentStep < 6) {
-
             setState(() {
               currentStep += 1;
-
             });
           }
         },
@@ -152,6 +149,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   ...getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
                     return GcuItem(
                       gcu: gcus,
+                      dropdownValue: dropdownValue,
+                      deskripsiController: deskripsiController,
                       onDropdownChanged: (value) {
                         setState(() {
                           dropdownValue = value;
@@ -193,38 +192,39 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         confirmBtnText: 'Submit',
         confirmBtnColor: Colors.green,
         onConfirmBtnTap: () async {
+          Navigator.pop(Get.context!);
           try {
             general_checkup generalData = await API.GeneralID();
             List<Data>? dataList = generalData.data;
             if (dataList != null && dataList.isNotEmpty) {
-              List<Map<String, dynamic>> gcus = [];
+              List<Map<String, dynamic>>
+              generalCheckupList = [];
               for (var data in dataList) {
                 if (data.gcus != null && data.gcus!.isNotEmpty) {
-                  List<Map<String, dynamic>> gcuList = [];
+                  List<Map<String, dynamic>> gcusList = [];
                   for (var gcu in data.gcus!) {
-                    gcuList.add({
+                    gcusList.add({
                       "gcu_id": gcu.gcuId,
-                      "status": dropdownValue != null ? dropdownValue : "",
-                      "description": deskripsiController.text ?? "",
+                      "status": dropdownValue ?? "", // Gunakan nilai dropdownValue jika tidak null
+                      "description": deskripsiController.text ?? "", // Gunakan nilai deskripsiController.text jika tidak null
                     });
                   }
                   Map<String, dynamic> generalCheckupObj = {
                     "sub_heading_id": data.subHeadingId,
-                    "gcus": gcuList,
+                    "gcus": gcusList,
                   };
-                  gcus.add(generalCheckupObj);
+                  generalCheckupList.add(generalCheckupObj);
+                  print('Submit Response: $generalCheckupList');
                 }
               }
-              print('hasil print: $gcus');
-              if (!isDataSent && gcus.isNotEmpty) {
-                Map<String, dynamic> combinedGeneralCheckup = {};
-                for (var entry in gcus) {
-                  combinedGeneralCheckup.addAll(entry);
-                }
-                SubmitGC submitResponse = await API.submitGCID(
-                  kodeBooking: arguments?["booking_id"],
-                  generalCheckup: combinedGeneralCheckup,
-                );
+              if (generalCheckupList.isNotEmpty) {
+                var kodeBooking = arguments?["booking_id"];
+                var combinedData = {
+                  "booking_id": kodeBooking,
+                  "general_checkup": generalCheckupList,
+                };
+                // Menampilkan alert loading
+
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
@@ -232,26 +232,47 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   headerBackgroundColor: Colors.yellow,
                   text: 'Submit General Checkup...',
                 );
-                if (submitResponse.status == true &&
-                    submitResponse.message == 'Berhasil Menyimpan Data') {
-                  QuickAlert.show(
-                    barrierDismissible: false,
-                    context: Get.context!,
-                    type: QuickAlertType.success,
-                    headerBackgroundColor: Colors.yellow,
-                    text: "Success to submit General Checkup",
-                    confirmBtnText: 'Kembali',
-                    cancelBtnText: 'Kembali',
-                    confirmBtnColor: Colors.green,
+                Navigator.pop(Get.context!);
+                try {
+                  SubmitGC submitResponse = await API.submitGCID(
+                    generalCheckup: combinedData,
+                    kodeBooking: kodeBooking,
                   );
-                  isDataSent = true;
-                } else {
+                  // Menampilkan hasil alert berdasarkan respons
+                  if (submitResponse.status == true &&
+                      submitResponse.message == 'Berhasil Menyimpan Data') {
+                    print('Submit Response: $submitResponse');
+                    Navigator.pop(Get.context!);
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.success,
+                      headerBackgroundColor: Colors.yellow,
+                      text: "Success to submit General Checkup",
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  } else {
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.error,
+                      headerBackgroundColor: Colors.yellow,
+                      text: "Failed to submit General Checkup",
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  }
+                } catch (submitError) {
+                  print('Submit Error: $submitError');
                   QuickAlert.show(
                     barrierDismissible: false,
                     context: Get.context!,
                     type: QuickAlertType.error,
                     headerBackgroundColor: Colors.yellow,
-                    text: "Failed to submit General Checkup",
+                    text: "Error submitting General Checkup: $submitError",
                     confirmBtnText: 'Kembali',
                     cancelBtnText: 'Kembali',
                     confirmBtnColor: Colors.green,
@@ -270,14 +291,16 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 confirmBtnColor: Colors.green,
               );
             }
-          } catch (e) {
-            Navigator.pop(Get.context!);
+
+          } catch (fetchError) {
+            print('Fetch Error: $fetchError');
+            // Menampilkan alert kesalahan
             QuickAlert.show(
               barrierDismissible: false,
               context: Get.context!,
               type: QuickAlertType.error,
               headerBackgroundColor: Colors.yellow,
-              text: "Error: $e",
+              text: "Error fetching General Checkup: $fetchError",
               confirmBtnText: 'Kembali',
               cancelBtnText: 'Kembali',
               confirmBtnColor: Colors.green,
@@ -285,7 +308,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           }
         },
       );
-
     } else {
       bool isDataSent = false;
       QuickAlert.show(
@@ -296,39 +318,39 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         confirmBtnText: 'Submit',
         confirmBtnColor: Colors.green,
         onConfirmBtnTap: () async {
+          Navigator.pop(Get.context!);
           try {
             general_checkup generalData = await API.GeneralID();
             List<Data>? dataList = generalData.data;
             if (dataList != null && dataList.isNotEmpty) {
-              List<Map<String, dynamic>> gcus = [];
+              List<Map<String, dynamic>>
+              generalCheckupList = [];
               for (var data in dataList) {
                 if (data.gcus != null && data.gcus!.isNotEmpty) {
-                  List<Map<String, dynamic>> gcuList = [];
+                  List<Map<String, dynamic>> gcusList = [];
                   for (var gcu in data.gcus!) {
-                    gcuList.add({
+                    gcusList.add({
                       "gcu_id": gcu.gcuId,
-                      "status": dropdownValue != null ? dropdownValue : "",
-                      "description": deskripsiController.text ?? "",
+                      "status": dropdownValue ?? "", // Gunakan nilai dropdownValue jika tidak null
+                      "description": deskripsiController.text ?? "", // Gunakan nilai deskripsiController.text jika tidak null
                     });
                   }
+
                   Map<String, dynamic> generalCheckupObj = {
                     "sub_heading_id": data.subHeadingId,
-                    "gcus": gcuList,
+                    "gcus": gcusList,
                   };
-                  gcus.add(generalCheckupObj);
+                  print('gcusList: $gcusList');
+                  generalCheckupList.add(generalCheckupObj);
                 }
               }
-              print('hasil print: $gcus');
-
-              if (!isDataSent && gcus.isNotEmpty) {
-                Map<String, dynamic> combinedGeneralCheckup = {};
-                for (var entry in gcus) {
-                  combinedGeneralCheckup.addAll(entry);
-                }
-                SubmitGC submitResponse = await API.submitGCID(
-                  kodeBooking: arguments?["booking_id"],
-                  generalCheckup: combinedGeneralCheckup,
-                );
+              if (generalCheckupList.isNotEmpty) {
+                var kodeBooking = arguments?["booking_id"];
+                var combinedData = {
+                  "booking_id": kodeBooking,
+                  "general_checkup": generalCheckupList,
+                };
+                // Menampilkan alert loading
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
@@ -336,29 +358,46 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   headerBackgroundColor: Colors.yellow,
                   text: 'Submit General Checkup...',
                 );
-
-                // Tampilkan pesan berdasarkan respons dari server
-                if (submitResponse.status == true &&
-                    submitResponse.message == 'Berhasil Menyimpan Data') {
-                  QuickAlert.show(
-                    barrierDismissible: false,
-                    context: Get.context!,
-                    type: QuickAlertType.success,
-                    headerBackgroundColor: Colors.yellow,
-                    text: "Success to submit General Checkup",
-                    confirmBtnText: 'Kembali',
-                    cancelBtnText: 'Kembali',
-                    confirmBtnColor: Colors.green,
+                Navigator.pop(Get.context!);
+                try {
+                  SubmitGC submitResponse = await API.submitGCID(
+                    generalCheckup: combinedData,
+                    kodeBooking: kodeBooking,
                   );
-                  // Set variabel isDataSent menjadi true setelah pengiriman data berhasil
-                  isDataSent = true;
-                } else {
+                  // Menampilkan hasil alert berdasarkan respons
+                  if (submitResponse.status == true &&
+                      submitResponse.message == 'Berhasil Menyimpan Data') {
+                    Navigator.pop(Get.context!);
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.success,
+                      headerBackgroundColor: Colors.yellow,
+                      text: "Success to submit General Checkup",
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  } else {
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.error,
+                      headerBackgroundColor: Colors.yellow,
+                      text: "Failed to submit General Checkup",
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  }
+                } catch (submitError) {
+                  print('Submit Error: $submitError');
                   QuickAlert.show(
                     barrierDismissible: false,
                     context: Get.context!,
                     type: QuickAlertType.error,
                     headerBackgroundColor: Colors.yellow,
-                    text: "Failed to submit General Checkup",
+                    text: "Error submitting General Checkup: $submitError",
                     confirmBtnText: 'Kembali',
                     cancelBtnText: 'Kembali',
                     confirmBtnColor: Colors.green,
@@ -366,7 +405,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 }
               }
             } else {
-              // Tidak ada data general checkup yang ditemukan
               QuickAlert.show(
                 barrierDismissible: false,
                 context: Get.context!,
@@ -378,15 +416,15 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 confirmBtnColor: Colors.green,
               );
             }
-          } catch (e) {
-            Navigator.pop(Get.context!);
-            Navigator.of(context).popUntil((route) => route.isFirst);
+          } catch (fetchError) {
+            print('Fetch Error: $fetchError');
+            // Menampilkan alert kesalahan
             QuickAlert.show(
               barrierDismissible: false,
               context: Get.context!,
               type: QuickAlertType.error,
               headerBackgroundColor: Colors.yellow,
-              text: "Error: $e",
+              text: "Error fetching General Checkup: $fetchError",
               confirmBtnText: 'Kembali',
               cancelBtnText: 'Kembali',
               confirmBtnColor: Colors.green,
@@ -402,12 +440,16 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
 class GcuItem extends StatefulWidget {
   final Gcus gcu;
+  final String? dropdownValue;
+  final TextEditingController deskripsiController;
   final ValueChanged<String?> onDropdownChanged;
   final ValueChanged<String?> onDescriptionChanged;
 
   const GcuItem({
     Key? key,
     required this.gcu,
+    required this.dropdownValue,
+    required this.deskripsiController,
     required this.onDropdownChanged,
     required this.onDescriptionChanged,
   }) : super(key: key);
@@ -415,71 +457,67 @@ class GcuItem extends StatefulWidget {
   @override
   _GcuItemState createState() => _GcuItemState();
 }
-
 class _GcuItemState extends State<GcuItem> {
   String? dropdownValue;
   String? description;
-  String? _previousDropdownValue; // Tambahkan variabel _previousDropdownValue
 
   @override
   void initState() {
     super.initState();
     dropdownValue = ''; // Inisialisasi nilai dropdownValue di initState
     description = ''; // Inisialisasi nilai description di initState
-    _previousDropdownValue = ''; // Inisialisasi nilai _previousDropdownValue di initState
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  widget.gcu.gcu ?? '',
-                  textAlign: TextAlign.start,
-                  softWrap: true,
-                ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                widget.gcu.gcu ?? '',
+                textAlign: TextAlign.start,
+                softWrap: true,
               ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: DropdownButton<String>(
-                  value: dropdownValue,
-                  hint: dropdownValue == '' ? const Text('Pilih') : null,
-                  onChanged: (String? value) {
-                    if (value != _previousDropdownValue) {
-                      setState(() {
-                        dropdownValue = value;
-                      });
-                      _previousDropdownValue = value;
-                    }
-                  },
-                  items: <String>['', 'Oke', 'Not Oke'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-          if (dropdownValue == 'Not Oke')
-            TextField(
-                onChanged: (text) {
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: DropdownButton<String>(
+                value: dropdownValue,
+                hint: dropdownValue == '' ? const Text('Pilih') : null,
+                onChanged: (String? value) {
                   setState(() {
-                    description = text;
+                    dropdownValue = value;
                   });
                 },
-                decoration: const InputDecoration(
-                  hintText: 'Keterangan',
-                ),
+                items: <String>['', 'Oke', 'Not Oke'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
-        ],
-      );
+            ),
+          ],
+        ),
+        if (dropdownValue == 'Not Oke')
+          TextField(
+            onChanged: (text) {
+              setState(() {
+                description = text;
+              });
+            },
+            decoration: const InputDecoration(
+              hintText: 'Keterangan',
+            ),
+          ),
+      ],
+    );
   }
 }
+
+

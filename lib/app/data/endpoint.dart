@@ -354,11 +354,11 @@ class API {
   }
   //Beda
   static Future<SubmitGC> submitGCID({
-    required generalCheckup,
-    required kodeBooking,
+    required Map<String, dynamic> generalCheckup,
+    required dynamic kodeBooking,
   }) async {
     final data = {
-      "kode_booking": kodeBooking,
+      "booking_id": kodeBooking,
       "general_checkup": generalCheckup,
     };
     try {
@@ -393,6 +393,7 @@ class API {
       throw e;
     }
   }
+
 
 //Beda
   static Future<Estimasi> estimasiId({

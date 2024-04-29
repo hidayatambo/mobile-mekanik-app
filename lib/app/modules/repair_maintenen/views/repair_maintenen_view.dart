@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,12 +54,9 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
           children: [
             Cardmaintenent(),
             SizedBox(height: 20,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Padding(
+            Container(
+              width: double.infinity,
+                child : Padding(
                     padding: const EdgeInsets.all(1),
                     child: ElevatedButton(
                       onPressed: () {
@@ -143,7 +141,7 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: const Text(
@@ -157,49 +155,6 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 5,),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.all(1),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        'Buat PKB',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 5,),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: const Text(
-                'Cetak P2H',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
           ],
         ),
         ),

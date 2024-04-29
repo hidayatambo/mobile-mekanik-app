@@ -354,16 +354,16 @@ class API {
   }
   //Beda
   static Future<SubmitGC> submitGCID({
-    required Map<String, dynamic> generalCheckup,
+    required generalCheckup,
     required kodeBooking,
   }) async {
     final data = {
       "kode_booking": kodeBooking,
-      "general_checkup": generalCheckup, // Hapus tanda kurung siku
+      "general_checkup": generalCheckup,
     };
     try {
       final token = await Publics.controller.getToken.value;
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       final response = await Dio().post(
         _getSubmitGC,

@@ -1,22 +1,14 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/data_endpoint/submit_gc.dart';
 import '../../../data/endpoint.dart';
-import '../../approve/controllers/approve_controller.dart';
-import '../../repair_maintenen/componen/card_consument.dart';
-import '../controllers/general_checkup_controller.dart';
-import 'Visibility.dart';
 
 class MyStepperPage extends StatefulWidget {
-  const MyStepperPage({Key? key}) : super(key: key);
+  const MyStepperPage({super.key});
 
   @override
   _MyStepperPageState createState() => _MyStepperPageState();
@@ -28,7 +20,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   int currentStep = 0;
   bool isSubmitting = false;
   String? dropdownValue;
-  bool isDataSent = false; // Tambahkan variabel boolean untuk memantau apakah data sudah dikirim
+  bool isDataSent = false;
 
   final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
 
@@ -55,10 +47,10 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
     ).copyWith(
-      background: Colors.white, // Warna latar belakang umum
-      onBackground: Colors.white, // Warna teks pada latar belakang
-      primary: MyColors.appPrimaryColor, // Warna teks dan ikon utama
-      onPrimary: Colors.white, // Warna teks pada teks dan ikon utama
+      background: Colors.white,
+      onBackground: Colors.white,
+      primary: MyColors.appPrimaryColor,
+      onPrimary: Colors.white,
     ),
     ),
     home :
@@ -69,7 +61,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
       ),
       body: Stepper(
         currentStep: currentStep,
-        physics: ScrollPhysics(),
+        physics: const ScrollPhysics(),
         onStepContinue: () {
 
           submitForm(context);
@@ -83,49 +75,49 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         },
         steps: [
           Step(
-            title: Text('Mesin'),
+            title: const Text('Mesin'),
             content: SingleChildScrollView(
               child: buildStepContent("Mesin"),
             ),
             isActive: currentStep >= 0,
           ),
           Step(
-            title: Text('Brake'),
+            title: const Text('Brake'),
             content: SingleChildScrollView(
               child: buildStepContent("Brake"),
             ),
             isActive: currentStep >= 1,
           ),
           Step(
-            title: Text('Accel'),
+            title: const Text('Accel'),
             content: SingleChildScrollView(
               child: buildStepContent("Accel"),
             ),
             isActive: currentStep >= 2,
           ),
           Step(
-            title: Text('Interior'),
+            title: const Text('Interior'),
             content: SingleChildScrollView(
               child: buildStepContent("Interior"),
             ),
             isActive: currentStep >= 3,
           ),
           Step(
-            title: Text('Exterior'),
+            title: const Text('Exterior'),
             content: SingleChildScrollView(
               child: buildStepContent("Exterior"),
             ),
             isActive: currentStep >= 4,
           ),
           Step(
-            title: Text('Bawah Kendaraan'),
+            title: const Text('Bawah Kendaraan'),
             content: SingleChildScrollView(
               child: buildStepContent("Bawah Kendaraan"),
             ),
             isActive: currentStep >= 5,
           ),
           Step(
-            title: Text('Stall Test'),
+            title: const Text('Stall Test'),
             content: SingleChildScrollView(
               child: buildStepContent("Stall Test"),
             ),
@@ -143,7 +135,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
       future: API.GeneralID(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasError) {
@@ -167,7 +159,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                       },
                       onDescriptionChanged: (description) {
                         setState(() {
-                          // Update description value
                           deskripsiController.text = description!;
                         });
                       },
@@ -181,7 +172,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
             );
           }
         } else {
-          return Center(child: Text('No data available'));
+          return const Center(child: Text('No data available'));
         }
       },
     ),
@@ -192,11 +183,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     setState(() {
       isSubmitting = true;
     });
-    // Submit form logic goes here
-
     if (currentStep < 6) {
-      // Show the dialog first
-      // Variabel boolean untuk memastikan pengiriman data hanya dilakukan sekali
       bool isDataSent = false;
       QuickAlert.show(
         context: Get.context!,
@@ -209,8 +196,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           try {
             general_checkup generalData = await API.GeneralID();
             List<Data>? dataList = generalData.data;
-
-            // Memastikan data tidak kosong
             if (dataList != null && dataList.isNotEmpty) {
               List<Map<String, dynamic>> gcus = [];
               for (var data in dataList) {
@@ -223,7 +208,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                       "description": deskripsiController.text ?? "",
                     });
                   }
-                  // Menambahkan data general checkup ke dalam gcus sebagai objek
                   Map<String, dynamic> generalCheckupObj = {
                     "sub_heading_id": data.subHeadingId,
                     "gcus": gcuList,
@@ -232,22 +216,15 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 }
               }
               print('hasil print: $gcus');
-
-              // Cek apakah data sudah dikirim sebelumnya dan gcus tidak null
               if (!isDataSent && gcus.isNotEmpty) {
-                // Menggabungkan semua entri dalam gcus menjadi satu map
                 Map<String, dynamic> combinedGeneralCheckup = {};
                 for (var entry in gcus) {
                   combinedGeneralCheckup.addAll(entry);
                 }
-
-                // Mengirim data general checkup ke API
                 SubmitGC submitResponse = await API.submitGCID(
                   kodeBooking: arguments?["booking_id"],
-                  generalCheckup: combinedGeneralCheckup, // gcus yang sudah selesai
+                  generalCheckup: combinedGeneralCheckup,
                 );
-
-                // Tampilkan pesan loading saat menunggu respons dari server
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
@@ -255,8 +232,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                   headerBackgroundColor: Colors.yellow,
                   text: 'Submit General Checkup...',
                 );
-
-                // Tampilkan pesan berdasarkan respons dari server
                 if (submitResponse.status == true &&
                     submitResponse.message == 'Berhasil Menyimpan Data') {
                   QuickAlert.show(
@@ -269,7 +244,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     cancelBtnText: 'Kembali',
                     confirmBtnColor: Colors.green,
                   );
-                  // Set variabel isDataSent menjadi true setelah pengiriman data berhasil
                   isDataSent = true;
                 } else {
                   QuickAlert.show(
@@ -285,7 +259,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 }
               }
             } else {
-              // Tidak ada data general checkup yang ditemukan
               QuickAlert.show(
                 barrierDismissible: false,
                 context: Get.context!,
@@ -312,8 +285,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           }
         },
       );
+
     } else {
-      // If already at the last step, show a dialog
       bool isDataSent = false;
       QuickAlert.show(
         context: Get.context!,
@@ -326,41 +299,36 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           try {
             general_checkup generalData = await API.GeneralID();
             List<Data>? dataList = generalData.data;
-
-            // Memastikan data tidak kosong
             if (dataList != null && dataList.isNotEmpty) {
-              Map<String, dynamic>? gcus; // Deklarasikan gcus di luar lingkup if agar dapat diakses nanti
-              if (dataList != null && dataList.isNotEmpty) {
-                gcus = {}; // Inisialisasi gcus di sini jika dataList tidak kosong
-                for (var data in dataList) {
-                  if (data.gcus != null && data.gcus!.isNotEmpty) {
-                    List<Map<String, dynamic>> gcuList = [];
-                    for (var gcu in data.gcus!) {
-                      gcuList.add({
-                        "gcu_id": gcu.gcuId,
-                        "status": dropdownValue != null ? dropdownValue : "",
-                        "description": deskripsiController.text ?? "",
-                      });
-                    }
-                    // Menambahkan data general checkup ke dalam gcus sebagai objek
-                    Map<String, dynamic> generalCheckupObj = {
-                      "sub_heading_id": data.subHeadingId,
-                      "gcus": gcuList,
-                    };
-                    gcus![generalCheckupObj]; // Memperbarui nilai gcus
+              List<Map<String, dynamic>> gcus = [];
+              for (var data in dataList) {
+                if (data.gcus != null && data.gcus!.isNotEmpty) {
+                  List<Map<String, dynamic>> gcuList = [];
+                  for (var gcu in data.gcus!) {
+                    gcuList.add({
+                      "gcu_id": gcu.gcuId,
+                      "status": dropdownValue != null ? dropdownValue : "",
+                      "description": deskripsiController.text ?? "",
+                    });
                   }
+                  Map<String, dynamic> generalCheckupObj = {
+                    "sub_heading_id": data.subHeadingId,
+                    "gcus": gcuList,
+                  };
+                  gcus.add(generalCheckupObj);
                 }
-                print('hasil print: $gcus');
               }
-              // Cek apakah data sudah dikirim sebelumnya dan gcus tidak null
-              if (!isDataSent && gcus != null) {
-                // Mengirim data general checkup ke API
+              print('hasil print: $gcus');
+
+              if (!isDataSent && gcus.isNotEmpty) {
+                Map<String, dynamic> combinedGeneralCheckup = {};
+                for (var entry in gcus) {
+                  combinedGeneralCheckup.addAll(entry);
+                }
                 SubmitGC submitResponse = await API.submitGCID(
                   kodeBooking: arguments?["booking_id"],
-                  generalCheckup: gcus, // gcus tidak perlu dibungkus dalam list karena sudah Map
+                  generalCheckup: combinedGeneralCheckup,
                 );
-
-                // Tampilkan pesan loading saat menunggu respons dari server
                 QuickAlert.show(
                   barrierDismissible: false,
                   context: Get.context!,
@@ -370,7 +338,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                 );
 
                 // Tampilkan pesan berdasarkan respons dari server
-                if (submitResponse.status == true && submitResponse.message == 'Berhasil Menyimpan Data') {
+                if (submitResponse.status == true &&
+                    submitResponse.message == 'Berhasil Menyimpan Data') {
                   QuickAlert.show(
                     barrierDismissible: false,
                     context: Get.context!,
@@ -476,11 +445,11 @@ class _GcuItemState extends State<GcuItem> {
                   softWrap: true,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Flexible(
                 child: DropdownButton<String>(
                   value: dropdownValue,
-                  hint: dropdownValue == '' ? Text('Pilih') : null,
+                  hint: dropdownValue == '' ? const Text('Pilih') : null,
                   onChanged: (String? value) {
                     if (value != _previousDropdownValue) {
                       setState(() {
@@ -506,7 +475,7 @@ class _GcuItemState extends State<GcuItem> {
                     description = text;
                   });
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Keterangan',
                 ),
               ),

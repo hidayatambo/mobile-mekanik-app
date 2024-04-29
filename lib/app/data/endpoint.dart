@@ -355,20 +355,14 @@ class API {
   //Beda
   static Future<SubmitGC> submitGCID({
     required Map<String, dynamic> generalCheckup,
-    required dynamic kodeBooking,
   }) async {
-    final data = {
-      "booking_id": kodeBooking,
-      "general_checkup": generalCheckup,
-
-    };
     try {
       final token = await Publics.controller.getToken.value;
       print('Token: $token');
 
       final response = await Dio().post(
         _getSubmitGC,
-        data: data,
+        data: generalCheckup,
         options: Options(
           headers: {
             "Content-Type": "application/json",
@@ -379,16 +373,14 @@ class API {
 
       print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
 
-      final obj = SubmitGC.fromJson(response.data);
-
-      if (obj.message == 'Invalid token: Expired') {
-        Get.offAllNamed(Routes.SIGNIN);
-        Get.snackbar(
-          obj.message.toString(),
-          obj.message.toString(),
-        );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        final submitGCData = SubmitGC.fromJson(data);
+        return submitGCData;
+      } else {
+        // Tangani respon yang tidak sesuai dengan harapan
+        throw Exception('Failed to submit general checkup');
       }
-      return obj;
     } catch (e) {
       print('Error: $e'); // Cetak kesalahan jika terjadi
       throw e;

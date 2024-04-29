@@ -4,25 +4,24 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
-import '../../../data/data_endpoint/submit_gc.dart';
 import '../../../data/endpoint.dart';
 
 class MyStepperPage extends StatefulWidget {
-  const MyStepperPage({super.key});
+  const MyStepperPage({Key? key}) : super(key: key);
 
   @override
   _MyStepperPageState createState() => _MyStepperPageState();
 }
 
-class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateMixin {
+class _MyStepperPageState extends State<MyStepperPage>
+    with TickerProviderStateMixin {
   late TextEditingController deskripsiController;
   late TabController _tabController;
   int currentStep = 0;
   bool isSubmitting = false;
   String? dropdownValue;
   bool isDataSent = false;
-
-  final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
+  late String kodeBooking;
   final List<String> stepTitles = [
     'Mesin',
     'Brake',
@@ -32,11 +31,16 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     'Bawah Kendaraan',
     'Stall Test',
   ];
+
   @override
   void initState() {
     super.initState();
     deskripsiController = TextEditingController();
     _tabController = TabController(length: 7, vsync: this);
+    final Map<String, dynamic>? arguments =
+    Get.arguments as Map<String, dynamic>?;
+    kodeBooking = arguments?['booking_id'] ?? '';
+    print('Kode Booking: $kodeBooking');
   }
 
   @override
@@ -48,21 +52,17 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
-    final String kodeBooking = arguments?['kode_booking'] ?? '';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-        ).copyWith(
+        colorScheme: ColorScheme.fromSwatch().copyWith(
           background: Colors.white,
           onBackground: Colors.white,
           primary: MyColors.appPrimaryColor,
           onPrimary: Colors.white,
         ),
       ),
-      home :
-      Scaffold(
+      home: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
           automaticallyImplyLeading: false,
@@ -71,12 +71,12 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           currentStep: currentStep,
           physics: const ScrollPhysics(),
           onStepContinue: () {
+            submitForm(context);
             if (currentStep < 6) {
               setState(() {
                 currentStep += 1;
+                isSubmitting = true;
               });
-            } else {
-              submitForm(context);
             }
           },
           steps: [
@@ -136,55 +136,61 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   }
 
   Widget buildStepContent(String title) {
-    return Column(children: [
-      FutureBuilder(
-        future: API.GeneralID(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData) {
-            final generalData = snapshot.data;
-            final getDataAcc = generalData?.data?.where((e) => e.subHeading == title).toList();
-            if (getDataAcc != null && getDataAcc.isNotEmpty) {
-              return
-                Column(
+    return Column(
+      children: [
+        FutureBuilder(
+          future: API.GeneralID(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.hasData) {
+              final generalData = snapshot.data;
+              final getDataAcc = generalData?.data?.where((e) =>
+              e.subHeading == title).toList();
+              if (getDataAcc != null && getDataAcc.isNotEmpty) {
+                return Column(
                   children: [
-                    ...getDataAcc.expand((e) => e.gcus ?? []).map((gcus) {
-                      return GcuItem(
-                        gcu: gcus,
-                        dropdownValue: dropdownValue,
-                        deskripsiController: deskripsiController,
-                        onDropdownChanged: (value) {
-                          setState(() {
-                            dropdownValue = value;
-                          });
-                        },
-                        onDescriptionChanged: (description) {
-                          setState(() {
-                            deskripsiController.text = description!;
-                          });
-                        },
-                      );
-                    }).toList(),
+                    ...getDataAcc
+                        .expand((e) => e.gcus ?? [])
+                        .map(
+                          (gcus) =>
+                          GcuItem(
+                            gcu: gcus,
+                            dropdownValue: dropdownValue,
+                            deskripsiController: deskripsiController,
+                            onDropdownChanged: (value) {
+                              setState(() {
+                                dropdownValue = value;
+                              });
+                            },
+                            onDescriptionChanged: (description) {
+                              setState(() {
+                                deskripsiController.text = description!;
+                              });
+                            },
+                          ),
+                    )
+                        .toList(),
                   ],
                 );
+              } else {
+                return Center(
+                  child: Text('No data available for $title'),
+                );
+              }
             } else {
-              return Center(
-                child: Text('No data available for $title'),
-              );
+              return const Center(child: Text('No data available'));
             }
-          } else {
-            return const Center(child: Text('No data available'));
-          }
-        },
-      ),
-    ],);
+          },
+        ),
+      ],
+    );
   }
 
   void submitForm(BuildContext context) async {
@@ -193,97 +199,112 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     });
 
     try {
-      general_checkup generalData = await API.GeneralID();
-      List<Data>? dataList = generalData.data;
+      final generalData = await API.GeneralID();
 
-      List<Map<String, dynamic>> generalCheckupList = [];
-      for (var i = 0; i <= currentStep; i++) {
-        final title = stepTitles[i]; // assuming you have stepTitles defined
-        final getDataAcc = dataList?.where((e) => e.subHeading == title).toList();
-        if (getDataAcc != null && getDataAcc.isNotEmpty) {
-          for (var data in getDataAcc) {
-            if (data.gcus != null && data.gcus!.isNotEmpty) {
-              List<Map<String, dynamic>> gcusList = [];
-              for (var gcu in data.gcus!) {
-                gcusList.add({
-                  "gcu_id": gcu.gcuId,
-                  "status": dropdownValue ?? "",
-                  "description": deskripsiController.text ?? "",
-                });
-              }
-              Map<String, dynamic> generalCheckupObj = {
-                "sub_heading_id": data.subHeadingId,
-                "gcus": gcusList,
-              };
-              print(gcusList);
-              generalCheckupList.add(generalCheckupObj);
-            }
+      if (generalData != null && generalData.data != null) {
+        final dataList = generalData.data!;
+        List<Map<String, dynamic>> generalCheckupList = [];
+        final title = stepTitles[currentStep];
+        final getDataAcc = dataList.firstWhere((e) => e.subHeading == title,
+            orElse: () => null as Data);
+
+        if (getDataAcc != null && getDataAcc.gcus != null &&
+            getDataAcc.gcus!.isNotEmpty) {
+          final gcusList = getDataAcc.gcus!.map<Map<String, dynamic>>((gcu) =>
+          {
+            "gcu_id": gcu.gcuId,
+            "status": "", // Set nilai default untuk status
+            "description": "", // Set nilai default untuk deskripsi
           }
-        }
-      }
+          ).toList();
 
-      if (generalCheckupList.isNotEmpty) {
-        var kodeBooking = arguments?["booking_id"];
-        var combinedData = {
-          "booking_id": kodeBooking,
-          "general_checkup": generalCheckupList,
-        };
+          final generalCheckupObj = {
+            "sub_heading_id": getDataAcc.subHeadingId,
+            "gcus": gcusList, // Menyimpan list gcus sebagai gcus
+          };
 
-        QuickAlert.show(
-          barrierDismissible: false,
-          context: Get.context!,
-          type: QuickAlertType.loading,
-          headerBackgroundColor: Colors.yellow,
-          text: 'Submit General Checkup...',
-          confirmBtnText: 'konfirmasi',
-          onConfirmBtnTap: () async {
-            Navigator.pop(Get.context!); // Tutup dialog loading
+          generalCheckupList.add(generalCheckupObj);
+          final kodeBooking = this.kodeBooking ?? '';
 
-            try {
-              SubmitGC submitResponse = await API.submitGCID(
-                generalCheckup: combinedData,
-                kodeBooking: kodeBooking,
-              );
+          if (kodeBooking.isNotEmpty) {
+            final combinedData = {
+              "booking_id": kodeBooking,
+              "general_checkup": [
+                {
+                  "sub_heading_id": getDataAcc.subHeadingId,
+                  "gcus": gcusList,
+                }
+              ],
+            };
 
-              if (submitResponse.status == true &&
-                  submitResponse.message == 'Berhasil Menyimpan Data') {
-                isSubmitting = true;
-              } else {
+            print('Data yang disubmit: $combinedData');
+
+            final submitResponse = await API.submitGCID(
+              generalCheckup: combinedData,
+            );
+
+            print('Response dari server: $submitResponse');
+
+            if (submitResponse != null) {
+              setState(() {
                 isSubmitting = false;
-              }
-              Navigator.pop(Get.context!);
-            } catch (submitError) {
-              print('Submit Error: $submitError');
-              Navigator.pop(Get.context!);
-              QuickAlert.show(
-                barrierDismissible: false,
-                context: Get.context!,
-                type: QuickAlertType.error,
-                headerBackgroundColor: Colors.yellow,
-                text: "Error submitting General Checkup: $submitError",
-                confirmBtnText: 'Kembali',
-                cancelBtnText: 'Kembali',
-                confirmBtnColor: Colors.green,
-              );
+              });
+            } else {
+              setState(() {
+                isSubmitting = false;
+              });
             }
-          },
-        );
-        Navigator.pop(Get.context!);
+          } else {
+            // Tangani kasus ketika kodeBooking kosong
+            setState(() {
+              isSubmitting = false;
+            });
+            QuickAlert.show(
+              barrierDismissible: false,
+              context: Get.context!,
+              type: QuickAlertType.info,
+              headerBackgroundColor: Colors.yellow,
+              text: 'Kode Booking tidak boleh kosong',
+              confirmBtnText: 'Kembali',
+              cancelBtnText: 'Kembali',
+              confirmBtnColor: Colors.green,
+            );
+          }
+        } else {
+          // Tangani kasus ketika getDataAcc null atau gcus kosong
+          setState(() {
+            isSubmitting = false;
+          });
+          QuickAlert.show(
+            barrierDismissible: false,
+            context: Get.context!,
+            type: QuickAlertType.info,
+            headerBackgroundColor: Colors.yellow,
+            text: 'Tidak ada data General Checkup yang ditemukan',
+            confirmBtnText: 'Kembali',
+            cancelBtnText: 'Kembali',
+            confirmBtnColor: Colors.green,
+          );
+        }
       } else {
+        // Tangani kasus ketika generalData null
+        setState(() {
+          isSubmitting = false;
+        });
         QuickAlert.show(
           barrierDismissible: false,
           context: Get.context!,
-          type: QuickAlertType.info,
-          headerBackgroundColor: Colors.yellow,
-          text: 'Tidak ada data General Checkup yang ditemukan',
+          type: QuickAlertType.error,
+          headerBackgroundColor: Colors.red,
+          text: 'Gagal mengambil data General Checkup',
           confirmBtnText: 'Kembali',
           cancelBtnText: 'Kembali',
           confirmBtnColor: Colors.green,
         );
       }
     } catch (fetchError) {
+      // Tangani kesalahan saat mengambil data
       print('Fetch Error: $fetchError');
-      Navigator.pop(Get.context!);
       QuickAlert.show(
         barrierDismissible: false,
         context: Get.context!,
@@ -298,7 +319,12 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   }
 }
 
-class GcuItem extends StatefulWidget {
+
+
+
+
+
+  class GcuItem extends StatefulWidget {
   final Gcus gcu;
   final String? dropdownValue;
   final TextEditingController deskripsiController;
@@ -318,16 +344,6 @@ class GcuItem extends StatefulWidget {
   _GcuItemState createState() => _GcuItemState();
 }
 class _GcuItemState extends State<GcuItem> {
-  String? dropdownValue;
-  String? description;
-
-  @override
-  void initState() {
-    super.initState();
-    dropdownValue = ''; // Inisialisasi nilai dropdownValue di initState
-    description = ''; // Inisialisasi nilai description di initState
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -347,11 +363,11 @@ class _GcuItemState extends State<GcuItem> {
             const SizedBox(width: 8),
             Flexible(
               child: DropdownButton<String>(
-                value: dropdownValue,
-                hint: dropdownValue == '' ? const Text('Pilih') : null,
+                value: widget.dropdownValue,
+                hint: widget.dropdownValue == '' ? const Text('Pilih') : null,
                 onChanged: (String? value) {
                   setState(() {
-                    dropdownValue = value;
+                    widget.onDropdownChanged(value);
                   });
                 },
                 items: <String>['', 'Oke', 'Not Oke'].map((String value) {
@@ -364,11 +380,11 @@ class _GcuItemState extends State<GcuItem> {
             ),
           ],
         ),
-        if (dropdownValue == 'Not Oke')
+        if (widget.dropdownValue == 'Not Oke')
           TextField(
             onChanged: (text) {
               setState(() {
-                description = text;
+                widget.onDescriptionChanged(text);
               });
             },
             decoration: const InputDecoration(
@@ -379,5 +395,6 @@ class _GcuItemState extends State<GcuItem> {
     );
   }
 }
+
 
 

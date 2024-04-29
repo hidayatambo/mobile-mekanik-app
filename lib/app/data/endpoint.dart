@@ -7,6 +7,7 @@ import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
 import 'data_endpoint/approve.dart';
 import 'data_endpoint/boking.dart';
+import 'data_endpoint/estimasi.dart';
 import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
@@ -27,6 +28,7 @@ class API {
   static const _getApprovek = '$_baseUrl/mekanik/approve-booking';
   static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
   static const _getSubmitGC = '$_baseUrl/mekanik/submit-general-checkup';
+  static const _getestimasi = '$_baseUrl/mekanik/insert-estimasi';
   static final _controller = Publics.controller;
 
 
@@ -351,17 +353,21 @@ class API {
     }
   }
   //Beda
-  //Beda
   static Future<SubmitGC> submitGCID({
-    required List<Map<String, dynamic>> generalCheckup,
+    required Map<String, dynamic> generalCheckup,
+    required kodeBooking,
   }) async {
+    final data = {
+      "kode_booking": kodeBooking,
+      "general_checkup": generalCheckup, // Hapus tanda kurung siku
+    };
     try {
       final token = await Publics.controller.getToken.value;
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       final response = await Dio().post(
         _getSubmitGC,
-        data: generalCheckup, // Mengirim data general checkup langsung tanpa objek tambahan
+        data: data,
         options: Options(
           headers: {
             "Content-Type": "application/json",
@@ -388,4 +394,78 @@ class API {
     }
   }
 
+//Beda
+  static Future<Estimasi> estimasiId({
+    required String kodeBooking,
+    required String kodePelanggan,
+    required String kodeKendaraan,
+    required String tglBooking,
+    required String jamBooking,
+    required String odometer,
+    required String pic,
+    required String hpPic,
+    required String kodeMembership,
+    required String kodePaketmember,
+    required String tipeSvc,
+    required String tipePelanggan,
+    required String referensi,
+    required String referensiTmn,
+    required String paketSvc,
+    required String keluhan,
+    required String perintahKerja,
+    required int ppn,
+  }) async {
+    final data = {
+      "kode_booking": kodeBooking,
+      "kode_pelanggan": kodePelanggan,
+      "kode_kendaraan": kodeKendaraan,
+      "tgl_booking": tglBooking,
+      "jam_booking": jamBooking,
+      "odometer": odometer,
+      "pic": pic,
+      "hp_pic": hpPic,
+      "kode_membership": kodeMembership,
+      "kode_paketmember": kodePaketmember,
+      "tipe_svc": tipeSvc,
+      "tipe_pelanggan": tipePelanggan,
+      "referensi": referensi,
+      "referensi_teman": referensiTmn,
+      "paket_svc": paketSvc,
+      "keluhan": keluhan,
+      "perintah_kerja": perintahKerja,
+      "ppn": ppn,
+    };
+
+    try {
+      final token = await Publics.controller.getToken.value;
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _getestimasi,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+
+      final obj = Estimasi.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
 }

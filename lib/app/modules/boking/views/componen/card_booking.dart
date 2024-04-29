@@ -154,7 +154,7 @@ class BokingList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Pemilik :'),
-                      Text(items.namaPelanggan??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                      Text(items.nama??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     ]),
               ],),
           ],

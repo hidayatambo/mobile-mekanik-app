@@ -48,6 +48,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
+    final String kodeBooking = arguments?['kode_booking'] ?? '';
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -210,9 +212,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
 
             // Memastikan data tidak kosong
             if (dataList != null && dataList.isNotEmpty) {
-              // Persiapkan list untuk menyimpan data general checkup
               List<Map<String, dynamic>> gcus = [];
-
               for (var data in dataList) {
                 if (data.gcus != null && data.gcus!.isNotEmpty) {
                   List<Map<String, dynamic>> gcuList = [];
@@ -220,7 +220,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     gcuList.add({
                       "gcu_id": gcu.gcuId,
                       "status": dropdownValue != null ? dropdownValue : "",
-                      "description": deskripsiController.text != null ? deskripsiController.text : "",
+                      "description": deskripsiController.text ?? "",
                     });
                   }
                   // Menambahkan data general checkup ke dalam gcus sebagai objek
@@ -228,21 +228,136 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     "sub_heading_id": data.subHeadingId,
                     "gcus": gcuList,
                   };
-                  gcus.add({
-                    "booking_id": arguments?["booking_id"],
-                    "general_checkup": [generalCheckupObj],
-                  });
+                  gcus.add(generalCheckupObj);
                 }
               }
               print('hasil print: $gcus');
-              // for (var item in gcus) {
-              //   print('hasil print: $item');
-              // }
-              // Cek apakah data sudah dikirim sebelumnya
-              if (!isDataSent) {
+
+              // Cek apakah data sudah dikirim sebelumnya dan gcus tidak null
+              if (!isDataSent && gcus.isNotEmpty) {
+                // Menggabungkan semua entri dalam gcus menjadi satu map
+                Map<String, dynamic> combinedGeneralCheckup = {};
+                for (var entry in gcus) {
+                  combinedGeneralCheckup.addAll(entry);
+                }
+
                 // Mengirim data general checkup ke API
                 SubmitGC submitResponse = await API.submitGCID(
-                  generalCheckup: gcus,
+                  kodeBooking: arguments?["booking_id"],
+                  generalCheckup: combinedGeneralCheckup, // gcus yang sudah selesai
+                );
+
+                // Tampilkan pesan loading saat menunggu respons dari server
+                QuickAlert.show(
+                  barrierDismissible: false,
+                  context: Get.context!,
+                  type: QuickAlertType.loading,
+                  headerBackgroundColor: Colors.yellow,
+                  text: 'Submit General Checkup...',
+                );
+
+                // Tampilkan pesan berdasarkan respons dari server
+                if (submitResponse.status == true &&
+                    submitResponse.message == 'Berhasil Menyimpan Data') {
+                  QuickAlert.show(
+                    barrierDismissible: false,
+                    context: Get.context!,
+                    type: QuickAlertType.success,
+                    headerBackgroundColor: Colors.yellow,
+                    text: "Success to submit General Checkup",
+                    confirmBtnText: 'Kembali',
+                    cancelBtnText: 'Kembali',
+                    confirmBtnColor: Colors.green,
+                  );
+                  // Set variabel isDataSent menjadi true setelah pengiriman data berhasil
+                  isDataSent = true;
+                } else {
+                  QuickAlert.show(
+                    barrierDismissible: false,
+                    context: Get.context!,
+                    type: QuickAlertType.error,
+                    headerBackgroundColor: Colors.yellow,
+                    text: "Failed to submit General Checkup",
+                    confirmBtnText: 'Kembali',
+                    cancelBtnText: 'Kembali',
+                    confirmBtnColor: Colors.green,
+                  );
+                }
+              }
+            } else {
+              // Tidak ada data general checkup yang ditemukan
+              QuickAlert.show(
+                barrierDismissible: false,
+                context: Get.context!,
+                type: QuickAlertType.info,
+                headerBackgroundColor: Colors.yellow,
+                text: 'Tidak ada data General Checkup yang ditemukan',
+                confirmBtnText: 'Kembali',
+                cancelBtnText: 'Kembali',
+                confirmBtnColor: Colors.green,
+              );
+            }
+          } catch (e) {
+            Navigator.pop(Get.context!);
+            QuickAlert.show(
+              barrierDismissible: false,
+              context: Get.context!,
+              type: QuickAlertType.error,
+              headerBackgroundColor: Colors.yellow,
+              text: "Error: $e",
+              confirmBtnText: 'Kembali',
+              cancelBtnText: 'Kembali',
+              confirmBtnColor: Colors.green,
+            );
+          }
+        },
+      );
+    } else {
+      // If already at the last step, show a dialog
+      bool isDataSent = false;
+      QuickAlert.show(
+        context: Get.context!,
+        type: QuickAlertType.warning,
+        headerBackgroundColor: Colors.yellow,
+        text: 'Periksa kembali General Checkup',
+        confirmBtnText: 'Submit',
+        confirmBtnColor: Colors.green,
+        onConfirmBtnTap: () async {
+          try {
+            general_checkup generalData = await API.GeneralID();
+            List<Data>? dataList = generalData.data;
+
+            // Memastikan data tidak kosong
+            if (dataList != null && dataList.isNotEmpty) {
+              Map<String, dynamic>? gcus; // Deklarasikan gcus di luar lingkup if agar dapat diakses nanti
+              if (dataList != null && dataList.isNotEmpty) {
+                gcus = {}; // Inisialisasi gcus di sini jika dataList tidak kosong
+                for (var data in dataList) {
+                  if (data.gcus != null && data.gcus!.isNotEmpty) {
+                    List<Map<String, dynamic>> gcuList = [];
+                    for (var gcu in data.gcus!) {
+                      gcuList.add({
+                        "gcu_id": gcu.gcuId,
+                        "status": dropdownValue != null ? dropdownValue : "",
+                        "description": deskripsiController.text ?? "",
+                      });
+                    }
+                    // Menambahkan data general checkup ke dalam gcus sebagai objek
+                    Map<String, dynamic> generalCheckupObj = {
+                      "sub_heading_id": data.subHeadingId,
+                      "gcus": gcuList,
+                    };
+                    gcus![generalCheckupObj]; // Memperbarui nilai gcus
+                  }
+                }
+                print('hasil print: $gcus');
+              }
+              // Cek apakah data sudah dikirim sebelumnya dan gcus tidak null
+              if (!isDataSent && gcus != null) {
+                // Mengirim data general checkup ke API
+                SubmitGC submitResponse = await API.submitGCID(
+                  kodeBooking: arguments?["booking_id"],
+                  generalCheckup: gcus, // gcus tidak perlu dibungkus dalam list karena sudah Map
                 );
 
                 // Tampilkan pesan loading saat menunggu respons dari server
@@ -266,6 +381,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     cancelBtnText: 'Kembali',
                     confirmBtnColor: Colors.green,
                   );
+                  // Set variabel isDataSent menjadi true setelah pengiriman data berhasil
+                  isDataSent = true;
                 } else {
                   QuickAlert.show(
                     barrierDismissible: false,
@@ -278,17 +395,23 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                     confirmBtnColor: Colors.green,
                   );
                 }
-
-                // Set variabel isDataSent menjadi true setelah pengiriman data
-                isDataSent = true;
               }
             } else {
               // Tidak ada data general checkup yang ditemukan
-              return;
+              QuickAlert.show(
+                barrierDismissible: false,
+                context: Get.context!,
+                type: QuickAlertType.info,
+                headerBackgroundColor: Colors.yellow,
+                text: 'Tidak ada data General Checkup yang ditemukan',
+                confirmBtnText: 'Kembali',
+                cancelBtnText: 'Kembali',
+                confirmBtnColor: Colors.green,
+              );
             }
           } catch (e) {
-            // Tangkap dan tampilkan error jika terjadi
             Navigator.pop(Get.context!);
+            Navigator.of(context).popUntil((route) => route.isFirst);
             QuickAlert.show(
               barrierDismissible: false,
               context: Get.context!,
@@ -302,113 +425,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           }
         },
       );
-    } else {
-      // If already at the last step, show a dialog
-      QuickAlert.show(
-        barrierDismissible: false,
-        context: Get.context!,
-        type: QuickAlertType.warning,
-        headerBackgroundColor: Colors.yellow,
-        text: 'Periksa kembali General Checkup',
-        confirmBtnText: 'Submit',
-        confirmBtnColor: Colors.green,
-        onConfirmBtnTap: () async {
-          try {
-            // Mendapatkan data general checkup dari API
-            general_checkup generalData = await API.GeneralID();
-            List<Data>? dataList = generalData.data;
 
-            // Memastikan data tidak kosong
-            if (dataList != null && dataList.isNotEmpty) {
-              // Persiapkan list untuk menyimpan data general checkup
-              List<Map<String, dynamic>> gcus = [];
-
-              for (var data in dataList) {
-                if (data.gcus != null && data.gcus!.isNotEmpty) {
-                  List<Map<String, dynamic>> gcuList = [];
-                  for (var gcu in data.gcus!) {
-                    gcuList.add({
-                      "gcu_id": gcu.gcuId,
-                      "status": dropdownValue != null ? dropdownValue : "",
-                      "description": deskripsiController.text != null ? deskripsiController.text : "",
-                    });
-                  }
-                  // Menambahkan data general checkup ke dalam gcus sebagai objek
-                  Map<String, dynamic> generalCheckupObj = {
-                    "sub_heading_id": data.subHeadingId,
-                    "gcus": gcuList,
-                  };
-
-                  gcus.add({
-                    "booking_id": arguments?["booking_id"],
-                    "general_checkup": [generalCheckupObj],
-                  });
-                }
-              }
-
-// Pencetakan dilakukan di luar loop
-              print('booking_id: ${arguments?["booking_id"]}');
-              print('hasil: ${gcus}');
-
-              SubmitGC submitResponse = await API.submitGCID(
-                generalCheckup: gcus,
-              );
-
-
-              // Tampilkan pesan loading saat menunggu respons dari server
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              QuickAlert.show(
-                barrierDismissible: false,
-                context: Get.context!,
-                type: QuickAlertType.loading,
-                headerBackgroundColor: Colors.yellow,
-                text: 'Submit General Checkup...',
-              );
-
-              // Tampilkan pesan berdasarkan respons dari server
-              if (submitResponse.status == true && submitResponse.message == 'Berhasil Menyimpan Data') {
-                QuickAlert.show(
-                  barrierDismissible: false,
-                  context: Get.context!,
-                  type: QuickAlertType.success,
-                  headerBackgroundColor: Colors.yellow,
-                  text: "Success to submit General Checkup",
-                  confirmBtnText: 'Kembali',
-                  cancelBtnText: 'Kembali',
-                  confirmBtnColor: Colors.green,
-                );
-              } else {
-                QuickAlert.show(
-                  barrierDismissible: false,
-                  context: Get.context!,
-                  type: QuickAlertType.success,
-                  headerBackgroundColor: Colors.yellow,
-                  text: "Success to submit General Checkup",
-                  confirmBtnText: 'Kembali',
-                  cancelBtnText: 'Kembali',
-                  confirmBtnColor: Colors.green,
-                );
-              }
-            } else {
-              // Tidak ada data general checkup yang ditemukan
-              return;
-            }
-          } catch (e) {
-            // Tangkap dan tampilkan error jika terjadi
-            Navigator.of(context).popUntil((route) => route.isFirst);
-            QuickAlert.show(
-              barrierDismissible: false,
-              context: Get.context!,
-              type: QuickAlertType.success,
-              headerBackgroundColor: Colors.yellow,
-              text: "Success to submit General Checkup",
-              confirmBtnText: 'Kembali',
-              cancelBtnText: 'Kembali',
-              confirmBtnColor: Colors.green,
-            );
-          }
-        },
-      );
     }
   }
 

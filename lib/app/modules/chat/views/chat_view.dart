@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../main.dart';
+import '../../../componen/loadingshammer.dart';
 
 class ChatView extends StatelessWidget {
   final List<User> users = [
@@ -8,22 +9,22 @@ class ChatView extends StatelessWidget {
     User(name: 'Dayat', profileImage: 'https://example.com/bob.jpg'),
   ];
 
-   ChatView({super.key});
+  ChatView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
           child: null
-        ),
+      ),
       appBar: AppBar(
         centerTitle: false,
         title: const Text('User List'),
       ),
-      body: const Column(
+      body:  Column(
         children: [
 
-      ],),
+        ],),
 
       // ListView.builder(
       //   itemCount: users.length,

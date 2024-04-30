@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
-import '../../../../data/data_endpoint/boking.dart';
-import '../../../../routes/app_pages.dart';
+
+import '../../../data/data_endpoint/boking.dart';
 
 class BokingList extends StatelessWidget {
   final DataBooking items;

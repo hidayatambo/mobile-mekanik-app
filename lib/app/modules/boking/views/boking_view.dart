@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
   import '../../../data/data_endpoint/profile.dart';
   import '../../../data/endpoint.dart';
   import '../../../routes/app_pages.dart';
-  import 'componen/card_booking.dart';
+import '../../chat/componen/card_booking.dart';
 
   class BokingView extends StatefulWidget {
   const BokingView({super.key});

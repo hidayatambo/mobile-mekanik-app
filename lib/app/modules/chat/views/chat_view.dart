@@ -20,7 +20,10 @@ class ChatView extends StatelessWidget {
         centerTitle: false,
         title: const Text('User List'),
       ),
-      body: null
+      body: const Column(
+        children: [
+
+      ],),
 
       // ListView.builder(
       //   itemCount: users.length,

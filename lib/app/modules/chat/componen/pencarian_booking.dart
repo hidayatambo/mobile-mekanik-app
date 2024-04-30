@@ -2,9 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:search_page/search_page.dart';
-
-import '../../../../data/data_endpoint/boking.dart';
-import '../../../../data/endpoint.dart';
+import '../../../data/data_endpoint/boking.dart';
+import '../../../data/endpoint.dart';
 import 'card_booking.dart';
 
 

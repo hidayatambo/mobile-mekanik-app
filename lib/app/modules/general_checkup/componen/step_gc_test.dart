@@ -5,25 +5,41 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
 import '../../../data/data_endpoint/general_chackup.dart';
 import '../../../data/endpoint.dart';
-import 'Visibility.dart';
 
 class MyStepperPage extends StatefulWidget {
   const MyStepperPage({Key? key}) : super(key: key);
 
   @override
   _MyStepperPageState createState() => _MyStepperPageState();
+
+  Widget buildGcuItem({
+    required Gcus gcu,
+    required String? dropdownValue,
+    required TextEditingController deskripsiController,
+    required Function(String?) onDropdownChanged,
+    required Function(String?) onDescriptionChanged,
+  }) {
+    return Column(
+      children: [
+        GcuItem(
+          gcu: gcu,
+          dropdownValue: dropdownValue,
+          deskripsiController: deskripsiController,
+          onDropdownChanged: onDropdownChanged,
+          onDescriptionChanged: onDescriptionChanged,
+        ),
+      ],
+    );
+  }
 }
 
-class _MyStepperPageState extends State<MyStepperPage>
-    with TickerProviderStateMixin {
-  late TextEditingController deskripsiController;
+class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateMixin {
   late TabController _tabController;
   int currentStep = 0;
   bool isSubmitting = false;
-  String? dropdownValue;
-  bool isDataSent = false;
   late String kodeBooking;
   final List<String> stepTitles = [
+    'Mesin',
     'Mesin',
     'Brake',
     'Accel',
@@ -33,13 +49,16 @@ class _MyStepperPageState extends State<MyStepperPage>
     'Stall Test',
   ];
 
+  late Map<int, String?> dropdownValues;
+  late Map<int, TextEditingController> deskripsiControllers;
+
   @override
   void initState() {
     super.initState();
-    deskripsiController = TextEditingController();
     _tabController = TabController(length: 7, vsync: this);
-    final Map<String, dynamic>? arguments =
-    Get.arguments as Map<String, dynamic>?;
+    dropdownValues = {};
+    deskripsiControllers = {};
+    final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
     kodeBooking = arguments?['booking_id'] ?? '';
     print('Kode Booking: $kodeBooking');
   }
@@ -47,7 +66,7 @@ class _MyStepperPageState extends State<MyStepperPage>
   @override
   void dispose() {
     _tabController.dispose();
-    deskripsiController.dispose();
+    deskripsiControllers.values.forEach((controller) => controller.dispose());
     super.dispose();
   }
 
@@ -73,13 +92,14 @@ class _MyStepperPageState extends State<MyStepperPage>
           physics: const ScrollPhysics(),
           onStepContinue: () {
             submitForm(context);
-            if (currentStep < 6) {
+            if (currentStep < 7) { // Periksa apakah currentStep kurang dari jumlah total langkah - 1
               setState(() {
                 currentStep += 1;
                 isSubmitting = true;
               });
             }
           },
+
           steps: [
             Step(
               title: const Text('Mesin'),
@@ -130,6 +150,13 @@ class _MyStepperPageState extends State<MyStepperPage>
               ),
               isActive: currentStep >= 6,
             ),
+            Step(
+              title: const Text('Submbit General Check UP Finish'),
+              content: SingleChildScrollView(
+                child: Container(),
+              ),
+              isActive: currentStep >= 7,
+            ),
           ],
         ),
       ),
@@ -152,32 +179,37 @@ class _MyStepperPageState extends State<MyStepperPage>
               );
             } else if (snapshot.hasData) {
               final generalData = snapshot.data;
-              final getDataAcc = generalData?.data?.where((e) =>
-              e.subHeading == title).toList();
+              final getDataAcc = generalData?.data?.where((e) => e.subHeading == title).toList();
               if (getDataAcc != null && getDataAcc.isNotEmpty) {
                 return Column(
                   children: [
-                    ...getDataAcc
-                        .expand((e) => e.gcus ?? [])
-                        .map(
-                          (gcus) =>
-                          GcuItem(
-                            gcu: gcus,
-                            dropdownValue: dropdownValue,
-                            deskripsiController: deskripsiController,
-                            onDropdownChanged: (value) {
-                              setState(() {
-                                dropdownValue = value;
-                              });
-                            },
-                            onDescriptionChanged: (description) {
-                              setState(() {
-                                deskripsiController.text = description!;
-                              });
-                            },
-                          ),
-                    )
-                        .toList(),
+                    ...getDataAcc.expand((e) => e.gcus ?? []).map(
+                          (gcus) {
+                        final int gcuId = gcus.gcuId;
+                        if (!deskripsiControllers.containsKey(gcuId)) {
+                          deskripsiControllers[gcuId] = TextEditingController();
+                        }
+
+                        return GcuItem(
+                          key: ValueKey(gcuId),
+                          gcu: gcus,
+                          dropdownValue: dropdownValues[gcuId],
+                          deskripsiController: deskripsiControllers[gcuId]!,
+                          onDropdownChanged: (value) {
+                            setState(() {
+                              dropdownValues[gcuId] = value;
+                              // Reset deskripsi jika dropdown diubah menjadi 'Oke'
+                              if (value == 'Oke') {
+                                deskripsiControllers[gcuId]?.text = '';
+                              }
+                            });
+                          },
+                          onDescriptionChanged: (description) {
+                            // Tidak perlu melakukan apa pun di sini karena deskripsi akan diperbarui ketika dropdown diubah
+                          },
+                        );
+                      },
+                    ).toList(),
                   ],
                 );
               } else {
@@ -194,6 +226,7 @@ class _MyStepperPageState extends State<MyStepperPage>
     );
   }
 
+
   void submitForm(BuildContext context) async {
     setState(() {
       isSubmitting = true;
@@ -202,26 +235,24 @@ class _MyStepperPageState extends State<MyStepperPage>
     try {
       final generalData = await API.GeneralID();
 
-      if (generalData != null && generalData.data != null) {
+      if (generalData.data != null) {
         final dataList = generalData.data!;
         List<Map<String, dynamic>> generalCheckupList = [];
         final title = stepTitles[currentStep];
-        final getDataAcc = dataList.firstWhere((e) => e.subHeading == title,
-            orElse: () => null as Data);
+        final getDataAcc = dataList.firstWhere((e) => e.subHeading == title, orElse: () => null as Data);
 
-        if (getDataAcc != null && getDataAcc.gcus != null &&
-            getDataAcc.gcus!.isNotEmpty) {
-          final gcusList = getDataAcc.gcus!.map<Map<String, dynamic>>((gcu) =>
-          {
-            "gcu_id": gcu.gcuId,
-            "status": "", // Set nilai default untuk status
-            "description": "", // Set nilai default untuk deskripsi
-          }
+        if (getDataAcc.gcus != null && getDataAcc.gcus!.isNotEmpty) {
+          final gcusList = getDataAcc.gcus!.map<Map<String, dynamic>>(
+                (gcu) => {
+              "gcu_id": gcu.gcuId.toString(),
+              "status": dropdownValues[gcu.gcuId],
+              "description": deskripsiControllers[gcu.gcuId]?.text ?? '', // Use deskripsiControllers
+            },
           ).toList();
 
           final generalCheckupObj = {
             "sub_heading_id": getDataAcc.subHeadingId,
-            "gcus": gcusList, // Menyimpan list gcus sebagai gcus
+            "gcus": gcusList,
           };
 
           generalCheckupList.add(generalCheckupObj);
@@ -246,17 +277,11 @@ class _MyStepperPageState extends State<MyStepperPage>
 
             print('Response dari server: $submitResponse');
 
-            if (submitResponse != null) {
-              setState(() {
-                isSubmitting = false;
-              });
-            } else {
-              setState(() {
-                isSubmitting = false;
-              });
-            }
-          } else {
-            // Tangani kasus ketika kodeBooking kosong
+            setState(() {
+              isSubmitting = false;
+            });
+                    } else {
+            // Handle case when kodeBooking is empty
             setState(() {
               isSubmitting = false;
             });
@@ -272,7 +297,7 @@ class _MyStepperPageState extends State<MyStepperPage>
             );
           }
         } else {
-          // Tangani kasus ketika getDataAcc null atau gcus kosong
+          // Handle case when getDataAcc is null or gcus is empty
           setState(() {
             isSubmitting = false;
           });
@@ -288,7 +313,7 @@ class _MyStepperPageState extends State<MyStepperPage>
           );
         }
       } else {
-        // Tangani kasus ketika generalData null
+        // Handle case when generalData is null
         setState(() {
           isSubmitting = false;
         });
@@ -304,7 +329,7 @@ class _MyStepperPageState extends State<MyStepperPage>
         );
       }
     } catch (fetchError) {
-      // Tangani kesalahan saat mengambil data
+      // Handle error while fetching data
       print('Fetch Error: $fetchError');
       QuickAlert.show(
         barrierDismissible: false,
@@ -320,8 +345,83 @@ class _MyStepperPageState extends State<MyStepperPage>
   }
 }
 
+class GcuItem extends StatefulWidget {
+  final Gcus gcu;
+  final String? dropdownValue;
+  final TextEditingController deskripsiController;
+  final ValueChanged<String?> onDropdownChanged;
+  final ValueChanged<String?> onDescriptionChanged;
 
+  const GcuItem({
+    Key? key,
+    required this.gcu,
+    required this.dropdownValue,
+    required this.deskripsiController,
+    required this.onDropdownChanged,
+    required this.onDescriptionChanged,
+  }) : super(key: key);
 
+  @override
+  _GcuItemState createState() => _GcuItemState();
+}
 
+class _GcuItemState extends State<GcuItem> {
+  late String? dropdownValueLocal;
 
+  @override
+  void initState() {
+    super.initState();
+    dropdownValueLocal = widget.dropdownValue;
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                widget.gcu.gcu ?? '',
+                textAlign: TextAlign.start,
+                softWrap: true,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: DropdownButton<String>(
+                value: dropdownValueLocal,
+                hint: dropdownValueLocal == '' ? const Text('Pilih') : null,
+                onChanged: (String? value) {
+                  setState(() {
+                    dropdownValueLocal = value;
+                  });
+                  widget.onDropdownChanged(value);
+                },
+                items: <String>['', 'Oke', 'Not Oke'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+        if (dropdownValueLocal == 'Not Oke')
+          TextField(
+            onChanged: (text) {
+              widget.onDescriptionChanged(text);
+            },
+            controller: widget.deskripsiController, // Use deskripsiController from widget
+            decoration: const InputDecoration(
+              hintText: 'Keterangan',
+            ),
+          ),
+      ],
+    );
+  }
+}

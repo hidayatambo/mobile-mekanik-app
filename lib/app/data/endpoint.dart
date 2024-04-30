@@ -9,9 +9,11 @@ import 'data_endpoint/approve.dart';
 import 'data_endpoint/boking.dart';
 import 'data_endpoint/estimasi.dart';
 import 'data_endpoint/general_chackup.dart';
+import 'data_endpoint/history.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
+import 'data_endpoint/submit_finish.dart';
 import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
 import 'localstorage.dart';
@@ -29,6 +31,8 @@ class API {
   static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
   static const _getSubmitGC = '$_baseUrl/mekanik/submit-general-checkup';
   static const _getestimasi = '$_baseUrl/mekanik/insert-estimasi';
+  static const _getSubmitGCFinish = '$_baseUrl/mekanik/submit-general-checkup-finish';
+  static const _gethistory = '$_baseUrl/mekanik/get-history-mekanik';
   static final _controller = Publics.controller;
 
 
@@ -56,7 +60,8 @@ class API {
         } else {
           if (obj.message != 0) {
             if (obj.token != null) {
-              LocalStorages.setToken(obj.token ?? '');
+              // Periksa apakah token tidak null sebelum disimpan
+              LocalStorages.setToken(obj.token ?? ''); // Gunakan nilai default jika obj.token null
               Get.snackbar('Selamat Datang', 'Menkanik Bengkelly');
               Get.offAllNamed(Routes.HOME);
             } else {
@@ -78,14 +83,19 @@ class API {
       throw e;
     }
   }
+
 //beda
+
   static Profile? _cachedProfile;
-  static Future<Profile> get profile async {
+  static void clearCachedProfile() {
+    _cachedProfile = null;
+  }
+  static Future<Profile> profileiD() async {
     if (_cachedProfile != null) {
       return _cachedProfile!;
     }
 
-    final token = Publics.controller.getToken.value;
+    final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
       var response = await Dio().get(
@@ -95,11 +105,15 @@ class API {
             "Content-Type": "application/json",
           },
         ),
-        data: data,
+        queryParameters: data,
       );
 
+      if (response.statusCode == 404) {
+        return Profile(status: false, message: "Tidak ada data booking untuk karyawan ini.");
+      }
+
       final obj = Profile.fromJson(response.data);
-      _cachedProfile = obj;
+      _cachedProfile = obj as Profile?;
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
@@ -119,13 +133,9 @@ class API {
     _cachedBoking = null;
   }
   static Future<Boking> bokingid() async {
-    if (_cachedBoking != null) {
-      return _cachedBoking!;
-    }
-
-    final token = Publics.controller.getToken.value;
-    var data = {"token": token};
     try {
+      final token = Publics.controller.getToken.value ?? '';
+      var data = {"token": token};
       var response = await Dio().get(
         _getTooking,
         options: Options(
@@ -141,7 +151,6 @@ class API {
       }
 
       final obj = Boking.fromJson(response.data);
-      _cachedBoking = obj;
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
@@ -150,11 +159,13 @@ class API {
           obj.message.toString(),
         );
       }
+
       return obj;
     } catch (e) {
       throw e;
     }
   }
+
   //Beda
   static general_checkup? _cachedGeneral;
 
@@ -167,7 +178,7 @@ class API {
       return _cachedGeneral!;
     }
 
-    final token = Publics.controller.getToken.value;
+    final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
       var response = await Dio().get(
@@ -237,7 +248,7 @@ class API {
     };
 
     try {
-      final token = await Publics.controller.getToken.value;
+      final token = Publics.controller.getToken.value ?? '';
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
@@ -280,7 +291,7 @@ class API {
     };
 
     try {
-      final token = await Publics.controller.getToken.value;
+      final token = Publics.controller.getToken.value ?? '';
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
@@ -323,7 +334,7 @@ class API {
       return _cachedMekanik!;
     }
 
-    final token = Publics.controller.getToken.value;
+    final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
       var response = await Dio().get(
@@ -397,7 +408,7 @@ class API {
     };
 
     try {
-      final token = await Publics.controller.getToken.value;
+      final token = Publics.controller.getToken.value ?? '';
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
@@ -434,7 +445,7 @@ class API {
     required Map<String, dynamic> generalCheckup,
   }) async {
     try {
-      final token = await Publics.controller.getToken.value;
+      final token = Publics.controller.getToken.value ?? '';
       print('Token: $token');
 
       final response = await Dio().post(
@@ -460,6 +471,88 @@ class API {
       }
     } catch (e) {
       print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+  static Future<Gcfinish> submitGCFinishId({
+    required String bookingId,
+  }) async {
+    final data = {
+      "booking_id": bookingId,
+
+    };
+
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _getSubmitGCFinish,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+
+      final obj = Gcfinish.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+  //beda
+  static History? _cachedHistory;
+  static void clearCachedHistory() {
+    _cachedHistory = null;
+  }
+  static Future<History> Historyid() async {
+    if (_cachedHistory != null) {
+      return _cachedHistory!;
+    }
+
+    final token = Publics.controller.getToken.value ?? '';
+    var data = {"token": token};
+    try {
+      var response = await Dio().get(
+        _gethistory,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        return History(status: false, message: "Tidak ada data booking untuk karyawan ini.");
+      }
+
+      final obj = History.fromJson(response.data);
+      _cachedHistory = obj as History?;
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
       throw e;
     }
   }

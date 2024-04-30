@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
 import '../../../data/data_endpoint/login.dart';
 import '../../../data/endpoint.dart';
+import '../../../data/localstorage.dart';
 import '../../../routes/app_pages.dart';
 import '../common/common.dart';
 import '../widgets/custom_widget.dart';
@@ -152,8 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: CustomElevatedButton(
                               message: "Masuk",
                               function: () async {
-                                if (_emailController.text.isNotEmpty &&
-                                    _passwordController.text.isNotEmpty) {
+                                if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
                                   Token aksesPX = await API.login(
                                     email: _emailController.text,
                                     password: _passwordController.text,
@@ -161,6 +161,10 @@ class _LoginPageState extends State<LoginPage> {
 
                                   if (aksesPX.message == 200) {
                                     if (aksesPX.token != null) {
+                                      // Hapus token dari penyimpanan lokal
+                                      await LocalStorages.deleteToken();
+
+                                      // Pindah ke halaman utama
                                       Get.offAllNamed(Routes.HOME);
                                     }
                                   }
@@ -177,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 }
                               },
+
                               color: MyColors.appPrimaryColor,
                             ),
                           ),

@@ -22,7 +22,7 @@ class _StatsScreenState extends State<StatsScreen> {
           children: [
             const Text('Dashboard'),
             FutureBuilder<Profile>(
-              future: API.profile,
+              future: API.profileiD(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();

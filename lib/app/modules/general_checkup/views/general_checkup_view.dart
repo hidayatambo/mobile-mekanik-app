@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/componen/color.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../repair_maintenen/componen/card_consument.dart';
 import '../componen/step_gc_test.dart';
 
@@ -62,7 +64,24 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     final String hp = args['hp'] ?? '';
     final String status = args['status'] ?? '';
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          QuickAlert.show(
+            barrierDismissible: false,
+            context: Get.context!,
+            type: QuickAlertType.confirm,
+            headerBackgroundColor: Colors.yellow,
+            text: 'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
+            confirmBtnText: 'Kembali',
+            cancelBtnText: 'Keluar',
+            onCancelBtnTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            confirmBtnColor: Colors.green,
+          );
+          return false;
+        },
+    child:   Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -72,14 +91,14 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         ),
         title: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
               Text('Edit General Check UP/P2H',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
               SizedBox(width: 50,),
             ],),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,20 +107,20 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nama :', style: TextStyle(fontSize: 13),),
-            Text('$nama',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-            Text('Kendaraan :',style: TextStyle(fontSize: 13),),
-            Text('$nama_tipe',style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+            const Text('Nama :', style: TextStyle(fontSize: 13),),
+            Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+            const Text('Kendaraan :',style: TextStyle(fontSize: 13),),
+            Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
           ]),
 
                 Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Jenis Service :', style: TextStyle(fontSize: 13),),
-                      Text('$nama_jenissvc',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                      Text('Kode Boking :',style: TextStyle(fontSize: 13),),
-                      Text('$bookingId',style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                      const Text('Jenis Service :', style: TextStyle(fontSize: 13),),
+                      Text('$nama_jenissvc',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                      const Text('Kode Boking :',style: TextStyle(fontSize: 13),),
+                      Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
                     ]),
             ],),
 
@@ -109,27 +128,28 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         toolbarHeight: 120,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            QuickAlert.show(
+              barrierDismissible: false,
+              context: Get.context!,
+              type: QuickAlertType.confirm,
+              headerBackgroundColor: Colors.yellow,
+              text: 'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
+              confirmBtnText: 'Kembali',
+              cancelBtnText: 'Keluar',
+              onCancelBtnTap: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+              confirmBtnColor: Colors.green,
+            );
+          },
         ),
         centerTitle: false,
         actions: [
-          // IconButton(
-          //   icon: const Icon(Icons.info, color: Colors.black),
-          //   onPressed: () {
-          //     Get.bottomSheet(
-          //       _buildBottomSheet(),
-          //       isDismissible: true,
-          //       enableDrag: true,
-          //       elevation: 10,
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          //       ),
-          //     );
-          //   },
-          // ),
         ],
       ),
-      body:  MyStepperPage()
+      body:  const MyStepperPage()
+    ),
      );
   }
   Widget _buildBottomSheet() {
@@ -161,7 +181,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'My Bottom Sheet',
                   style: TextStyle(
                     fontSize: 20,
@@ -169,7 +189,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     Get.back(); // Menutup bottom sheet saat tombol close ditekan
                   },

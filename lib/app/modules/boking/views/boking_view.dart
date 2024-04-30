@@ -65,7 +65,7 @@ import 'package:flutter/material.dart';
               children: [
                 const Text('Booking'),
                 FutureBuilder<Profile>(
-                  future: API.profile,
+                  future: API.profileiD(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -112,7 +112,7 @@ import 'package:flutter/material.dart';
                           context: context,
                           delegate: SearchPage<DataBooking>(
                             items: data,
-                            searchLabel: 'Cari History Booking',
+                            searchLabel: 'Cari Booking',
                             searchStyle: GoogleFonts.nunito(color: Colors.black),
                             showItemsOnEmpty: true,
                             failure: Center(
@@ -383,9 +383,7 @@ import 'package:flutter/material.dart';
                     );
                   }
                 },
-              )
-
-
+              ),
             ],
           ),
         ),
@@ -397,7 +395,7 @@ import 'package:flutter/material.dart';
     }
 
     void _onRefresh(String? status) {
-      API.clearCachedBoking();
+      API.Historyid();
       widget.clearCachedBoking();
       _refreshControllers[_getStatusIndex(status)].refreshCompleted();
     }

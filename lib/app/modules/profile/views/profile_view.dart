@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/data/data_endpoint/profile.dart';
 import 'package:mekanik/app/data/endpoint.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../componen/ButtonSubmitWidget.dart';
 import '../../../componen/color.dart';
+import '../../../data/localstorage.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
@@ -19,6 +22,15 @@ class _ProfileViewState extends State<ProfileView> {
   Color theme1 = Colors.white;
   Color theme2 = const Color(0xff2E324F);
   Color black = Colors.black;
+  late RefreshController _refreshController; // the refresh controller
+  final _scaffoldKey =
+  GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
+  @override
+  void initState() {
+    _refreshController =
+        RefreshController(); // we have to use initState because this part of the app have to restart
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,231 +40,275 @@ class _ProfileViewState extends State<ProfileView> {
         toolbarHeight: 0,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _profilePic(),
-            FutureBuilder<Profile>(
-              future: API.profile,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  if (snapshot.data != null) {
-                    final nama = snapshot.data!.data?.namaKaryawan ?? "";
-                    final cabang = snapshot.data!.data?.cabang ?? "";
-                    final email = snapshot.data!.data?.email ?? "";
-                    final hp = snapshot.data!.data?.hp ?? "";
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 4.0),
-                          child: Text(
-                            nama,
+      body: SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+        onLoading: _onLoading,
+        onRefresh: _onRefresh,
+        child:
+        SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              _profilePic(),
+              FutureBuilder<Profile>(
+                future: API.profileiD(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    if (snapshot.data != null) {
+                      final nama = snapshot.data!.data?.namaKaryawan ?? "";
+                      final cabang = snapshot.data!.data?.cabang ?? "";
+                      final email = snapshot.data!.data?.email ?? "";
+                      final hp = snapshot.data!.data?.hp ?? "";
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                8.0, 8.0, 8.0, 4.0),
+                            child: Text(
+                              nama,
+                              style: TextStyle(
+                                color: black,
+                                fontSize: 26.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                8.0, 0.0, 8.0, 8.0),
+                            child: Text(
+                              cabang,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            email,
                             style: TextStyle(
                               color: black,
-                              fontSize: 26.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                          child: Text(
-                            cabang,
-                            style: const TextStyle(
-                              color: Colors.grey,
                               fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.normal,
                             ),
                           ),
-                        ),
-                        Text(
-                          email,
-                          style: TextStyle(
-                            color: black,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        Text(
-                          hp,
-                          style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const Text('Tidak ada data');
-                  }
-                }
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(40.0, 8.0, 40.0, 0.0),
-              child: Divider(
-                color: Color(0xff78909c),
-                height: 50.0,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child:  Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                Text('Edit Profile'),
-                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
-              ],),),
-            Container(
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child:  Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Pengaturan'),
-                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
-                ],),),
-            Container(
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(left: 20,right: 20, top: 10),
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child:  Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Ubah Password'),
-                  Icon(Icons.arrow_forward_ios_rounded,color: Colors.grey,)
-                ],),),
-            InkWell(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => Dialog(
-                    backgroundColor: Colors.transparent,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.all(30),
-                      height: 245,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                           Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "Continue To Logout?",
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Are you sure to logout from this device?",
-                                style: TextStyle(fontSize: 17),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonSubmitWidget1(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                title: "No, cancel",
-                                bgColor: Colors.white,
-                                textColor: MyColors.appPrimaryColor,
-                                fontWeight: FontWeight.normal,
-                                width: 70,
-                                height: 50,
-                                borderSide: Colors.transparent,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              ButtonSubmitWidget2(
-                                onPressed: controller.logout,
-                                title: "Yes, Continue",
-                                bgColor: MyColors.appPrimaryColor,
-                                textColor: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                width: 100,
-                                height: 50,
-                                borderSide: Colors.transparent,
-                              ),
-                            ],
+                          Text(
+                            hp,
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.normal,
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-              child:
-            Container(
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(left: 20,right: 20, top: 30),
-              decoration: const BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(10))
+                      );
+                    } else {
+                      return const Text('Tidak ada data');
+                    }
+                  }
+                },
               ),
-              child:  Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Logout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                  Icon(Icons.logout_rounded,color: Colors.white,)
-                ],),),),
-          ],
+              const Padding(
+                padding: EdgeInsets.fromLTRB(40.0, 8.0, 40.0, 0.0),
+                child: Divider(
+                  color: Color(0xff78909c),
+                  height: 50.0,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text('Edit Profile'),
+                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
+                  ],),),
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text('Pengaturan'),
+                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
+                  ],),),
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text('Ubah Password'),
+                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
+                  ],),),
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) =>
+                        Dialog(
+                          backgroundColor: Colors.transparent,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.all(30),
+                            height: 245,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      "Continue To Logout?",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "Are you sure to logout from this device?",
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    ButtonSubmitWidget1(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      title: "No, cancel",
+                                      bgColor: Colors.white,
+                                      textColor: MyColors.appPrimaryColor,
+                                      fontWeight: FontWeight.normal,
+                                      width: 70,
+                                      height: 50,
+                                      borderSide: Colors.transparent,
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    ButtonSubmitWidget2(
+                                      onPressed:() {
+                                        logout();
+                                      },
+                                      title: "Yes, Continue",
+                                      bgColor: MyColors.appPrimaryColor,
+                                      textColor: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                      width: 100,
+                                      height: 50,
+                                      borderSide: Colors.transparent,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  );
+                },
+                child:
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 30),
+                  decoration: const BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text('Logout', style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),),
+                      Icon(Icons.logout_rounded, color: Colors.white,)
+                    ],),),),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Padding _profilePic() => Padding(
-    padding: const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
-    child: Stack(
-      alignment: const Alignment(0.9, 0.9),
-      children: <Widget>[
-        const CircleAvatar(
-          backgroundImage: AssetImage("assets/avatar.png"),
-          radius: 50.0,
+  Padding _profilePic() =>
+      Padding(
+        padding: const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
+        child: Stack(
+          alignment: const Alignment(0.9, 0.9),
+          children: <Widget>[
+            const CircleAvatar(
+              backgroundImage: AssetImage("assets/avatar.png"),
+              radius: 50.0,
+            ),
+            Container(
+              height: 30.0,
+              width: 30.0,
+              alignment: Alignment.bottomRight,
+              child: Image.asset("assets/success_logo.png"),
+            ),
+          ],
         ),
-        Container(
-          height: 30.0,
-          width: 30.0,
-          alignment: Alignment.bottomRight,
-          child: Image.asset("assets/success_logo.png"),
-        ),
-      ],
-    ),
-  );
+      );
+
+  _onLoading() {
+    _refreshController
+        .loadComplete(); // after data returned,set the //footer state to idle
+  }
+
+  _onRefresh() {
+    setState(() {
+// so whatever you want to refresh it must be inside the setState
+      const ProfileView(); // if you only want to refresh the list you can place this, so the two can be inside setState
+      _refreshController
+          .refreshCompleted(); // request complete,the header will enter complete state,
+// resetFooterState : it will set the footer state from noData to idle
+    });
+  }
+  void logout() {
+    // Bersihkan cache untuk setiap data yang Anda simpan dalam cache
+    LocalStorages.deleteToken();
+    API.clearCachedBoking();
+    API.clearCachedProfile();
+    API.clearCacheGeneral();
+    API.clearCacheMekanik();
+    API.clearCachedHistory();
+
+    // Navigasi ke halaman login
+    Get.offAllNamed(Routes.SIGNIN);
+  }
 }

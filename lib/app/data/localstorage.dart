@@ -17,8 +17,14 @@ class LocalStorages {
 
   static String get getToken => boxToken.listenable.value['token'] ?? '';
 
-  static Future<void> get deleteToken async {
+  static Future<void> deleteToken() async {
     await boxToken.remove('token');
-    Publics.controller.getToken.value = LocalStorages.getToken;
+    Publics.controller.getToken.value = ''; // Set nilai token kosong setelah dihapus
+  }
+
+  // Tambahkan fungsi logout untuk menghapus token saat logout
+  static Future<void> logout() async {
+    await deleteToken(); // Panggil fungsi deleteToken
+    // Tambahkan kode lain yang perlu dijalankan saat logout, jika ada
   }
 }

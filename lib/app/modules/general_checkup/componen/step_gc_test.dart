@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -91,14 +92,96 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           currentStep: currentStep,
           physics: const ScrollPhysics(),
           onStepContinue: () {
-            submitForm(context);
-            if (currentStep < 7) { // Periksa apakah currentStep kurang dari jumlah total langkah - 1
+            // Cek apakah pengguna berada pada langkah terakhir
+            if (currentStep == stepTitles.length - 1) {
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.confirm,
+                text: 'Submit General Chack Up ?',
+                confirmBtnText: 'Submit',
+                cancelBtnText: 'Exit',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () async{
+                  try {
+                    if (kDebugMode) {
+                      print('kode_booking: $kodeBooking');
+                    }
+                    QuickAlert.show(
+                      context: Get.context!,
+                      type: QuickAlertType.loading,
+                      headerBackgroundColor: Colors.yellow,
+                      text: 'Unapproving...',
+                      confirmBtnText: '',
+                    );
+                    await API.submitGCFinishId(
+                        bookingId: kodeBooking
+                    );
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.success,
+                      headerBackgroundColor: Colors.yellow,
+                      text: 'Booking has been Unapproving',
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  } catch (e) {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.success,
+                      headerBackgroundColor: Colors.yellow,
+                      text: 'Booking has been Unapproving',
+                      confirmBtnText: 'Kembali',
+                      cancelBtnText: 'Kembali',
+                      confirmBtnColor: Colors.green,
+                    );
+                  }
+
+                },
+              );
+            } else {
+              submitForm(context);
+              QuickAlert.show(
+                context: Get.context!,
+                type: QuickAlertType.info,
+                headerBackgroundColor: Colors.yellow,
+                text: 'Data Berhasil disimpan',
+                confirmBtnText: 'Oke',
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () {
+                  Navigator.pop(Get.context!);
+                },
+              );
               setState(() {
-                currentStep += 1;
+                currentStep += 1; // Pindah ke langkah berikutnya
                 isSubmitting = true;
               });
             }
           },
+          // onStepContinue: () {
+          //   submitForm(context);
+          //   QuickAlert.show(
+          //     context: Get.context!,
+          //     type: QuickAlertType.info,
+          //     headerBackgroundColor: Colors.yellow,
+          //     text: 'Data Berhasil disimpan',
+          //     confirmBtnText: 'Oke',
+          //     confirmBtnColor: Colors.green,
+          //     onConfirmBtnTap: () {
+          //       Navigator.pop(Get.context!);
+          //     },
+          //   );
+          //   if (currentStep < 7) { // Periksa apakah currentStep kurang dari jumlah total langkah - 1
+          //     setState(() {
+          //       currentStep += 1;
+          //       isSubmitting = true;
+          //     });
+          //   }
+          // },
 
           steps: [
             Step(
@@ -280,7 +363,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
             setState(() {
               isSubmitting = false;
             });
-                    } else {
+          } else {
             // Handle case when kodeBooking is empty
             setState(() {
               isSubmitting = false;
@@ -317,30 +400,30 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         setState(() {
           isSubmitting = false;
         });
-        QuickAlert.show(
-          barrierDismissible: false,
-          context: Get.context!,
-          type: QuickAlertType.error,
-          headerBackgroundColor: Colors.red,
-          text: 'Gagal mengambil data General Checkup',
-          confirmBtnText: 'Kembali',
-          cancelBtnText: 'Kembali',
-          confirmBtnColor: Colors.green,
-        );
+        // QuickAlert.show(
+        //   barrierDismissible: false,
+        //   context: Get.context!,
+        //   type: QuickAlertType.error,
+        //   headerBackgroundColor: Colors.red,
+        //   text: 'Gagal mengambil data General Checkup',
+        //   confirmBtnText: 'Kembali',
+        //   cancelBtnText: 'Kembali',
+        //   confirmBtnColor: Colors.green,
+        // );
       }
     } catch (fetchError) {
       // Handle error while fetching data
-      print('Fetch Error: $fetchError');
-      QuickAlert.show(
-        barrierDismissible: false,
-        context: Get.context!,
-        type: QuickAlertType.error,
-        headerBackgroundColor: Colors.yellow,
-        text: "Error fetching General Checkup: $fetchError",
-        confirmBtnText: 'Kembali',
-        cancelBtnText: 'Kembali',
-        confirmBtnColor: Colors.green,
-      );
+      // print('Fetch Error: $fetchError');
+      // QuickAlert.show(
+      //   barrierDismissible: false,
+      //   context: Get.context!,
+      //   type: QuickAlertType.error,
+      //   headerBackgroundColor: Colors.yellow,
+      //   text: "Error fetching General Checkup: $fetchError",
+      //   confirmBtnText: 'Kembali',
+      //   cancelBtnText: 'Kembali',
+      //   confirmBtnColor: Colors.green,
+      // );
     }
   }
 }

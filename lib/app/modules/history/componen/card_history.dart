@@ -1,149 +1,248 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:mekanik/app/componen/color.dart';
 
-class ProfileApp extends StatelessWidget {
-  const ProfileApp({super.key});
+import '../../../data/data_endpoint/boking.dart';
+import '../../../data/data_endpoint/history.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    return ProfileScreen();
-  }
-}
+class HistoryList extends StatelessWidget {
+  final DataHistory items;
+  final VoidCallback onTap;
 
-class Job {
-  final String title;
-  final String vehicle;
-  final String client;
-  final String date;
-  final String status;
-  final String mechanic;
-
-  Job({
-    required this.title,
-    required this.vehicle,
-    required this.client,
-    required this.date,
-    required this.status,
-    required this.mechanic,
-  });
-}
-
-class ProfileScreen extends StatelessWidget {
-  final List<Job> jobs = [
-    Job(
-      title: 'Repair & Maintenance',
-      vehicle: 'SX4 S-Cross',
-      client: 'DIDIT',
-      date: '2024-03-25',
-      status: 'Selesai',
-      mechanic: 'Riki',
-    ),
-    Job(
-      title: 'Emergency Service',
-      vehicle: 'Avanza',
-      client: 'RIXKI',
-      date: '2024-03-26',
-      status: 'Selesai',
-      mechanic: 'Perimansyah',
-    ),
-    Job(
-      title: 'General Checkup',
-      vehicle: 'Civic',
-      client: 'ANDI',
-      date: '2024-03-27',
-      status: 'Selesai',
-      mechanic: 'Mbah Jenggot',
-    ),
-  ];
-
-   ProfileScreen({super.key});
+  const HistoryList({Key? key, required this.items, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return AnimationLimiter(
-      child: Column(
-        children: AnimationConfiguration.toStaggeredList(
-          duration: const Duration(milliseconds: 475),
-          childAnimationBuilder: (widget) => SlideAnimation(
-            child: FadeInAnimation(
-              child: widget,
+    Color statusColor = StatusColor.getColor(items.status??'');
+    return InkWell(
+      onTap: onTap, // Menggunakan onTap yang diterima dari luar
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 5,
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
-          ),
-          children: jobs.map((job) {
-            return AnimationConfiguration.staggeredList(
-              position: jobs.indexOf(job),
-              duration: const Duration(milliseconds: 475),
-              child: SlideAnimation(
-                verticalOffset: 50.0,
-                child: FadeInAnimation(
-                  child: InkWell(
-                    onTap: () {
-                      // Get.toNamed(Routes.GENERAL_CHECKUP);
-                    },
-                    child:
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.15),
-                            spreadRadius: 5,
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: ListTile(
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(children: [
+                  Text('Tipe Service'),
+                  Text(items.tipeSvc??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                ],),
+                Column(
+                    children: [
+                      Text('Status'),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
                           children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.car_repair_rounded, color: Colors.blue),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('${job.title} - ${job.vehicle}'),
-                                          Text(
-                                            job.status,
-                                            style: const TextStyle(color: Colors.green),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '${job.client} - ${job.date}',
-                                            style: const TextStyle(fontSize: 12),
-                                          ),
-                                          Text('Mekanik: ${job.mechanic}'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              items.status.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ),),
-                ),
+                      ),]),
+              ],),
+            SizedBox(height: 10,),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-            );
-          }).toList(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(children: [
+                    Text('Tgl estimasi :'),
+                    Text(items.tglEstimasi??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                  ],),
+                  Column(children: [
+                    Text('Kode estimasi :'),
+                    Text(items.kodeEstimasi??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                  ],),
+                ],),),
+            SizedBox(height: 10,),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Detail Pelanggan',style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                      Text('Pelanggan :'),
+                      Text(items.nama??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                    ],),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                      Text('Kode PKB :'),
+                      Text(items.kodeEstimasi??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                    ],),
+                  ],),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('No Polisi :'),
+                          Text(items.noPolisi??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('Odometer :'),
+                          Text(items.odometer??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                    ],),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('KM Keluar :'),
+                          Text(items.kmKeluar??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('KM Kembali :'),
+                          Text(items.kmKembali??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                    ],),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('Tgl Keluar :'),
+                          Text(items.tglKeluar??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('Tgl Kembali :'),
+                          Text(items.tglKembali??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                    ],),
+                  SizedBox(height: 10,),
+                  Divider(color: Colors.grey,),
+                  SizedBox(height: 10,),
+                  Text('Detail Mekanik',style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('PIC Estimasi :'),
+                          Text(items.createdBy??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('PIC PKB :'),
+                          Text(items.createdByPkb??"-",style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                    ],),
+                ],),),
+          ],
         ),
       ),
     );
+  }
+}
+
+class StatusColor {
+  static Color getColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'diproses':
+        return Colors.orange;
+      case 'estimasi':
+        return Colors.lime;
+      case 'dikerjakan':
+        return Colors.orange;
+      case 'invoice':
+        return Colors.blue;
+      case 'ditolak by sistem':
+        return Colors.red;
+      case 'ditolak':
+        return Colors.red;
+      case 'selesai dikerjakan':
+        return Colors.green;
+      default:
+        return Colors.transparent;
+    }
   }
 }

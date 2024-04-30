@@ -235,8 +235,8 @@ class StatusColor {
         return Colors.orange;
       case 'invoice':
         return Colors.blue;
-      case 'ditolak by sistem':
-        return Colors.red;
+      case 'pkb':
+        return Colors.green;
       case 'ditolak':
         return Colors.red;
       case 'selesai dikerjakan':

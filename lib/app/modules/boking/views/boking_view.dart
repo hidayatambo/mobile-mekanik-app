@@ -200,14 +200,14 @@ import 'package:flutter/material.dart';
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
+                    return  Center(
+                      child: Text('Belum ada data booking.'),
                     );
                   } else if (snapshot.hasData) {
                     Boking getDataAcc = snapshot.data!;
                     if (getDataAcc.status == false) {
-                      return const Center(
-                        child: Text('Tidak ada data booking untuk karyawan ini.'),
+                      return const  Center(
+                        child: Text('Belum ada data booking.'),
                       );
                     } else if (getDataAcc.message == 'Invalid token: Expired') {
                       Get.offAllNamed(Routes.SIGNIN);
@@ -222,7 +222,7 @@ import 'package:flutter/material.dart';
 
                     if (filteredList.isEmpty) {
                       return Center(
-                        child: Text('No data available for Booking'),
+                        child: Text('Belum ada data booking.'),
                       );
                     }
 

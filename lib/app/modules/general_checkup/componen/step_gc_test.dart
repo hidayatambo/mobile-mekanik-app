@@ -97,9 +97,10 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
               QuickAlert.show(
                 context: context,
                 type: QuickAlertType.confirm,
-                text: 'Submit General Chack Up ?',
+                text: 'Simpan data General Chack Up ke database bangkelly',
                 confirmBtnText: 'Submit',
                 cancelBtnText: 'Exit',
+                title: 'Submit General Chack Up',
                 confirmBtnColor: Colors.green,
                 onConfirmBtnTap: () async{
                   try {
@@ -147,10 +148,10 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
               submitForm(context);
               QuickAlert.show(
                 context: Get.context!,
-                type: QuickAlertType.info,
+                type: QuickAlertType.confirm,
                 headerBackgroundColor: Colors.yellow,
-                text: 'Data Berhasil disimpan',
                 confirmBtnText: 'Oke',
+                title: 'Data Berhasil disimpan',
                 confirmBtnColor: Colors.green,
                 onConfirmBtnTap: () {
                   Navigator.pop(Get.context!);

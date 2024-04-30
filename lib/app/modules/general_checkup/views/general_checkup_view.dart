@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:mekanik/app/componen/color.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../repair_maintenen/componen/card_consument.dart';
@@ -48,21 +46,9 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Widget build(BuildContext context) {
     final Map args = Get.arguments;
     final String? bookingId = args['kode_booking'];
-    final String? tgl_booking = args['tgl_booking'];
-    final String? jam_booking = args['jam_booking'];
     final String nama = args['nama'] ?? '';
     final String nama_jenissvc = args['nama_jenissvc'] ?? '';
-    final String no_polisi = args['no_polisi'] ?? '';
-    final String nama_merk = args['nama_merk'] ?? '';
-    final String nama_tipe = args['nama_tipe'] ?? '';
-    final String alamat = args['alamat'] ?? '';
-    final String tahun = args['tahun'] ?? '';
-    final String warna = args['warna'] ?? '';
-    final String nomesin = args['no_mesin'] ?? '';
-    final String norangka = args['no_rangka'] ?? '';
-    final String transmisi = args['transmisi'] ?? '';
-    final String hp = args['hp'] ?? '';
-    final String status = args['status'] ?? '';
+    final String nama_tipe = args['nama_tipe'] ?? '';;
 
     return WillPopScope(
         onWillPop: () async {
@@ -73,6 +59,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             headerBackgroundColor: Colors.yellow,
             text: 'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
             confirmBtnText: 'Kembali',
+            title: 'Penting !!',
             cancelBtnText: 'Keluar',
             onCancelBtnTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
@@ -136,6 +123,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               headerBackgroundColor: Colors.yellow,
               text: 'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
               confirmBtnText: 'Kembali',
+              title: 'Penting !!',
               cancelBtnText: 'Keluar',
               onCancelBtnTap: () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
@@ -145,7 +133,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           },
         ),
         centerTitle: false,
-        actions: [
+        actions: const [
         ],
       ),
       body:  const MyStepperPage()
@@ -155,25 +143,9 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Widget _buildBottomSheet() {
     final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
     final Map args = Get.arguments;
-    final String? bookingId = args['id'];
-    final String? tgl_booking = args['tgl_booking'];
-    final String? jam_booking = args['jam_booking'];
-    final String nama = args['nama'] ?? '';
-    final String nama_jenissvc = args['nama_jenissvc'] ?? '';
-    final String no_polisi = args['no_polisi'] ?? '';
-    final String nama_merk = args['nama_merk'] ?? '';
-    final String nama_tipe = args['nama_tipe'] ?? '';
-    final String alamat = args['alamat'] ?? '';
-    final String tahun = args['tahun'] ?? '';
-    final String warna = args['warna'] ?? '';
-    final String nomesin = args['no_mesin'] ?? '';
-    final String norangka = args['no_rangka'] ?? '';
-    final String transmisi = args['transmisi'] ?? '';
-    final String hp = args['hp'] ?? '';
-    final String status = args['status'] ?? '';
     return Container(
       color: Colors.white,
-      height: Get.height * 0.9, // Mengatur tinggi bottom sheet menjadi 80% dari tinggi layar
+      height: Get.height * 0.9,
       child: Column(
         children: [
           Padding(

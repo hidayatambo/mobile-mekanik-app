@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../main.dart';
-import '../../../componen/loadingshammer.dart';
+import '../../../componen/loading_shammer.dart';
 
 class ChatView extends StatelessWidget {
   final List<User> users = [

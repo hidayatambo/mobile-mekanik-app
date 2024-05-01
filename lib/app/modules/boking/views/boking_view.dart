@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
   import 'package:pull_to_refresh/pull_to_refresh.dart';
   import 'package:search_page/search_page.dart';
 
-  import '../../../componen/loadingshammer.dart';
+  import '../../../componen/loading_cabang_shimmer.dart';
+import '../../../componen/loading_search_shimmer.dart';
+import '../../../componen/loading_shammer.dart';
 import '../../../data/data_endpoint/boking.dart';
   import '../../../data/data_endpoint/profile.dart';
   import '../../../data/endpoint.dart';
@@ -69,7 +71,7 @@ import '../componen/card_booking.dart';
                   future: API.profileiD(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
+                      return const loadcabang();
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
@@ -102,7 +104,7 @@ import '../componen/card_booking.dart';
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: loadsearch(),
                     );
                   } else if (snapshot.hasData && snapshot.data != null) {
                     final data = snapshot.data!.dataBooking;

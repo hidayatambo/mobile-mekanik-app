@@ -15,6 +15,14 @@ class ApproveController extends GetxController {
   final TextEditingController odometer = TextEditingController(text: '');
   final TextEditingController catatan = TextEditingController();
   final TextEditingController mekanik = TextEditingController();
+  final TextEditingController jam = TextEditingController();
+  final TextEditingController tanggal = TextEditingController();
+  final TextEditingController keluhan = TextEditingController();
+  final TextEditingController perintah = TextEditingController();
+  final TextEditingController rangka = TextEditingController();
+  final TextEditingController mesin = TextEditingController();
+  final TextEditingController pic = TextEditingController();
+  final TextEditingController hppic = TextEditingController();
 
   void setData({
     required String id,

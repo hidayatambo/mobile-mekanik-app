@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mekanik/app/modules/home/componen/stats_grid.dart';
+import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import 'bar_chart.dart';
@@ -25,7 +26,7 @@ class _StatsScreenState extends State<StatsScreen> {
               future: API.profileiD(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const loadcabang();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

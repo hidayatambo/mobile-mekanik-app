@@ -39,6 +39,7 @@ class Loadingshammer extends StatelessWidget {
                     children: [
                       const Text('Jenis Service'),
                       Shimmer(
+                        direction: ShimmerDirection(),
                         child:
                       Container(
                         width: 120,

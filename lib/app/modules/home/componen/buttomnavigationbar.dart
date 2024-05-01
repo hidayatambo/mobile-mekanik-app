@@ -90,11 +90,11 @@ class _HomeViewState extends State<HomeView> {
           });
         },
         children:  <Widget>[
-          HomePage(),
+          const HomePage(),
           ChatView(),
-          BokingView(),
+          const BokingView(),
           const HistoryView(),
-          ProfileView(),
+          const ProfileView(),
         ],
       ),
       appBar: AppBar(

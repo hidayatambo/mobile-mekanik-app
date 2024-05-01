@@ -13,7 +13,7 @@ class History {
     if (json['dataHistory'] != null) {
       dataHistory = <DataHistory>[];
       json['dataHistory'].forEach((v) {
-        dataHistory!.add(new DataHistory.fromJson(v));
+        dataHistory!.add(DataHistory.fromJson(v));
       });
     }
   }
@@ -53,7 +53,7 @@ class DataHistory {
   String? tglKeluar;
   String? tglKembali;
   String? kmKeluar;
-  Null? kmKembali;
+  String? kmKembali;
   String? keluhan;
   String? perintahKerja;
   String? pergantianPart;

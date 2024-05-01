@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
   import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../componen/loading_search_shimmer.dart';
-import '../../../componen/loading_shammer.dart';
+import '../../../componen/loading_shammer_booking.dart';
 import '../../../data/data_endpoint/boking.dart';
   import '../../../data/data_endpoint/profile.dart';
   import '../../../data/endpoint.dart';
@@ -398,7 +398,7 @@ import '../componen/card_booking.dart';
     }
 
     void _onRefresh(String? status) {
-      API.Historyid();
+      API.bokingid();
       widget.clearCachedBoking();
       _refreshControllers[_getStatusIndex(status)].refreshCompleted();
     }

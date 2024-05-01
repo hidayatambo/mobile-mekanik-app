@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mekanik/app/modules/home/componen/stats_grid.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
@@ -13,9 +14,26 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
+  late RefreshController _refreshController; // the refresh controller
+  final _scaffoldKey =
+  GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
+  @override
+  void initState() {
+    _refreshController =
+        RefreshController(); // we have to use initState because this part of the app have to restart
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+    onLoading: _onLoading,
+    onRefresh: _onRefresh,
+    child:
+      Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: Column(
@@ -71,6 +89,7 @@ class _StatsScreenState extends State<StatsScreen> {
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -112,5 +131,19 @@ class _StatsScreenState extends State<StatsScreen> {
       sliver: SliverToBoxAdapter(
       ),
     );
+  }
+  _onLoading() {
+    _refreshController
+        .loadComplete(); // after data returned,set the //footer state to idle
+  }
+
+  _onRefresh() {
+    setState(() {
+// so whatever you want to refresh it must be inside the setState
+      const StatsScreen(); // if you only want to refresh the list you can place this, so the two can be inside setState
+      _refreshController
+          .refreshCompleted(); // request complete,the header will enter complete state,
+// resetFooterState : it will set the footer state from noData to idle
+    });
   }
 }

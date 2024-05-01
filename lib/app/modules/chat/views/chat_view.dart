@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../../main.dart';
-import '../../../componen/loading_shammer.dart';
+import '../../../componen/color.dart';
+import '../../../componen/loading_shammer_booking.dart';
 
 class ChatView extends StatelessWidget {
   final List<User> users = [

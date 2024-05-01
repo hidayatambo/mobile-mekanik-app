@@ -306,7 +306,7 @@ class _ProfileViewState extends State<ProfileView> {
     API.clearCachedProfile();
     API.clearCacheGeneral();
     API.clearCacheMekanik();
-    API.clearCachedHistory();
+    API.clearCacheHistory();
 
     // Navigasi ke halaman login
     Get.offAllNamed(Routes.SIGNIN);

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
 import 'data_endpoint/approve.dart';
@@ -207,6 +206,7 @@ class API {
       throw e;
     }
   }
+
   //Beda
   static Future<Approve> approveId({
     required String email,
@@ -516,15 +516,17 @@ class API {
   }
   //beda
   static History? _cachedHistory;
-  static void clearCachedHistory() {
-    _cachedHistory = null;
+
+  static void clearCacheHistory() {
+    _cachedGeneral = null;
   }
-  static Future<History> Historyid() async {
+
+  static Future<History> HistoryID() async {
     if (_cachedHistory != null) {
       return _cachedHistory!;
     }
 
-    final token = Publics.controller.getToken.value ?? '';
+    final token = Publics.controller.getToken.value;
     var data = {"token": token};
     try {
       var response = await Dio().get(
@@ -538,22 +540,20 @@ class API {
       );
 
       if (response.statusCode == 404) {
-        return History(status: false, message: "Tidak ada data booking untuk karyawan ini.");
+        throw Exception("Tidak ada data general checkup.");
       }
 
       final obj = History.fromJson(response.data);
-      _cachedHistory = obj as History?;
+      _cachedHistory = obj;
 
-      if (obj.message == 'Invalid token: Expired') {
-        Get.offAllNamed(Routes.SIGNIN);
-        Get.snackbar(
-          obj.message.toString(),
-          obj.message.toString(),
-        );
+      if (obj.dataHistory == null) {
+        throw Exception("Data general checkup kosong.");
       }
+
       return obj;
     } catch (e) {
       throw e;
     }
   }
+
 }

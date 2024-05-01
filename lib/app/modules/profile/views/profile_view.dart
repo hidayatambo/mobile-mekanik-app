@@ -302,11 +302,6 @@ class _ProfileViewState extends State<ProfileView> {
   void logout() {
     // Bersihkan cache untuk setiap data yang Anda simpan dalam cache
     LocalStorages.deleteToken();
-    API.clearCachedBoking();
-    API.clearCachedProfile();
-    API.clearCacheGeneral();
-    API.clearCacheMekanik();
-    API.clearCacheHistory();
 
     // Navigasi ke halaman login
     Get.offAllNamed(Routes.SIGNIN);

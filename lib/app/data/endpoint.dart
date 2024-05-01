@@ -85,15 +85,8 @@ class API {
 
 //beda
 
-  static Profile? _cachedProfile;
-  static void clearCachedProfile() {
-    _cachedProfile = null;
-  }
-  static Future<Profile> profileiD() async {
-    if (_cachedProfile != null) {
-      return _cachedProfile!;
-    }
 
+  static Future<Profile> profileiD() async {
     final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
@@ -112,7 +105,6 @@ class API {
       }
 
       final obj = Profile.fromJson(response.data);
-      _cachedProfile = obj as Profile?;
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);
@@ -126,11 +118,8 @@ class API {
       throw e;
     }
   }
+
 //beda
-  static Boking? _cachedBoking;
-  static void clearCachedBoking() {
-    _cachedBoking = null;
-  }
   static Future<Boking> bokingid() async {
     try {
       final token = Publics.controller.getToken.value ?? '';
@@ -166,17 +155,7 @@ class API {
   }
 
   //Beda
-  static general_checkup? _cachedGeneral;
-
-  static void clearCacheGeneral() {
-    _cachedGeneral = null;
-  }
-
   static Future<general_checkup> GeneralID() async {
-    if (_cachedGeneral != null) {
-      return _cachedGeneral!;
-    }
-
     final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
@@ -195,7 +174,6 @@ class API {
       }
 
       final obj = general_checkup.fromJson(response.data);
-      _cachedGeneral = obj;
 
       if (obj.data == null) {
         throw Exception("Data general checkup kosong.");
@@ -323,17 +301,7 @@ class API {
     }
   }
   //Beda
-  static Mekanik? _cachedMekanik;
-
-  static void clearCacheMekanik() {
-    _cachedMekanik = null;
-  }
-
   static Future<Mekanik> MekanikID() async {
-    if (_cachedMekanik != null) {
-      return _cachedMekanik!;
-    }
-
     final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
     try {
@@ -352,7 +320,6 @@ class API {
       }
 
       final obj = Mekanik.fromJson(response.data);
-      _cachedMekanik = obj;
 
       if (obj.message == null) {
         throw Exception("Data Mekanik kosong.");
@@ -515,17 +482,7 @@ class API {
     }
   }
   //beda
-  static History? _cachedHistory;
-
-  static void clearCacheHistory() {
-    _cachedGeneral = null;
-  }
-
   static Future<History> HistoryID() async {
-    if (_cachedHistory != null) {
-      return _cachedHistory!;
-    }
-
     final token = Publics.controller.getToken.value;
     var data = {"token": token};
     try {
@@ -544,7 +501,6 @@ class API {
       }
 
       final obj = History.fromJson(response.data);
-      _cachedHistory = obj;
 
       if (obj.dataHistory == null) {
         throw Exception("Data general checkup kosong.");

@@ -158,8 +158,8 @@ class BokingList extends StatelessWidget {
                   children: [
                     const Text('Merek :'),
                     Text(items.namaMerk??'', style: const TextStyle(fontWeight: FontWeight.bold),),
-                    const Text('NoPol :'),
-                    Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Warna :'),
+                    Text(items.warna??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
                 Column(

@@ -304,6 +304,7 @@ import '../componen/card_booking.dart';
                                       'nama_jenissvc': e.namaService??'',
                                       'no_polisi': e.noPolisi??'',
                                       'nama_merk': e.namaMerk??'',
+                                      'keluhan': e.keluhan??'',
                                       'kode_booking': e.kodeBooking??'',
                                       'tahun': e.tahun??'',
                                       'warna': e.warna??'',
@@ -326,6 +327,7 @@ import '../componen/card_booking.dart';
                                       'booking_id': e.tglBooking??'',
                                       'jam_booking': e.jamBooking??'',
                                       'nama': e.nama??'',
+                                      'keluhan': e.keluhan??'',
                                       'kode_kendaraan': e.kodeKendaraan??'',
                                       'kode_pelanggan': e.kodePelanggan??'',
                                       'nama_jenissvc': e.namaService??'',
@@ -338,7 +340,7 @@ import '../componen/card_booking.dart';
                                       'nama_merk': e.namaMerk??'',
                                       'transmisi': e.transmisi??'',
                                       'nama_tipe': e.namaTipe??'',
-                                      'alamat': e.hp??'',
+                                      'alamat': e.alamat??'',
                                       'status': e.bookingStatus??'',
                                       'status': e.bookingStatus??'',
 
@@ -374,7 +376,7 @@ import '../componen/card_booking.dart';
                                     }
                                   }
                                   Get.toNamed(
-                                    Routes.GENERAL_CHECKUP,
+                                    Routes.CHAT,
                                     arguments: {
                                       // 'id': e.id??'',
                                       'tgl_booking': e.tglBooking ?? '',
@@ -387,6 +389,7 @@ import '../componen/card_booking.dart';
                                       'nama_jenissvc': e.namaService ?? '',
                                       'no_polisi': e.noPolisi ?? '',
                                       'tahun': e.tahun ?? '',
+                                      'tahun': e.keluhan ?? '',
                                       'kategori_kendaraan': e
                                           .kategoriKendaraan ?? '',
                                       'kategori_kendaraan_id': kategoriKendaraanId,
@@ -439,6 +442,7 @@ import '../componen/card_booking.dart';
                                       'no_polisi': e.noPolisi ?? '',
                                       'tahun': e.tahun ?? '',
                                       'warna': e.warna ?? '',
+                                      'warna': e.keluhan ?? '',
                                       'kode_kendaraan': e.kodeKendaraan ?? '',
                                       'kode_pelanggan': e.kodePelanggan ?? '',
                                       'ho': e.nama ?? '',

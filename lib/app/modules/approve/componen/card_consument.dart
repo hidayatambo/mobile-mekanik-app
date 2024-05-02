@@ -67,6 +67,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
     final String alamat = args['alamat'] ?? '';
     final String tahun = args['tahun'] ?? '';
     final String warna = args['warna'] ?? '';
+    final String keluhan = args['keluhan'] ?? '';
     final String kodebooking = args['kode_booking'] ?? '';
     final String nomesin = args['no_mesin'] ?? '';
     final String norangka = args['no_rangka'] ?? '';
@@ -477,13 +478,31 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         ),
                       ),
                     ),
-
                   ],),),
               SizedBox(width: 10,),
               Flexible(
-                child:
-                Column(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Keluhan'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.only(left: 25, right: 20),
+                      child: TextField(
+                        enabled: false,
+
+                        decoration: InputDecoration(
+                          hintText: keluhan,
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+
                   ],),),
             ],),
           const Divider(

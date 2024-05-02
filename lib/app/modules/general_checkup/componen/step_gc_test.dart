@@ -93,7 +93,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         ),
         body: Stepper(
           currentStep: currentStep,
-          physics: const ScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           onStepContinue: () {
             // Cek apakah pengguna berada pada langkah terakhir
             if (currentStep == stepTitles.length - 1) {
@@ -166,27 +166,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
               });
             }
           },
-          // onStepContinue: () {
-          //   submitForm(context);
-          //   QuickAlert.show(
-          //     context: Get.context!,
-          //     type: QuickAlertType.info,
-          //     headerBackgroundColor: Colors.yellow,
-          //     text: 'Data Berhasil disimpan',
-          //     confirmBtnText: 'Oke',
-          //     confirmBtnColor: Colors.green,
-          //     onConfirmBtnTap: () {
-          //       Navigator.pop(Get.context!);
-          //     },
-          //   );
-          //   if (currentStep < 7) { // Periksa apakah currentStep kurang dari jumlah total langkah - 1
-          //     setState(() {
-          //       currentStep += 1;
-          //       isSubmitting = true;
-          //     });
-          //   }
-          // },
-
           steps: [
             Step(
               title: const Text('Mesin'),

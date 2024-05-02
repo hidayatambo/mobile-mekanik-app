@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import '../../../data/data_endpoint/mekanik.dart';
+import '../../../data/endpoint.dart';
 import '../../repair_maintenen/componen/card_consument.dart';
 import '../componen/step_gc_test.dart';
 
@@ -21,6 +26,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       status[key] = value;
     });
   }
+  String? selectedMechanic = '';
   void handleSubmit() {
     showModalBottomSheet(
       enableDrag: true,
@@ -48,7 +54,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     final String? bookingId = args['kode_booking'];
     final String nama = args['nama'] ?? '';
     final String nama_jenissvc = args['nama_jenissvc'] ?? '';
-    final String nama_tipe = args['nama_tipe'] ?? '';;
+    final String nama_tipe = args['nama_tipe'] ?? '';
 
     return WillPopScope(
         onWillPop: () async {
@@ -82,23 +88,23 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-              Text('Edit General Check UP/P2H',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-              SizedBox(width: 50,),
-            ],),
+                Text('Edit General Check UP/P2H',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                SizedBox(width: 50,),
+              ],),
             const SizedBox(height: 10,),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-        Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Nama :', style: TextStyle(fontSize: 13),),
-            Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-            const Text('Kendaraan :',style: TextStyle(fontSize: 13),),
-            Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-          ]),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Nama :', style: TextStyle(fontSize: 13),),
+                      Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                      const Text('Kendaraan :',style: TextStyle(fontSize: 13),),
+                      Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                    ]),
 
                 Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -109,10 +115,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       const Text('Kode Boking :',style: TextStyle(fontSize: 13),),
                       Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
                     ]),
-            ],),
+              ],),
+            SizedBox(height: 10,),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
 
-        ],),
-        toolbarHeight: 120,
+                ]),
+          ],),
+        toolbarHeight: 160,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () {
@@ -136,10 +148,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         actions: const [
         ],
       ),
-      body:  const MyStepperPage()
+      body: const MyStepperPage()
     ),
      );
   }
+
   Widget _buildBottomSheet() {
     final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
     final Map args = Get.arguments;

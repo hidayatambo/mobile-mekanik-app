@@ -1,219 +1,187 @@
+import 'dart:developer';
+
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:mekanik/app/data/data_endpoint/history.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
-
-import '../../../../main.dart';
-import '../../../componen/color.dart';
-import '../../../componen/loading_shammer_booking.dart';
-import '../../../data/data_endpoint/kategory.dart';
+import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
-import '../../../tester/tester_kategori.dart';
+import '../../general_checkup/componen/step_gc_test.dart';
 
-class ChatView extends StatelessWidget {
-  final List<User> users = [
-    User(name: 'Irwan', profileImage: 'https://example.com/alice.jpg'),
-    User(name: 'Dayat', profileImage: 'https://example.com/bob.jpg'),
-  ];
+class ChatView extends StatefulWidget {
+  const ChatView({Key? key}) : super(key: key);
 
-  ChatView({super.key});
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
 
+class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-          child: null
-      ),
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('User List'),
-      ),
-      body:  Column(
-        children: [
-          FutureBuilder(
-            future: API.kategoriID(),
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState != ConnectionState.waiting &&
-                  snapshot.data != null) {
-                Kategori getDataAcc =
-                    snapshot.data ?? DataKategoriKendaraan();
-                return Column(
-                  children: AnimationConfiguration.toStaggeredList(
-                    duration: const Duration(milliseconds: 475),
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                      child: FadeInAnimation(
-                        child: widget,
-                      ),
-                    ),
-                    children: getDataAcc.dataKategoriKendaraan != null
-                        ? getDataAcc.dataKategoriKendaraan!
-                        .map((e) {
-                      return Datakategori(
-                        items: e,
-                        onTap: () {},
-                      );
-                    })
-                        .toList()
-                        : [Container()],
-                  ),
-                );
-              } else {
-                return SizedBox(
-                  height: Get.height - 250,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [],
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-
-        ])
-  );
-
-
-      // ListView.builder(
-      //   itemCount: users.length,
-      //   itemBuilder: (context, index) {
-      //     final user = users[index];
-      //     return ListTile(
-      //       leading: CircleAvatar(
-      //         backgroundImage: NetworkImage(user.profileImage),
-      //       ),
-      //       title: Text(user.name),
-      //       onTap: () {
-      //         Navigator.push(
-      //           context,
-      //           MaterialPageRoute(builder: (context) => ChatScreen(user: user)),
-      //         );
-      //       },
-      //     );
-      //   },
-      // ),
-
-  }
-}
-
-class ChatScreen extends StatefulWidget {
-  final User user;
-
-  const ChatScreen({super.key, required this.user});
-
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final List<Message> _messages = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(widget.user.profileImage),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverPersistentHeader(
+              pinned: true,
+              floating: true,
+              delegate: CustomSliverDelegate(
+                expandedHeight: 120,
+              ),
             ),
-            const SizedBox(width: 8),
-            Text(widget.user.name),
+            SliverFillRemaining(
+              child: MyStepperPage()
+            ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return MessageBubble(
-                  message: message,
-                  isMe: message.isMe,
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Type your message...',
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    if (_controller.text.isNotEmpty) {
-                      setState(() {
-                        _messages.add(Message(text: _controller.text, isMe: true));
-                        _controller.clear();
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
 }
 
-class User {
-  final String name;
-  final String profileImage;
+class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
+  final double expandedHeight;
+  final bool hideTitleWhenExpanded;
 
-  User({required this.name, required this.profileImage});
-}
-
-class Message {
-  final String text;
-  final bool isMe;
-
-  Message({required this.text, required this.isMe});
-}
-
-class MessageBubble extends StatelessWidget {
-  final Message message;
-  final bool isMe;
-
-  const MessageBubble({super.key, required this.message, required this.isMe});
+  CustomSliverDelegate({
+    required this.expandedHeight,
+    this.hideTitleWhenExpanded = true,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final Map args = Get.arguments;
+    final String? bookingId = args['kode_booking'];
+    final String nama = args['nama'] ?? '';
+    final String nama_jenissvc = args['nama_jenissvc'] ?? '';
+    final String nama_tipe = args['nama_tipe'] ?? '';
+    final appBarSize = expandedHeight - shrinkOffset;
+    final cardTopPosition = expandedHeight / 10 - shrinkOffset;
+    final proportion = 2 - (expandedHeight / appBarSize);
+    String? selectedMechanic = '';
+    final percent = proportion < 0 || proportion > 1 ? 0.0 : proportion;
+    return SizedBox(
+      height: expandedHeight + expandedHeight / 0.6,
+      child: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: isMe ? Colors.blue : Colors.grey[300],
-              borderRadius: BorderRadius.circular(10),
+          SizedBox(
+            height: appBarSize < kToolbarHeight ? kToolbarHeight : appBarSize,
+            child: AppBar(
+              backgroundColor:Colors.white,
+              toolbarHeight: 40,
+              elevation: 0.0,
+              title: Opacity(
+                  opacity: hideTitleWhenExpanded ? 1.0 - percent : 1.0,
+                  child: Text("Test",)),
             ),
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              message.text,
-              style: TextStyle(
-                color: isMe ? Colors.white : Colors.black,
+          ),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            top: cardTopPosition > 0 ? cardTopPosition : 2,
+            bottom: 0.0,
+            child: Opacity(
+              opacity: percent,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10 * percent),
+                child: Container(
+                  margin: EdgeInsets.only(top: 0),
+                  child:
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child:Column(
+                      children: [
+                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Nama :', style: TextStyle(fontSize: 13),),
+                                Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                                Text('Kendaraan :',style: TextStyle(fontSize: 13),),
+                                Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                              ]),
+
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Jenis Service :', style: TextStyle(fontSize: 13),),
+                                Text('$nama_jenissvc',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                                Text('Kode Boking :',style: TextStyle(fontSize: 13),),
+                                Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                              ]),
+                        ],),
+                      SizedBox(height: 5,),
+                      FutureBuilder<Mekanik>(
+                        future: API.MekanikID(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.hasData && snapshot.data!.dataMekanik != null && snapshot.data!.dataMekanik!.isNotEmpty) {
+                              final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
+                              final List<String> namaMekanikList = _list
+                                  .map((mekanik) => mekanik.nama!)
+                                  .where((nama) => nama != null)
+                                  .toList();
+                              return Column(
+                                children: [
+                                  CustomDropdown<String>.search(
+                                    hintText: 'Pilih mekanik',
+                                    items: namaMekanikList,
+                                    excludeSelected: false,
+                                    onChanged: (value) {
+                                      selectedMechanic = value;
+                                      log('Mengubah nilai menjadi: $value');
+                                    },
+                                  ),
+                                ],
+                              );
+                            } else {
+                              // Menampilkan pesan jika tidak ada data Mekanik
+                              return Center(child: Text('Mekanik tidak ada'));
+                            }
+                          }
+                        },
+                      ),
+                    ],),
+                  ),
+                ),
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  double get maxExtent => expandedHeight + expandedHeight / 2;
+
+  @override
+  double get minExtent => kToolbarHeight;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

@@ -154,32 +154,37 @@ class _LoginPageState extends State<LoginPage> {
                               message: "Masuk",
                               function: () async {
                                 if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-                                  Token aksesPX = await API.login(
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
-                                  );
+                                  try {
+                                    Token aksesPX = await API.login(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                    );
 
-                                  if (aksesPX.message == 200) {
-                                    if (aksesPX.token != null) {
-                                      // Hapus token dari penyimpanan lokal
-                                      await LocalStorages.deleteToken();
-
-                                      // Pindah ke halaman utama
-                                      Get.offAllNamed(Routes.HOME);
+                                    if (aksesPX.status != false) {
+                                      if (aksesPX.token != null) {
+                                        await LocalStorages.deleteToken();
+                                        Get.offAllNamed(Routes.HOME);
+                                      }
+                                    } else {
+                                      // Menampilkan pesan kesalahan sesuai dengan respons server
+                                      String errorMessage = aksesPX.message ?? 'Terjadi kesalahan saat login';
+                                      Object errorDetail = aksesPX.data ?? '';
+                                      Get.snackbar('Error', '$errorMessage: $errorDetail');
                                     }
+                                  } catch (e) {
+                                    // Menampilkan pesan kesalahan saat terjadi error
+                                    print('Error during login: $e');
+                                    Get.snackbar('Error', 'Terjadi kesalahan saat login',
+                                        backgroundColor: const Color(0xffe5f3e7));
                                   }
                                 } else {
                                   Get.snackbar('404', 'Username dan Password harus diisi');
                                 }
-                                if (flag) {
-                                  setState(() {
-                                    flag = false;
-                                  });
-                                } else {
-                                  setState(() {
-                                    flag = true;
-                                  });
-                                }
+
+                                setState(() {
+                                  flag = !flag;
+                                });
+
                               },
 
                               color: MyColors.appPrimaryColor,

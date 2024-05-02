@@ -91,7 +91,6 @@ class BokingList extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    const Text('Jam Booking :'),
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -100,12 +99,28 @@ class BokingList extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            items.jamBooking.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Container(
+                            padding: EdgeInsetsDirectional.all(4),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+                            child: Column(children: [
+                              const Text('tanggal Booking :'),
+                              Text(
+                                items.jamBooking.toString(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text('Jam Booking :'),
+                              Text(
+                                items.jamBooking.toString(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],),
+
                           ),
                         ],
                       ),

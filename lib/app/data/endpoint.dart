@@ -44,6 +44,7 @@ class API {
       "email": email,
       "password": password,
     };
+
     try {
       var response = await Dio().post(
         _getLogin,
@@ -55,36 +56,43 @@ class API {
         ),
         data: data,
       );
+
       if (response.statusCode == 200) {
         final responseData = response.data;
-        final obj = Token.fromJson(responseData);
-        if (obj.message == 'Invalid token: Expired') {
-          Get.offAllNamed(Routes.SIGNIN);
+
+        if (responseData['status'] == false) {
+          // Tangani kasus email atau password salah
+          Get.snackbar('Error', responseData['message'],
+              backgroundColor: const Color(0xffe5f3e7));
+          return Token(status: false); // Token dengan status false
         } else {
-          if (obj.message != 0) {
-            if (obj.token != null) {
-              LocalStorages.setToken(obj.token ?? ''); // Gunakan nilai default jika obj.token null
-              Get.snackbar('Selamat Datang', 'Menkanik Bengkelly');
-              Get.offAllNamed(Routes.HOME);
-            } else {
-              Get.snackbar('Error', 'Kode Perusahaan tidak ditemukan',
-                  backgroundColor: const Color(0xffe5f3e7));
-            }
+          final obj = Token.fromJson(responseData);
+          if (obj.token != null) {
+            LocalStorages.setToken(obj.token!);
+            Get.snackbar('Selamat Datang', 'Menkanik Bengkelly');
+            Get.offAllNamed(Routes.HOME);
           } else {
-            Get.snackbar('Error', 'Gagal melakukan login',
+            Get.snackbar('Error', 'Kode Perusahaan tidak ditemukan',
                 backgroundColor: const Color(0xffe5f3e7));
           }
+          print('Login successful. Response data: ${obj.toJson()}');
+          return obj;
         }
-        print(obj.toJson());
-        return obj;
       } else {
-        throw Exception('Failed to load data, status code: ${response.statusCode}');
+        print('Failed to load data, status code: ${response.statusCode}');
+        throw DioError(
+          requestOptions: RequestOptions(path: _getLogin),
+          response: response,
+        );
       }
     } catch (e) {
-      print(e);
+      print('Error during login: $e');
       throw e;
     }
   }
+
+
+
 
 //beda
 

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
-import '../../../data/data_endpoint/general_chackup.dart';
+import '../../../data/data_endpoint/gc_mekanik.dart';
 import '../../../data/endpoint.dart';
 
 class MyStepperPage extends StatefulWidget {
@@ -39,6 +39,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   int currentStep = 0;
   bool isSubmitting = false;
   late String kodeBooking;
+  late String kategoriKendaraanId;
   final List<String> stepTitles = [
     'Mesin',
     'Mesin',
@@ -61,7 +62,9 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     deskripsiControllers = {};
     final Map<String, dynamic>? arguments = Get.arguments as Map<String, dynamic>?;
     kodeBooking = arguments?['booking_id'] ?? '';
+    kategoriKendaraanId = arguments?['kategori_kendaraan_id'] ?? '';
     print('Kode Booking: $kodeBooking');
+    print('kategori_kendaraan_id : $kategoriKendaraanId');
   }
 
   @override
@@ -251,7 +254,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     return Column(
       children: [
         FutureBuilder(
-          future: API.GeneralID(),
+          future: API.GCMekanikID(
+              kategoriKendaraanId: kategoriKendaraanId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -263,7 +267,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
               );
             } else if (snapshot.hasData) {
               final generalData = snapshot.data;
-              final getDataAcc = generalData?.data?.where((e) => e.subHeading == title).toList();
+              final getDataAcc = generalData?.dataGeneralCheckUp?.where((e) => e.subHeading == title).toList();
               if (getDataAcc != null && getDataAcc.isNotEmpty) {
                 return Column(
                   children: [
@@ -273,7 +277,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                         if (!deskripsiControllers.containsKey(gcuId)) {
                           deskripsiControllers[gcuId] = TextEditingController();
                         }
-
                         return GcuItem(
                           key: ValueKey(gcuId),
                           gcu: gcus,
@@ -282,7 +285,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                           onDropdownChanged: (value) {
                             setState(() {
                               dropdownValues[gcuId] = value;
-                              // Reset deskripsi jika dropdown diubah menjadi 'Oke'
                               if (value == 'Oke') {
                                 deskripsiControllers[gcuId]?.text = '';
                               }
@@ -317,13 +319,15 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     });
 
     try {
-      final generalData = await API.GeneralID();
+      final kategoriKendaraanId = this.kategoriKendaraanId ?? '';
+      final generalData = await API.GCMekanikID
+        (kategoriKendaraanId: kategoriKendaraanId);
 
-      if (generalData.data != null) {
-        final dataList = generalData.data!;
+      if (generalData.dataGeneralCheckUp != null) {
+        final dataList = generalData.dataGeneralCheckUp!;
         List<Map<String, dynamic>> generalCheckupList = [];
         final title = stepTitles[currentStep];
-        final getDataAcc = dataList.firstWhere((e) => e.subHeading == title, orElse: () => null as Data);
+        final getDataAcc = dataList.firstWhere((e) => e.subHeading == title, orElse: () => null as DataGeneralCheckUp);
 
         if (getDataAcc.gcus != null && getDataAcc.gcus!.isNotEmpty) {
           final gcusList = getDataAcc.gcus!.map<Map<String, dynamic>>(

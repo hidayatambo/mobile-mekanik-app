@@ -7,8 +7,10 @@ import '../routes/app_pages.dart';
 import 'data_endpoint/approve.dart';
 import 'data_endpoint/boking.dart';
 import 'data_endpoint/estimasi.dart';
+import 'data_endpoint/gc_mekanik.dart';
 import 'data_endpoint/general_chackup.dart';
 import 'data_endpoint/history.dart';
+import 'data_endpoint/kategory.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
@@ -26,12 +28,14 @@ class API {
   static const _getTooking = '$_baseUrl/mekanik/booking';
   static const _getGeneral = '$_baseUrl/mekanik/general-checkup';
   static const _getMekanik = '$_baseUrl/mekanik/get-mekanik';
-  static const _getApprovek = '$_baseUrl/mekanik/approve-booking';
-  static const _getUpprovek = '$_baseUrl/mekanik/unapprove-booking';
-  static const _getSubmitGC = '$_baseUrl/mekanik/submit-general-checkup';
-  static const _getestimasi = '$_baseUrl/mekanik/insert-estimasi';
-  static const _getSubmitGCFinish = '$_baseUrl/mekanik/submit-general-checkup-finish';
+  static const _postApprovek = '$_baseUrl/mekanik/approve-booking';
+  static const _postUpprovek = '$_baseUrl/mekanik/unapprove-booking';
+  static const _postSubmitGC = '$_baseUrl/mekanik/submit-general-checkup';
+  static const _postestimasi = '$_baseUrl/mekanik/insert-estimasi';
+  static const _postSubmitGCFinish = '$_baseUrl/mekanik/submit-general-checkup-finish';
   static const _gethistory = '$_baseUrl/mekanik/get-history-mekanik';
+  static const _getKategory = '$_baseUrl/mekanik/kategori-kendaraan';
+  static const _getGCMekanik = '$_baseUrl/mekanik/general-checkup-mekanik';
   static final _controller = Publics.controller;
 
 
@@ -59,7 +63,6 @@ class API {
         } else {
           if (obj.message != 0) {
             if (obj.token != null) {
-              // Periksa apakah token tidak null sebelum disimpan
               LocalStorages.setToken(obj.token ?? ''); // Gunakan nilai default jika obj.token null
               Get.snackbar('Selamat Datang', 'Menkanik Bengkelly');
               Get.offAllNamed(Routes.HOME);
@@ -230,7 +233,7 @@ class API {
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
-        _getApprovek,
+        _postApprovek,
         data: data,
         options: Options(
           headers: {
@@ -273,7 +276,7 @@ class API {
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
-        _getUpprovek,
+        _postUpprovek,
         data: data,
         options: Options(
           headers: {
@@ -379,7 +382,7 @@ class API {
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
-        _getestimasi,
+        _postestimasi,
         data: data,
         options: Options(
           headers: {
@@ -407,16 +410,16 @@ class API {
     }
   }
 
-
+//Beda
   static Future<SubmitGC> submitGCID({
     required Map<String, dynamic> generalCheckup,
   }) async {
     try {
-      final token = Publics.controller.getToken.value ?? '';
+      final token = await Publics.controller.getToken.value;
       print('Token: $token');
 
       final response = await Dio().post(
-        _getSubmitGC,
+        _postSubmitGC,
         data: generalCheckup,
         options: Options(
           headers: {
@@ -441,6 +444,7 @@ class API {
       throw e;
     }
   }
+  //Beda
   static Future<Gcfinish> submitGCFinishId({
     required String bookingId,
   }) async {
@@ -454,7 +458,7 @@ class API {
       print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
       var response = await Dio().post(
-        _getSubmitGCFinish,
+        _postSubmitGCFinish,
         data: data,
         options: Options(
           headers: {
@@ -511,5 +515,70 @@ class API {
       throw e;
     }
   }
+//Beda
+  static Future<Kategori> kategoriID() async {
+    final token = Publics.controller.getToken.value;
+    var data = {"token": token};
+    try {
+      var response = await Dio().get(
+        _getKategory,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = Kategori.fromJson(response.data);
+
+      if (obj.dataKategoriKendaraan == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+  static Future<GCMekanik> GCMekanikID({
+    required String kategoriKendaraanId,
+  }) async {
+    final token = Publics.controller.getToken.value;
+    var data = {
+      "kategori_kendaraan_id": kategoriKendaraanId,
+    };
+    try {
+      var response = await Dio().get(
+        _getGCMekanik,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token", // Menambahkan token dalam header
+          },
+        ),
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = GCMekanik.fromJson(response.data);
+
+      if (obj.dataGeneralCheckUp == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+
 
 }

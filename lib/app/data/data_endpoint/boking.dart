@@ -42,6 +42,7 @@ class DataBooking {
   String? status;
   String? namaService;
   String? namaCabang;
+  String? kategoriKendaraan;
   String? kodeKendaraan;
   String? kodePelanggan;
   String? noPolisi;
@@ -68,6 +69,7 @@ class DataBooking {
         this.status,
         this.namaService,
         this.namaCabang,
+        this.kategoriKendaraan,
         this.kodeKendaraan,
         this.kodePelanggan,
         this.noPolisi,
@@ -94,6 +96,7 @@ class DataBooking {
     status = json['status'];
     namaService = json['nama_service'];
     namaCabang = json['nama_cabang'];
+    kategoriKendaraan = json['kategori_kendaraan'];
     kodeKendaraan = json['kode_kendaraan'];
     kodePelanggan = json['kode_pelanggan'];
     noPolisi = json['no_polisi'];
@@ -122,6 +125,7 @@ class DataBooking {
     data['status'] = this.status;
     data['nama_service'] = this.namaService;
     data['nama_cabang'] = this.namaCabang;
+    data['kategori_kendaraan'] = this.kategoriKendaraan;
     data['kode_kendaraan'] = this.kodeKendaraan;
     data['kode_pelanggan'] = this.kodePelanggan;
     data['no_polisi'] = this.noPolisi;

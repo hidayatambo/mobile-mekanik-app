@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mekanik/app/data/data_endpoint/history.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../../main.dart';
 import '../../../componen/color.dart';
 import '../../../componen/loading_shammer_booking.dart';
+import '../../../data/data_endpoint/kategory.dart';
+import '../../../data/endpoint.dart';
+import '../../../tester/tester_kategori.dart';
 
 class ChatView extends StatelessWidget {
   final List<User> users = [
@@ -25,8 +32,50 @@ class ChatView extends StatelessWidget {
       ),
       body:  Column(
         children: [
+          FutureBuilder(
+            future: API.kategoriID(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState != ConnectionState.waiting &&
+                  snapshot.data != null) {
+                Kategori getDataAcc =
+                    snapshot.data ?? DataKategoriKendaraan();
+                return Column(
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 475),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      child: FadeInAnimation(
+                        child: widget,
+                      ),
+                    ),
+                    children: getDataAcc.dataKategoriKendaraan != null
+                        ? getDataAcc.dataKategoriKendaraan!
+                        .map((e) {
+                      return Datakategori(
+                        items: e,
+                        onTap: () {},
+                      );
+                    })
+                        .toList()
+                        : [Container()],
+                  ),
+                );
+              } else {
+                return SizedBox(
+                  height: Get.height - 250,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [],
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
 
-        ],),
+        ])
+  );
+
 
       // ListView.builder(
       //   itemCount: users.length,
@@ -46,7 +95,7 @@ class ChatView extends StatelessWidget {
       //     );
       //   },
       // ),
-    );
+
   }
 }
 

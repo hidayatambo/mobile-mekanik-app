@@ -62,7 +62,7 @@ class _SearchBokingState extends State<SearchBoking> {
                             boking.kodeBooking,
                           ],
                           builder: (items) =>
-                              BokingList(items: items, onTap: () {  },),
+                              BokingList(items: items, onTap: () {  }, ),
                         ),
                       ),
                       decoration: InputDecoration(

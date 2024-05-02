@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
   import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   import 'package:get/get.dart';
   import 'package:google_fonts/google_fonts.dart';
+import 'package:mekanik/app/data/data_endpoint/kategory.dart';
   import 'package:pull_to_refresh/pull_to_refresh.dart';
   import 'package:search_page/search_page.dart';
 
@@ -13,6 +14,7 @@ import '../../../data/data_endpoint/boking.dart';
   import '../../../data/data_endpoint/profile.dart';
   import '../../../data/endpoint.dart';
   import '../../../routes/app_pages.dart';
+import '../../../tester/tester_kategori.dart';
 import '../componen/card_booking.dart';
 
   class BokingView extends StatefulWidget {
@@ -195,6 +197,46 @@ import '../componen/card_booking.dart';
         child: SingleChildScrollView(
           child: Column(
             children: [
+              FutureBuilder(
+                future: API.kategoriID(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData &&
+                      snapshot.connectionState != ConnectionState.waiting &&
+                      snapshot.data != null) {
+                    Kategori getDataAcc =
+                        snapshot.data ?? DataKategoriKendaraan();
+                    return Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 475),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: getDataAcc.dataKategoriKendaraan != null
+                            ? getDataAcc.dataKategoriKendaraan!
+                            .map((e) {
+                          return Datakategori(
+                            items: e,
+                            onTap: () {},
+                          );
+                        })
+                            .toList()
+                            : [Container()],
+                      ),
+                    );
+                  } else {
+                    return SizedBox(
+                      height: Get.height - 250,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
               FutureBuilder<Boking>(
                 future: API.bokingid(),
                 builder: (context, snapshot) {
@@ -241,7 +283,7 @@ import '../componen/card_booking.dart';
                             .map(
                               (e) => BokingList(
                             items: e,
-                            onTap: () {
+                            onTap: () async {
                               if (kDebugMode) {
                                 print('Nilai e.namaJenissvc: ${e.namaService??''}');
                               }
@@ -312,63 +354,102 @@ import '../componen/card_booking.dart';
                                 print('Nilai e.namaJenissvc: ${e.namaService??''}');
                               }
                               if (e.bookingStatus != null && e.namaService != null) {
-                                if (e.bookingStatus!.toLowerCase() == 'dikerjakan' &&
+                                if (e.bookingStatus!.toLowerCase() ==
+                                    'dikerjakan' &&
                                     e.namaService!.toLowerCase() !=
                                         'repair & maintenance') {
+                                  final generalData = await API.kategoriID();
+                                  String kategoriKendaraanId = '';
+                                  if (generalData != null) {
+                                    final matchingKategori = generalData
+                                        .dataKategoriKendaraan
+                                        ?.where((kategori) =>
+                                    kategori.kategoriKendaraan ==
+                                        e.kategoriKendaraan)
+                                        .firstOrNull;
+                                    if (matchingKategori != null &&
+                                        matchingKategori is DataKategoriKendaraan) {
+                                      kategoriKendaraanId = matchingKategori
+                                          .kategoriKendaraanId ?? '';
+                                    }
+                                  }
                                   Get.toNamed(
                                     Routes.GENERAL_CHECKUP,
                                     arguments: {
                                       // 'id': e.id??'',
-                                      'tgl_booking': e.tglBooking??'',
+                                      'tgl_booking': e.tglBooking ?? '',
                                       'booking_id': e.bookingId.toString(),
-                                      'jam_booking': e.jamBooking??'',
-                                      'nama': e.nama??'',
-                                      'kode_booking': e.kodeBooking??'',
-                                      'kode_kendaraan': e.kodeKendaraan??'',
-                                      'kode_pelanggan': e.kodePelanggan??'',
-                                      'nama_jenissvc': e.namaService??'',
-                                      'no_polisi': e.noPolisi??'',
-                                      'tahun': e.tahun??'',
-                                      'warna': e.warna??'',
-                                      'ho': e.hp??'',
-                                      'kode_booking': e.kodeBooking??'',
-                                      'nama_merk': e.namaMerk??'',
-                                      'transmisi': e.transmisi??'',
-                                      'nama_tipe': e.namaTipe??'',
-                                      'alamat': e.alamat??'',
-                                      'status': e.bookingStatus??'',
-                                      'status': e.bookingStatus??'',
+                                      'jam_booking': e.jamBooking ?? '',
+                                      'nama': e.nama ?? '',
+                                      'kode_booking': e.kodeBooking ?? '',
+                                      'kode_kendaraan': e.kodeKendaraan ?? '',
+                                      'kode_pelanggan': e.kodePelanggan ?? '',
+                                      'nama_jenissvc': e.namaService ?? '',
+                                      'no_polisi': e.noPolisi ?? '',
+                                      'tahun': e.tahun ?? '',
+                                      'kategori_kendaraan': e
+                                          .kategoriKendaraan ?? '',
+                                      'kategori_kendaraan_id': kategoriKendaraanId,
+                                      'warna': e.warna ?? '',
+                                      'ho': e.hp ?? '',
+                                      'kode_booking': e.kodeBooking ?? '',
+                                      'nama_merk': e.namaMerk ?? '',
+                                      'transmisi': e.transmisi ?? '',
+                                      'nama_tipe': e.namaTipe ?? '',
+                                      'alamat': e.alamat ?? '',
+                                      'status': e.bookingStatus ?? '',
+                                      'status': e.bookingStatus ?? '',
                                     },
                                   );
-                                } else if (e.bookingStatus!.toLowerCase() == 'dikerjakan' &&
+                                } else if (e.bookingStatus!.toLowerCase() ==
+                                    'dikerjakan' &&
                                     e.namaService!.toLowerCase() !=
                                         'general check up/p2h') {
+                                  final generalData = await API.kategoriID();
+                                  String kategoriKendaraanId = ''; // Default value
+
+                                  if (generalData != null) {
+                                    final matchingKategori = generalData
+                                        .dataKategoriKendaraan
+                                        ?.firstWhere((kategori) =>
+                                    kategori.kategoriKendaraan ==
+                                        e.kategoriKendaraan,
+                                        orElse: () =>
+                                            DataKategoriKendaraan(
+                                                kategoriKendaraanId: '',
+                                                kategoriKendaraan: ''));
+                                    if (matchingKategori != null &&
+                                        matchingKategori is DataKategoriKendaraan) {
+                                      kategoriKendaraanId = matchingKategori
+                                          .kategoriKendaraanId ?? '';
+                                    }
+                                  }
                                   Get.toNamed(
                                     Routes.REPAIR_MAINTENEN,
                                     arguments: {
-                                      // 'id': e.??'',
-                                      'tgl_booking': e.tglBooking??'',
+                                      'tgl_booking': e.tglBooking ?? '',
                                       'booking_id': e.bookingId.toString(),
-                                      'jam_booking': e.jamBooking??'',
-                                      'nama': e.nama??'',
-                                      'kode_booking': e.kodeBooking??'',
-                                      'nama_jenissvc': e.namaService??'',
-                                      'no_polisi': e.noPolisi??'',
-                                      'tahun': e.tahun??'',
-                                      'warna': e.warna??'',
-                                      'kode_kendaraan': e.kodeKendaraan??'',
-                                      'kode_pelanggan': e.kodePelanggan??'',
-                                      'ho': e.nama??'',
-                                      'kode_booking': e.kodeBooking??'',
-                                      'nama_merk': e.namaMerk??'',
-                                      'transmisi': e.transmisi??'',
-                                      'nama_tipe': e.namaTipe??'',
-                                      'alamat': e.alamat??'',
-                                      'status': e.bookingStatus??'',
-                                      'status': e.bookingStatus??'',
+                                      'jam_booking': e.jamBooking ?? '',
+                                      'nama': e.nama ?? '',
+                                      'kategori_kendaraan_id': kategoriKendaraanId,
+                                      'kategori_kendaraan': e
+                                          .kategoriKendaraan ?? '',
+                                      'kode_booking': e.kodeBooking ?? '',
+                                      'nama_jenissvc': e.namaService ?? '',
+                                      'no_polisi': e.noPolisi ?? '',
+                                      'tahun': e.tahun ?? '',
+                                      'warna': e.warna ?? '',
+                                      'kode_kendaraan': e.kodeKendaraan ?? '',
+                                      'kode_pelanggan': e.kodePelanggan ?? '',
+                                      'ho': e.nama ?? '',
+                                      'kode_booking': e.kodeBooking ?? '',
+                                      'nama_merk': e.namaMerk ?? '',
+                                      'transmisi': e.transmisi ?? '',
+                                      'nama_tipe': e.namaTipe ?? '',
+                                      'alamat': e.alamat ?? '',
+                                      'status': e.bookingStatus ?? '',
                                     },
                                   );
-                                } else {
                                 }
                               } else {
                                 // Lakukan penanganan jika status atau namaJenissvc bernilai null

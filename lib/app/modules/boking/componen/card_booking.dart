@@ -34,44 +34,119 @@ class BokingList extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Jenis Service'),
-                    Text(items.namaService?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text('Kode Booking :'),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(bottom: 10, top: 10, right: 15, left: 15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child:  Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(children: [
+                        Text('Jenis Service'),
+                        Text(items.namaService?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+                      ],),
                     Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: MyColors.appPrimaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: statusColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          items.bookingStatus.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                    ],),
+                 SizedBox(height: 10,),
+                  Divider(color: Colors.grey,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(children: [
+                        const Text('Tanggal Booking' ,style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ),),
+                        Text(
+                          items.tglBooking.toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                      ],),
+                      Column(children: [
+                        const Text('Jam Booking' ,style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ),),
+                        Text(
+                          items.jamBooking.toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                      ],),
+                    ],
+                  ),
+                  Divider(color: Colors.grey,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const Text('Pelanggan'),
+                          Text(items.nama??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                        ]),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text('Kode Booking'),
                           Text(
                             items.kodeBooking.toString(),
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.green,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                  ],),
+                ],
+              ),
             ),
+            const SizedBox(height: 10),
+            Text('Detail Kendaraaan',style: TextStyle(fontWeight: FontWeight.bold),),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,95 +158,22 @@ class BokingList extends StatelessWidget {
                   children: [
                     const Text('Merek :'),
                     Text(items.namaMerk??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('NoPol :'),
+                    Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     const Text('Type :'),
                     Text(items.namaTipe??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('NoPol :'),
                     Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
                 ),
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsetsDirectional.all(4),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
-                            child: Column(children: [
-                              const Text('tanggal Booking :'),
-                              Text(
-                                items.jamBooking.toString(),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Text('Jam Booking :'),
-                              Text(
-                                items.jamBooking.toString(),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],),
-
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text('Status :'),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 5,),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            items.bookingStatus.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Pemilik :'),
-                      Text(items.nama??'', style: const TextStyle(fontWeight: FontWeight.bold),),
-                    ]),
-              ],),
           ],
         ),
       ),

@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                     if (aksesPX.status != false) {
                                       if (aksesPX.token != null) {
-                                        await LocalStorages.deleteToken();
+                                        // await LocalStorages.deleteToken();
                                         Get.offAllNamed(Routes.HOME);
                                       }
                                     } else {

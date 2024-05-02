@@ -25,7 +25,7 @@ class _ChatViewState extends State<ChatView> {
               pinned: true,
               floating: true,
               delegate: CustomSliverDelegate(
-                expandedHeight: 120,
+                expandedHeight: 150,
               ),
             ),
             SliverFillRemaining(
@@ -56,7 +56,7 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
     final String nama_jenissvc = args['nama_jenissvc'] ?? '';
     final String nama_tipe = args['nama_tipe'] ?? '';
     final appBarSize = expandedHeight - shrinkOffset;
-    final cardTopPosition = expandedHeight / 10 - shrinkOffset;
+    final cardTopPosition = expandedHeight / 3 - shrinkOffset;
     final proportion = 2 - (expandedHeight / appBarSize);
     String? selectedMechanic = '';
     final percent = proportion < 0 || proportion > 1 ? 0.0 : proportion;

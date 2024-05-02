@@ -89,7 +89,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
       home: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
-          automaticallyImplyLeading: false,
         ),
         body: Stepper(
           currentStep: currentStep,

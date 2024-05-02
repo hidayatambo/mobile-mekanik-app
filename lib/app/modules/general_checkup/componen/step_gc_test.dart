@@ -482,7 +482,7 @@ class _GcuItemState extends State<GcuItem> {
             onChanged: (text) {
               widget.onDescriptionChanged(text);
             },
-            controller: widget.deskripsiController, // Use deskripsiController from widget
+            controller: widget.deskripsiController,
             decoration: const InputDecoration(
               hintText: 'Keterangan',
             ),

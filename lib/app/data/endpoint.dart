@@ -91,12 +91,7 @@ class API {
     }
   }
 
-
-
-
 //beda
-
-
   static Future<Profile> profileiD() async {
     final token = Publics.controller.getToken.value ?? '';
     var data = {"token": token};
@@ -251,7 +246,7 @@ class API {
         ),
       );
 
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+      print('Response: ${response.data}');
 
       final obj = Approve.fromJson(response.data);
 

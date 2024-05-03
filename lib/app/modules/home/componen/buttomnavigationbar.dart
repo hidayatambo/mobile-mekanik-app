@@ -48,10 +48,10 @@ class _HomeViewState extends State<HomeView> {
             child: Icon(Icons.home_outlined,color: Colors.white,),
             label: 'Home',labelStyle: TextStyle(color: Colors.white),
           ),
-          CurvedNavigationBarItem(
-            child: Icon(Icons.chat_bubble_outline,color: Colors.white,),
-            label: 'Chat',labelStyle: TextStyle(color: Colors.white),
-          ),
+          // CurvedNavigationBarItem(
+          //   child: Icon(Icons.chat_bubble_outline,color: Colors.white,),
+          //   label: 'Chat',labelStyle: TextStyle(color: Colors.white),
+          // ),
           CurvedNavigationBarItem(
             child: Icon(Icons.calendar_month_rounded,color: Colors.white,),
             label: 'Booking',labelStyle: TextStyle(color: Colors.white),
@@ -91,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
         },
         children:  <Widget>[
           const HomePage(),
-          ChatView(),
+          // ChatView(),
           const BokingView(),
           const HistoryView(),
           const ProfileView(),

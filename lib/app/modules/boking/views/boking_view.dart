@@ -376,7 +376,7 @@ import '../componen/card_booking.dart';
                                     }
                                   }
                                   Get.toNamed(
-                                    Routes.CHAT,
+                                    Routes.GENERAL_CHECKUP,
                                     arguments: {
                                       // 'id': e.id??'',
                                       'tgl_booking': e.tglBooking ?? '',

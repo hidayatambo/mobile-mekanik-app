@@ -82,48 +82,78 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           statusBarBrightness: Brightness.light,
           systemNavigationBarColor: Colors.white,
         ),
-        title: Column(
-          children: [
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('Edit General Check UP/P2H',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                SizedBox(width: 50,),
-              ],),
-            const SizedBox(height: 10,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Nama :', style: TextStyle(fontSize: 13),),
-                      Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                      const Text('Kendaraan :',style: TextStyle(fontSize: 13),),
-                      Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-                    ]),
-
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Jenis Service :', style: TextStyle(fontSize: 13),),
-                      Text('$nama_jenissvc',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                      const Text('Kode Boking :',style: TextStyle(fontSize: 13),),
-                      Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-                    ]),
-              ],),
-            SizedBox(height: 10,),
-            Row(
+        title: Container(child :
+          Column(
+            children: [
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Text('Edit General Check UP/P2H',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                  SizedBox(width: 50,),
+                ],),
+              const SizedBox(height: 10,),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Nama :', style: TextStyle(fontSize: 13),),
+                        Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                        const Text('Kendaraan :',style: TextStyle(fontSize: 13),),
+                        Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                      ]),
 
-                ]),
-          ],),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Jenis Service :', style: TextStyle(fontSize: 13),),
+                        Text('$nama_jenissvc',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                        const Text('Kode Boking :',style: TextStyle(fontSize: 13),),
+                        Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
+                      ]),
+                ],),
+              SizedBox(height: 10,),
+              FutureBuilder<Mekanik>(
+                future: API.MekanikID(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    if (snapshot.hasData && snapshot.data!.dataMekanik != null && snapshot.data!.dataMekanik!.isNotEmpty) {
+                      final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
+                      final List<String> namaMekanikList = _list
+                          .map((mekanik) => mekanik.nama!)
+                          .where((nama) => nama != null)
+                          .toList();
+                      return Column(
+                        children: [
+                          CustomDropdown<String>.search(
+                            hintText: 'Pilih mekanik',
+                            items: namaMekanikList,
+                            excludeSelected: false,
+                            onChanged: (value) {
+                              selectedMechanic = value;
+                              log('Mengubah nilai menjadi: $value');
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Menampilkan pesan jika tidak ada data Mekanik
+                      return Center(child: Text('Mekanik tidak ada'));
+                    }
+                  }
+                },
+              ),
+            ],),
+        ),
         toolbarHeight: 160,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),

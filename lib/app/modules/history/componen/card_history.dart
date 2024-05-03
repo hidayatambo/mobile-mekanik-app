@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mekanik/app/componen/color.dart';
 import '../../../data/data_endpoint/history.dart';
 import 'detail_sheet.dart';
@@ -36,6 +37,7 @@ class HistoryList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,38 +51,12 @@ class HistoryList extends StatelessWidget {
                           items.tipeSvc ?? "-",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text('Pelanggan :'),
-                                Text(
-                                  items.nama ?? "-",
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 10),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Text('PIC Estimasi :'),
-                        Text(
-                          items.createdBy ?? "-",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('Status :'),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -102,28 +78,46 @@ class HistoryList extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Text('Kode estimasi :'),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: MyColors.appPrimaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                items.kodeEstimasi.toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+
                       ],
                     ),
                   ],
+                ),
+                Divider(color: Colors.grey,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      const Text('Pelanggan'),
+                      Text(
+                        items.nama ?? "-",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                      const Text('Kode estimasi'),
+                      Text(
+                        items.kodeEstimasi.toString(),
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],)
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text('PIC Estimasi'),
+                Text(
+                  items.createdBy ?? "-",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Container(

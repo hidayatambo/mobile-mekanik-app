@@ -231,7 +231,6 @@ class _HistoryViewState extends State<HistoryView> with SingleTickerProviderStat
                   final data = snapshot.data!.dataHistory ?? [];
                   List<DataHistory> filteredData = [];
                   if (selectedStatus == 'Semua') {
-                    // Adjust status selection only for the currently active tab
                     filteredData = data.where((item) => item.tipeSvc == tabService).toList();
                   } else {
                     filteredData =

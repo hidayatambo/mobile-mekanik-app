@@ -181,42 +181,6 @@ class ApproveView extends GetView<ApproveController> {
                     barrierDismissible: true,
                     confirmBtnText: 'Konfirmasi',
                     text: 'Pilih terlebih dahulu Mekanik yang ingin melakukan General Checkup',
-                    widget: FutureBuilder<Mekanik>(
-                      future: API.MekanikID(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          // Memeriksa apakah data Mekanik tersedia atau tidak
-                          if (snapshot.hasData && snapshot.data!.dataMekanik != null && snapshot.data!.dataMekanik!.isNotEmpty) {
-                            final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
-                            final List<String> namaMekanikList = _list
-                                .map((mekanik) => mekanik.nama!)
-                                .where((nama) => nama != null)
-                                .toList();
-                            return Column(
-                              children: [
-                                CustomDropdown<String>.search(
-                                  hintText: 'Pilih mekanik',
-                                  items: namaMekanikList,
-                                  excludeSelected: false,
-                                  onChanged: (value) {
-                                    selectedMechanic = value;
-                                    log('Mengubah nilai menjadi: $value');
-                                  },
-                                ),
-                              ],
-                            );
-                          } else {
-                            // Menampilkan pesan jika tidak ada data Mekanik
-                            return Center(child: Text('Mekanik tidak ada'));
-                          }
-                        }
-                      },
-                    ),
-
                     onConfirmBtnTap: () async {
                       Navigator.pop(Get.context!);
                       try {

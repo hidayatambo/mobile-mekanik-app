@@ -26,14 +26,7 @@ class _StatsScreenState extends State<StatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: true,
-        header: const WaterDropHeader(),
-    onLoading: _onLoading,
-    onRefresh: _onRefresh,
-    child:
-      Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: Column(
@@ -72,23 +65,30 @@ class _StatsScreenState extends State<StatsScreen> {
           ],),
         backgroundColor: Colors.white,
       ),
-      body: CustomScrollView(
-        physics: const ClampingScrollPhysics(),
-        slivers: <Widget>[
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            sliver: SliverToBoxAdapter(
-              child: StatsGrid(),
+      body: SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+        onLoading: _onLoading,
+        onRefresh: _onRefresh,
+        child:
+        CustomScrollView(
+          physics: const ClampingScrollPhysics(),
+          slivers: <Widget>[
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              sliver: SliverToBoxAdapter(
+                child: StatsGrid(),
+              ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(top: 20.0),
-            sliver: SliverToBoxAdapter(
-              child: BarChartSample2(),
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 20.0),
+              sliver: SliverToBoxAdapter(
+                child: BarChartSample2(),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

@@ -92,7 +92,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
         ),
         body: Stepper(
           currentStep: currentStep,
-          physics: NeverScrollableScrollPhysics(),
+          physics: ScrollPhysics(),
           onStepContinue: () {
             // Cek apakah pengguna berada pada langkah terakhir
             if (currentStep == stepTitles.length - 1) {
@@ -454,6 +454,7 @@ class _GcuItemState extends State<GcuItem> {
                 widget.gcu.gcu ?? '',
                 textAlign: TextAlign.start,
                 softWrap: true,
+
               ),
             ),
             const SizedBox(width: 8),
@@ -467,7 +468,7 @@ class _GcuItemState extends State<GcuItem> {
                   });
                   widget.onDropdownChanged(value);
                 },
-                items: <String>['', 'Oke', 'Not Oke'].map((String value) {
+                items: <String>['', 'OK', 'NOT_OKE'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -477,7 +478,7 @@ class _GcuItemState extends State<GcuItem> {
             ),
           ],
         ),
-        if (dropdownValueLocal == 'Not Oke')
+        if (dropdownValueLocal == 'NOT_OKE')
           TextField(
             onChanged: (text) {
               widget.onDescriptionChanged(text);

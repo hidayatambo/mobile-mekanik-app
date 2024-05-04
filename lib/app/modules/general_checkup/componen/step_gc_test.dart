@@ -77,155 +77,269 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: Colors.white,
-          onBackground: Colors.white,
-          primary: MyColors.appPrimaryColor,
-          onPrimary: Colors.white,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            background: Colors.white,
+            onBackground: Colors.white,
+            primary: MyColors.appPrimaryColor,
+            onPrimary: Colors.white,
+          ),
         ),
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-        ),
-        body: Stepper(
-          currentStep: currentStep,
-          physics: ScrollPhysics(),
-          onStepContinue: () {
-            // Cek apakah pengguna berada pada langkah terakhir
-            if (currentStep == stepTitles.length - 1) {
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.confirm,
-                text: 'Simpan data General Chack Up ke database bangkelly',
-                confirmBtnText: 'Submit',
-                cancelBtnText: 'Exit',
-                title: 'Submit General Chack Up',
-                confirmBtnColor: Colors.green,
-                onConfirmBtnTap: () async{
-                  try {
-                    if (kDebugMode) {
-                      print('kode_booking: $kodeBooking');
-                    }
-                    QuickAlert.show(
-                      context: Get.context!,
-                      type: QuickAlertType.loading,
-                      headerBackgroundColor: Colors.yellow,
-                      text: 'Unapproving...',
-                      confirmBtnText: '',
-                    );
-                    await API.submitGCFinishId(
-                        bookingId: kodeBooking
-                    );
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    QuickAlert.show(
-                      barrierDismissible: false,
-                      context: Get.context!,
-                      type: QuickAlertType.success,
-                      headerBackgroundColor: Colors.yellow,
-                      text: 'Booking has been Unapproving',
-                      confirmBtnText: 'Kembali',
-                      cancelBtnText: 'Kembali',
-                      confirmBtnColor: Colors.green,
-                    );
-                  } catch (e) {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                    QuickAlert.show(
-                      barrierDismissible: false,
-                      context: Get.context!,
-                      type: QuickAlertType.success,
-                      headerBackgroundColor: Colors.yellow,
-                      text: 'Booking has been Unapproving',
-                      confirmBtnText: 'Kembali',
-                      cancelBtnText: 'Kembali',
-                      confirmBtnColor: Colors.green,
-                    );
-                  }
-
-                },
-              );
-            } else {
-              submitForm(context);
-              QuickAlert.show(
-                context: Get.context!,
-                type: QuickAlertType.confirm,
-                headerBackgroundColor: Colors.yellow,
-                confirmBtnText: 'Oke',
-                title: 'Data Berhasil disimpan',
-                confirmBtnColor: Colors.green,
-                onConfirmBtnTap: () {
-                  Navigator.pop(Get.context!);
-                },
-              );
+        home: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+          ),
+          body: Stepper(
+            currentStep: currentStep,
+            physics: ScrollPhysics(),
+            onStepContinue: () {
               setState(() {
-                currentStep += 1; // Pindah ke langkah berikutnya
-                isSubmitting = true;
+                submitForm(context);
+                if (currentStep < stepTitles.length - 1) {
+                  currentStep += 1; // Pindah ke langkah berikutnya
+                } else {
+                  // Jika pengguna berada di langkah terakhir, tampilkan dialog konfirmasi
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.confirm,
+                    text: 'Simpan data General Check Up ke database bangkelly',
+                    confirmBtnText: 'Submit',
+                    cancelBtnText: 'Exit',
+                    title: 'Submit General Check Up',
+                    confirmBtnColor: Colors.green,
+                    onConfirmBtnTap: () async {
+                      try {
+                        if (kDebugMode) {
+                          print('kode_booking: $kodeBooking');
+                        }
+                        QuickAlert.show(
+                          context: Get.context!,
+                          type: QuickAlertType.loading,
+                          headerBackgroundColor: Colors.yellow,
+                          text: 'Gwnweal CheckUp...',
+                          confirmBtnText: '',
+                        );
+                        await API.submitGCFinishId(
+                            bookingId: kodeBooking
+                        );
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        QuickAlert.show(
+                          barrierDismissible: false,
+                          context: Get.context!,
+                          type: QuickAlertType.success,
+                          headerBackgroundColor: Colors.yellow,
+                          text: 'Booking has been Unapproving',
+                          confirmBtnText: 'Kembali',
+                          cancelBtnText: 'Kembali',
+                          confirmBtnColor: Colors.green,
+                        );
+                      } catch (e) {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        QuickAlert.show(
+                          barrierDismissible: false,
+                          context: Get.context!,
+                          type: QuickAlertType.success,
+                          headerBackgroundColor: Colors.yellow,
+                          text: 'Booking has been Unapproving',
+                          confirmBtnText: 'Kembali',
+                          cancelBtnText: 'Kembali',
+                          confirmBtnColor: Colors.green,
+                        );
+                      }
+                    },
+                  );
+                }
               });
-            }
-          },
-          steps: [
-            Step(
-              title: const Text('Mesin'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Mesin"),
+            },
+            steps: [
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Mesin'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 0;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Mesin"),
+                ),
+                isActive: currentStep >= 0,
               ),
-              isActive: currentStep >= 0,
-            ),
-            Step(
-              title: const Text('Brake'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Brake"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Brake'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 1;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Brake"),
+                ),
+                isActive: currentStep >= 1,
               ),
-              isActive: currentStep >= 1,
-            ),
-            Step(
-              title: const Text('Accel'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Accel"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Accel'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 2;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Accel"),
+                ),
+                isActive: currentStep >= 2,
               ),
-              isActive: currentStep >= 2,
-            ),
-            Step(
-              title: const Text('Interior'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Interior"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Interior'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 3;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Interior"),
+                ),
+                isActive: currentStep >= 3,
               ),
-              isActive: currentStep >= 3,
-            ),
-            Step(
-              title: const Text('Exterior'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Exterior"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Exterior'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 4;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Exterior"),
+                ),
+                isActive: currentStep >= 4,
               ),
-              isActive: currentStep >= 4,
-            ),
-            Step(
-              title: const Text('Bawah Kendaraan'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Bawah Kendaraan"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Bawah Kendaraan'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 5;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Bawah Kendaraan"),
+                ),
+                isActive: currentStep >= 5,
               ),
-              isActive: currentStep >= 5,
-            ),
-            Step(
-              title: const Text('Stall Test'),
-              content: SingleChildScrollView(
-                child: buildStepContent("Stall Test"),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Stall Test'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 6;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: buildStepContent("Stall Test"),
+                ),
+                isActive: currentStep >= 6,
               ),
-              isActive: currentStep >= 6,
-            ),
-            Step(
-              title: const Text('Submbit General Check UP Finish'),
-              content: SingleChildScrollView(
-                child: Container(),
+              Step(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Finish General Check UP'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          currentStep = 7;
+                        });
+                      },
+                      child: Text('Lihat'),
+                    ),
+                  ],
+                ),
+                content: SingleChildScrollView(
+                  child: Container(),
+                ),
+                isActive: currentStep >= 7,
               ),
-              isActive: currentStep >= 7,
-            ),
-          ],
-        ),
-      ),
-    );
+            ],
+          ),
+        ));
   }
 
   Widget buildStepContent(String title) {

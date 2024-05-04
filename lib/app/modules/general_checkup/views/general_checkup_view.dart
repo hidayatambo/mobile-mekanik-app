@@ -4,6 +4,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik.dart';
@@ -22,7 +23,36 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Map<String, String?> status = {};
   String? selectedMechanic;
   bool showBody = false; // State to control visibility of body
+  late DateTime? startTime;
+  DateTime? stopTime;
 
+  void startTimer() {
+    setState(() {
+      startTime = DateTime.now();
+    });
+  }
+
+  void stopTimer() {
+    setState(() {
+      stopTime = DateTime.now();
+    });
+  }
+
+  String getStartTime() {
+    if (startTime != null) {
+      return DateFormat('HH:mm').format(startTime!);
+    } else {
+      return 'Start';
+    }
+  }
+
+  String getStopTime() {
+    if (stopTime != null) {
+      return DateFormat('HH:mm').format(stopTime!);
+    } else {
+      return 'Stop';
+    }
+  }
   void updateStatus(String key, String? value) {
     setState(() {
       status[key] = value;
@@ -177,7 +207,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             .map((mekanik) => mekanik.nama!)
                             .where((nama) => nama != null)
                             .toList();
-                        return Column(
+                        return Container(
+                          width: double.infinity,
+                          child:
+                          Column(
                           children: [
                             DropdownButton<String>(
                               hint: Text('Pilih mekanik'),
@@ -197,7 +230,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                               }).toList(),
                             ),
                           ],
-                        );
+                        ),);
                       } else {
                         // Menampilkan pesan jika tidak ada data Mekanik
                         return Center(child: Text('Mekanik tidak ada'));
@@ -205,10 +238,32 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     }
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
+                      ),
+                      onPressed: startTimer,
+                      child: Text('Start'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
+                      ),
+                      onPressed: stopTimer,
+                      child: Text('Stop'),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          toolbarHeight: 180,
+          toolbarHeight: 220,
           leading: IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             onPressed: () {

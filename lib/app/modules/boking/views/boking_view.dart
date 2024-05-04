@@ -197,46 +197,6 @@ import '../componen/card_booking.dart';
         child: SingleChildScrollView(
           child: Column(
             children: [
-              FutureBuilder(
-                future: API.kategoriID(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.connectionState != ConnectionState.waiting &&
-                      snapshot.data != null) {
-                    Kategori getDataAcc =
-                        snapshot.data ?? DataKategoriKendaraan();
-                    return Column(
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: const Duration(milliseconds: 475),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          child: FadeInAnimation(
-                            child: widget,
-                          ),
-                        ),
-                        children: getDataAcc.dataKategoriKendaraan != null
-                            ? getDataAcc.dataKategoriKendaraan!
-                            .map((e) {
-                          return Datakategori(
-                            items: e,
-                            onTap: () {},
-                          );
-                        })
-                            .toList()
-                            : [Container()],
-                      ),
-                    );
-                  } else {
-                    return SizedBox(
-                      height: Get.height - 250,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [],
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
               FutureBuilder<Boking>(
                 future: API.bokingid(),
                 builder: (context, snapshot) {

@@ -190,80 +190,109 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 SizedBox(
                   height: 10,
                 ),
-                FutureBuilder<Mekanik>(
-                  future: API.MekanikID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.hasData &&
-                          snapshot.data!.dataMekanik != null &&
-                          snapshot.data!.dataMekanik!.isNotEmpty) {
-                        final List<DataMekanik> _list =
-                        snapshot.data!.dataMekanik!;
-                        final List<String> namaMekanikList = _list
-                            .map((mekanik) => mekanik.nama!)
-                            .where((nama) => nama != null)
-                            .toList();
-                        return Container(
-                          width: double.infinity,
-                          child:
-                          Column(
-                          children: [
-                            DropdownButton<String>(
-                              hint: Text('Pilih mekanik'),
-                              value: selectedMechanic,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedMechanic = newValue;
-                                  showBody = true; // Show body when mechanic is selected
-                                  log('Mengubah nilai menjadi: $newValue');
-                                });
-                              },
-                              items: namaMekanikList.map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),);
-                      } else {
-                        // Menampilkan pesan jika tidak ada data Mekanik
-                        return Center(child: Text('Mekanik tidak ada'));
-                      }
-                    }
+            Container(
+              width: double.infinity,
+              child:
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, backgroundColor: Colors.blue, // foreground
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      useSafeArea: true,
+                      backgroundColor: Colors.white,
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      showDragHandle: true,
+                      enableDrag: true,
+                      builder: (BuildContext context) {
+                        return Container( // Use Container to fill the entire screen
+                          height: MediaQuery.of(context).size.height, // Adjust height to fit entire screen
+                          child: _buildBottomSheet(), // Your bottom sheet content
+                        );
+                      },
+                    );
+
                   },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
-                      ),
-                      onPressed: startTimer,
-                      child: Text('Start'),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
-                      ),
-                      onPressed: stopTimer,
-                      child: Text('Stop'),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                  ],
-                ),
+                  child: Text('Mekanik'),
+                ),),
+                // FutureBuilder<Mekanik>(
+                //   future: API.MekanikID(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return CircularProgressIndicator();
+                //     } else if (snapshot.hasError) {
+                //       return Text('Error: ${snapshot.error}');
+                //     } else {
+                //       if (snapshot.hasData &&
+                //           snapshot.data!.dataMekanik != null &&
+                //           snapshot.data!.dataMekanik!.isNotEmpty) {
+                //         final List<DataMekanik> _list =
+                //         snapshot.data!.dataMekanik!;
+                //         final List<String> namaMekanikList = _list
+                //             .map((mekanik) => mekanik.nama!)
+                //             .where((nama) => nama != null)
+                //             .toList();
+                //         return Container(
+                //           width: double.infinity,
+                //           child:
+                //           Column(
+                //           children: [
+                //             DropdownButton<String>(
+                //               hint: Text('Pilih mekanik'),
+                //               value: selectedMechanic,
+                //               onChanged: (newValue) {
+                //                 setState(() {
+                //                   selectedMechanic = newValue;
+                //                   showBody = true; // Show body when mechanic is selected
+                //                   log('Mengubah nilai menjadi: $newValue');
+                //                 });
+                //               },
+                //               items: namaMekanikList.map<DropdownMenuItem<String>>((String value) {
+                //                 return DropdownMenuItem<String>(
+                //                   value: value,
+                //                   child: Text(value),
+                //                 );
+                //               }).toList(),
+                //             ),
+                //           ],
+                //         ),);
+                //       } else {
+                //         // Menampilkan pesan jika tidak ada data Mekanik
+                //         return Center(child: Text('Mekanik tidak ada'));
+                //       }
+                //     }
+                //   },
+                // ),
+                SizedBox(height: 10,),
+                // showBody ? Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     ElevatedButton(
+                //       style: ElevatedButton.styleFrom(
+                //         foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
+                //       ),
+                //       onPressed: startTimer,
+                //       child: Text('Start'),
+                //     ),
+                //     ElevatedButton(
+                //       style: ElevatedButton.styleFrom(
+                //         foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
+                //       ),
+                //       onPressed: stopTimer,
+                //       child: Text('Stop'),
+                //     ),
+                //   ],
+                // )
+                // : Container()
               ],
             ),
           ),
-          toolbarHeight: 220,
+          toolbarHeight: 170,
           leading: IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             onPressed: () {
@@ -287,51 +316,99 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           centerTitle: false,
           actions: const [],
         ),
-        body: showBody ? MyStepperPage() : Container(), // Show body only if showBody is true
+        body: showBody ?
+                MyStepperPage() : Container(), // Show body only if showBody is true
       ),
     );
   }
 
   Widget _buildBottomSheet() {
-    final Map<String, dynamic>? arguments =
-    Get.arguments as Map<String, dynamic>?;
-    final Map args = Get.arguments;
-    return Container(
-      color: Colors.white,
-      height: Get.height * 0.9,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'My Bottom Sheet',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        bool showDropdown = false; // State variable to track whether dropdown is shown or not
+
+        return Container(
+          color: Colors.white,
+          height: Get.height * 0.9,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          showDropdown = true; // Set showDropdown to true when "Tambah mekanik" button is pressed
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.add),
+                          Text('Tambah mekanik'),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Get.back(); // Close the bottom sheet when the close button is pressed
+                      },
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Get.back(); // Menutup bottom sheet saat tombol close ditekan
+              ),
+              if (showDropdown) // Show dropdown only if showDropdown is true
+                FutureBuilder<Mekanik>(
+                  future: API.MekanikID(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      if (snapshot.hasData &&
+                          snapshot.data!.dataMekanik != null &&
+                          snapshot.data!.dataMekanik!.isNotEmpty) {
+                        final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
+                        final List<String> namaMekanikList = _list
+                            .map((mekanik) => mekanik.nama!)
+                            .where((nama) => nama != null)
+                            .toList();
+                        return DropdownButton<String>(
+                          hint: Text('Pilih mekanik'),
+                          value: selectedMechanic,
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedMechanic = newValue;
+                              log('Mengubah nilai menjadi: $newValue');
+                            });
+                          },
+                          items: namaMekanikList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        );
+                      } else {
+                        return Center(child: Text('Mekanik tidak ada'));
+                      }
+                    }
                   },
                 ),
-              ],
-            ),
+            ],
           ),
-          Expanded(
-            child: Container(
-              color: Colors.grey[200],
-              child: const Center(
-                child: Cardmaintenent(),
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
+
+
 }

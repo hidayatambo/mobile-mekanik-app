@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../componen/color.dart';
@@ -73,7 +74,35 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
     deskripsiControllers.values.forEach((controller) => controller.dispose());
     super.dispose();
   }
+  late DateTime? startTime;
+  DateTime? stopTime;
+  void startTimer() {
+    setState(() {
+      startTime = DateTime.now();
+    });
+  }
 
+  void stopTimer() {
+    setState(() {
+      stopTime = DateTime.now();
+    });
+  }
+
+  String getStartTime() {
+    if (startTime != null) {
+      return DateFormat('HH:mm').format(startTime!);
+    } else {
+      return 'Start';
+    }
+  }
+
+  String getStopTime() {
+    if (stopTime != null) {
+      return DateFormat('HH:mm').format(stopTime!);
+    } else {
+      return 'Stop';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -90,256 +119,279 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           appBar: AppBar(
             toolbarHeight: 0,
           ),
-          body: Stepper(
-            currentStep: currentStep,
-            physics: ScrollPhysics(),
-            onStepContinue: () {
-              setState(() {
-                submitForm(context);
-                if (currentStep < stepTitles.length - 1) {
-                  currentStep += 1; // Pindah ke langkah berikutnya
-                } else {
-                  // Jika pengguna berada di langkah terakhir, tampilkan dialog konfirmasi
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.confirm,
-                    text: 'Simpan data General Check Up ke database bangkelly',
-                    confirmBtnText: 'Submit',
-                    cancelBtnText: 'Exit',
-                    title: 'Submit General Check Up',
-                    confirmBtnColor: Colors.green,
-                    onConfirmBtnTap: () async {
-                      try {
-                        if (kDebugMode) {
-                          print('kode_booking: $kodeBooking');
+          body: SingleChildScrollView(child:
+          Column(children: [
+            SizedBox(height: 10,),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     ElevatedButton(
+            //       style: ElevatedButton.styleFrom(
+            //         foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
+            //       ),
+            //       onPressed: startTimer,
+            //       child: Text('Start'),
+            //     ),
+            //     ElevatedButton(
+            //       style: ElevatedButton.styleFrom(
+            //         foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
+            //       ),
+            //       onPressed: stopTimer,
+            //       child: Text('Stop'),
+            //     ),
+            //   ],
+            // ),
+            Stepper(
+              currentStep: currentStep,
+              physics: NeverScrollableScrollPhysics(),
+              onStepContinue: () {
+                setState(() {
+                  submitForm(context);
+                  if (currentStep < stepTitles.length - 1) {
+                    currentStep += 1; // Pindah ke langkah berikutnya
+                  } else {
+                    // Jika pengguna berada di langkah terakhir, tampilkan dialog konfirmasi
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.confirm,
+                      text: 'Simpan data General Check Up ke database bangkelly',
+                      confirmBtnText: 'Submit',
+                      cancelBtnText: 'Exit',
+                      title: 'Submit General Check Up',
+                      confirmBtnColor: Colors.green,
+                      onConfirmBtnTap: () async {
+                        try {
+                          if (kDebugMode) {
+                            print('kode_booking: $kodeBooking');
+                          }
+                          QuickAlert.show(
+                            context: Get.context!,
+                            type: QuickAlertType.loading,
+                            headerBackgroundColor: Colors.yellow,
+                            text: 'Gwnweal CheckUp...',
+                            confirmBtnText: '',
+                          );
+                          await API.submitGCFinishId(
+                              bookingId: kodeBooking
+                          );
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                          QuickAlert.show(
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            type: QuickAlertType.success,
+                            headerBackgroundColor: Colors.yellow,
+                            text: 'Booking has been Unapproving',
+                            confirmBtnText: 'Kembali',
+                            cancelBtnText: 'Kembali',
+                            confirmBtnColor: Colors.green,
+                          );
+                        } catch (e) {
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                          QuickAlert.show(
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            type: QuickAlertType.success,
+                            headerBackgroundColor: Colors.yellow,
+                            text: 'Booking has been Unapproving',
+                            confirmBtnText: 'Kembali',
+                            cancelBtnText: 'Kembali',
+                            confirmBtnColor: Colors.green,
+                          );
                         }
-                        QuickAlert.show(
-                          context: Get.context!,
-                          type: QuickAlertType.loading,
-                          headerBackgroundColor: Colors.yellow,
-                          text: 'Gwnweal CheckUp...',
-                          confirmBtnText: '',
-                        );
-                        await API.submitGCFinishId(
-                            bookingId: kodeBooking
-                        );
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        QuickAlert.show(
-                          barrierDismissible: false,
-                          context: Get.context!,
-                          type: QuickAlertType.success,
-                          headerBackgroundColor: Colors.yellow,
-                          text: 'Booking has been Unapproving',
-                          confirmBtnText: 'Kembali',
-                          cancelBtnText: 'Kembali',
-                          confirmBtnColor: Colors.green,
-                        );
-                      } catch (e) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        QuickAlert.show(
-                          barrierDismissible: false,
-                          context: Get.context!,
-                          type: QuickAlertType.success,
-                          headerBackgroundColor: Colors.yellow,
-                          text: 'Booking has been Unapproving',
-                          confirmBtnText: 'Kembali',
-                          cancelBtnText: 'Kembali',
-                          confirmBtnColor: Colors.green,
-                        );
-                      }
-                    },
-                  );
-                }
-              });
-            },
-            steps: [
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Mesin'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 0;
-                        });
                       },
-                      child: Text('Lihat'),
-                    ),
-                  ],
-                ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Mesin"),
-                ),
-                isActive: currentStep >= 0,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Brake'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                    );
+                  }
+                });
+              },
+              steps: [
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Mesin'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 0;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 1;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Mesin"),
+                  ),
+                  isActive: currentStep >= 0,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Brake"),
-                ),
-                isActive: currentStep >= 1,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Accel'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Brake'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 1;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 2;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Brake"),
+                  ),
+                  isActive: currentStep >= 1,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Accel"),
-                ),
-                isActive: currentStep >= 2,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Interior'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Accel'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 2;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 3;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Accel"),
+                  ),
+                  isActive: currentStep >= 2,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Interior"),
-                ),
-                isActive: currentStep >= 3,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Exterior'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Interior'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 3;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 4;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Interior"),
+                  ),
+                  isActive: currentStep >= 3,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Exterior"),
-                ),
-                isActive: currentStep >= 4,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Bawah Kendaraan'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Exterior'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 4;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 5;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Exterior"),
+                  ),
+                  isActive: currentStep >= 4,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Bawah Kendaraan"),
-                ),
-                isActive: currentStep >= 5,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Stall Test'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Bawah Kendaraan'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 5;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 6;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Bawah Kendaraan"),
+                  ),
+                  isActive: currentStep >= 5,
                 ),
-                content: SingleChildScrollView(
-                  child: buildStepContent("Stall Test"),
-                ),
-                isActive: currentStep >= 6,
-              ),
-              Step(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Finish General Check UP'),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Stall Test'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 6;
+                          });
+                        },
+                        child: Text('Lihat'),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          currentStep = 7;
-                        });
-                      },
-                      child: Text('Lihat'),
-                    ),
-                  ],
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: buildStepContent("Stall Test"),
+                  ),
+                  isActive: currentStep >= 6,
                 ),
-                content: SingleChildScrollView(
-                  child: Container(),
+                Step(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Finish General Check UP'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, backgroundColor: MyColors.appPrimaryColor, // foreground
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            currentStep = 7;
+                          });
+                        },
+                        child: Text('Lihat'),
+                      ),
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: Container(),
+                  ),
+                  isActive: currentStep >= 7,
                 ),
-                isActive: currentStep >= 7,
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+          ],),
+        )));
   }
 
   Widget buildStepContent(String title) {

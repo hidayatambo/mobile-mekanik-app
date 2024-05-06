@@ -9,7 +9,6 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
-import '../../repair_maintenen/componen/card_consument.dart';
 import '../componen/step_gc_test.dart';
 
 class GeneralCheckupView extends StatefulWidget {
@@ -23,36 +22,31 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Map<String, String?> status = {};
   String? selectedMechanic;
   bool showBody = false; // State to control visibility of body
-  late DateTime? startTime;
+  List<List<String>> dropdownOptionsList = [[]];
+  List<String?> selectedValuesList = [null];
+
+  DateTime? startTime;
   DateTime? stopTime;
 
-  void startTimer() {
-    setState(() {
-      startTime = DateTime.now();
-    });
+  String? kodeBooking;
+  String? nama;
+  String? nama_jenissvc;
+  String? kategoriKendaraanId;
+  String? kendaraan;
+  String? nama_tipe;
+
+  @override
+  void initState() {
+    super.initState();
+    final Map? args = Get.arguments;
+    kodeBooking = args?['kode_booking'];
+    nama = args?['nama'];
+    kategoriKendaraanId = args?['kategori_kendaraan_id'] ?? '';
+    kendaraan = args?['kategori_kendaraan'];
+    nama_jenissvc = args?['nama_jenissvc'];
+    nama_tipe = args?['nama_tipe'];
   }
 
-  void stopTimer() {
-    setState(() {
-      stopTime = DateTime.now();
-    });
-  }
-
-  String getStartTime() {
-    if (startTime != null) {
-      return DateFormat('HH:mm').format(startTime!);
-    } else {
-      return 'Start';
-    }
-  }
-
-  String getStopTime() {
-    if (stopTime != null) {
-      return DateFormat('HH:mm').format(stopTime!);
-    } else {
-      return 'Stop';
-    }
-  }
   void updateStatus(String key, String? value) {
     setState(() {
       status[key] = value;
@@ -82,12 +76,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
 
   @override
   Widget build(BuildContext context) {
-    final Map args = Get.arguments;
-    final String? bookingId = args['kode_booking'];
-    final String nama = args['nama'] ?? '';
-    final String nama_jenissvc = args['nama_jenissvc'] ?? '';
-    final String nama_tipe = args['nama_tipe'] ?? '';
-
     return WillPopScope(
       onWillPop: () async {
         QuickAlert.show(
@@ -124,8 +112,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   children: [
                     Text(
                       'Edit General Check UP/P2H',
-                      style:
-                      TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       width: 50,
@@ -148,7 +136,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             style: TextStyle(fontSize: 13),
                           ),
                           Text(
-                            '$nama',
+                            nama ?? '',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.bold),
                           ),
@@ -157,7 +145,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             style: TextStyle(fontSize: 13),
                           ),
                           Text(
-                            '$nama_tipe',
+                            nama_tipe ?? '',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.bold),
                           ),
@@ -171,7 +159,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             style: TextStyle(fontSize: 13),
                           ),
                           Text(
-                            '$nama_jenissvc',
+                            nama_jenissvc ?? '',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.bold),
                           ),
@@ -180,7 +168,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             style: TextStyle(fontSize: 13),
                           ),
                           Text(
-                            '$bookingId',
+                            kodeBooking ?? '',
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.bold),
                           ),
@@ -190,105 +178,37 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 SizedBox(
                   height: 10,
                 ),
-            Container(
-              width: double.infinity,
-              child:
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue, // foreground
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      useSafeArea: true,
-                      backgroundColor: Colors.white,
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue, // foreground
+                    ),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        useSafeArea: true,
+                        backgroundColor: Colors.white,
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
                         ),
-                      ),
-                      showDragHandle: true,
-                      enableDrag: true,
-                      builder: (BuildContext context) {
-                        return Container( // Use Container to fill the entire screen
-                          height: MediaQuery.of(context).size.height, // Adjust height to fit entire screen
-                          child: _buildBottomSheet(), // Your bottom sheet content
-                        );
-                      },
-                    );
-
-                  },
-                  child: Text('Mekanik'),
-                ),),
-                // FutureBuilder<Mekanik>(
-                //   future: API.MekanikID(),
-                //   builder: (context, snapshot) {
-                //     if (snapshot.connectionState == ConnectionState.waiting) {
-                //       return CircularProgressIndicator();
-                //     } else if (snapshot.hasError) {
-                //       return Text('Error: ${snapshot.error}');
-                //     } else {
-                //       if (snapshot.hasData &&
-                //           snapshot.data!.dataMekanik != null &&
-                //           snapshot.data!.dataMekanik!.isNotEmpty) {
-                //         final List<DataMekanik> _list =
-                //         snapshot.data!.dataMekanik!;
-                //         final List<String> namaMekanikList = _list
-                //             .map((mekanik) => mekanik.nama!)
-                //             .where((nama) => nama != null)
-                //             .toList();
-                //         return Container(
-                //           width: double.infinity,
-                //           child:
-                //           Column(
-                //           children: [
-                //             DropdownButton<String>(
-                //               hint: Text('Pilih mekanik'),
-                //               value: selectedMechanic,
-                //               onChanged: (newValue) {
-                //                 setState(() {
-                //                   selectedMechanic = newValue;
-                //                   showBody = true; // Show body when mechanic is selected
-                //                   log('Mengubah nilai menjadi: $newValue');
-                //                 });
-                //               },
-                //               items: namaMekanikList.map<DropdownMenuItem<String>>((String value) {
-                //                 return DropdownMenuItem<String>(
-                //                   value: value,
-                //                   child: Text(value),
-                //                 );
-                //               }).toList(),
-                //             ),
-                //           ],
-                //         ),);
-                //       } else {
-                //         // Menampilkan pesan jika tidak ada data Mekanik
-                //         return Center(child: Text('Mekanik tidak ada'));
-                //       }
-                //     }
-                //   },
-                // ),
+                        showDragHandle: true,
+                        enableDrag: true,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height,
+                            child: _buildBottomSheet(),
+                          );
+                        },
+                      );
+                    },
+                    child: Text('Mekanik'),
+                  ),
+                ),
                 SizedBox(height: 10,),
-                // showBody ? Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     ElevatedButton(
-                //       style: ElevatedButton.styleFrom(
-                //         foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
-                //       ),
-                //       onPressed: startTimer,
-                //       child: Text('Start'),
-                //     ),
-                //     ElevatedButton(
-                //       style: ElevatedButton.styleFrom(
-                //         foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
-                //       ),
-                //       onPressed: stopTimer,
-                //       child: Text('Stop'),
-                //     ),
-                //   ],
-                // )
-                // : Container()
               ],
             ),
           ),
@@ -316,17 +236,15 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           centerTitle: false,
           actions: const [],
         ),
-        body: showBody ?
-                MyStepperPage() : Container(), // Show body only if showBody is true
+        body: showBody ? MyStepperPage() : Container(),
       ),
     );
   }
 
+  // Fungsi untuk membangun bottom sheet
   Widget _buildBottomSheet() {
     return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        bool showDropdown = false; // State variable to track whether dropdown is shown or not
-
+      builder: (context, setState) {
         return Container(
           color: Colors.white,
           height: Get.height * 0.9,
@@ -344,7 +262,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       ),
                       onPressed: () {
                         setState(() {
-                          showDropdown = true; // Set showDropdown to true when "Tambah mekanik" button is pressed
+                          dropdownOptionsList.add([]);
+                          selectedValuesList.add(null);
                         });
                       },
                       child: Row(
@@ -354,55 +273,58 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         ],
                       ),
                     ),
+
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
-                        Get.back(); // Close the bottom sheet when the close button is pressed
+                        Get.back(); // Close the bottom sheet
                       },
                     ),
                   ],
                 ),
               ),
-              if (showDropdown) // Show dropdown only if showDropdown is true
-                FutureBuilder<Mekanik>(
-                  future: API.MekanikID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.hasData &&
-                          snapshot.data!.dataMekanik != null &&
-                          snapshot.data!.dataMekanik!.isNotEmpty) {
-                        final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
-                        final List<String> namaMekanikList = _list
-                            .map((mekanik) => mekanik.nama!)
-                            .where((nama) => nama != null)
-                            .toList();
-                        return DropdownButton<String>(
-                          hint: Text('Pilih mekanik'),
-                          value: selectedMechanic,
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedMechanic = newValue;
-                              log('Mengubah nilai menjadi: $newValue');
-                            });
-                          },
-                          items: namaMekanikList
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: dropdownOptionsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return FutureBuilder<Mekanik>(
+                      future: API.MekanikID(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          final dataMekanik = snapshot.data?.dataMekanik;
+
+                          if (dataMekanik != null && dataMekanik.isNotEmpty) {
+                            List<String> namaMekanikList = dataMekanik.map((mekanik) => mekanik.nama!).toList();
+                            dropdownOptionsList[index] = namaMekanikList;
+
+                            // Update selected value if not set yet
+                            if (selectedValuesList[index] == null && namaMekanikList.isNotEmpty) {
+                              selectedValuesList[index] = namaMekanikList.first;
+                            }
+
+                            return _buildDropdown(
+                              index + 1,
+                              dropdownOptionsList[index],
+                              selectedValuesList[index],
+                                  (String? newValue) {
+                                setState(() {
+                                  selectedValuesList[index] = newValue;
+                                });
+                              },
                             );
-                          }).toList(),
-                        );
-                      } else {
-                        return Center(child: Text('Mekanik tidak ada'));
-                      }
-                    }
+                          } else {
+                            return Center(child: Text('Mekanik tidak ada'));
+                          }
+                        }
+                      },
+                    );
                   },
                 ),
+              ),
             ],
           ),
         );
@@ -410,5 +332,73 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     );
   }
 
+  Widget _buildDropdown(int dropdownIndex, List<String>? dropdownOptions,
+      String? selectedValue, Function(String?)? onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Mekanik $dropdownIndex'),
+        if (dropdownOptions != null && dropdownOptions.isNotEmpty)
+          DropdownButton<String>(
+            value: selectedValue ?? dropdownOptions.first,
+            onChanged: onChanged,
+            items: dropdownOptions
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        if (startTime == null)
+          ElevatedButton(
+            onPressed: () {
+              showBody = true;
+              setState(() {
+                // Tetapkan nilai kodeBooking dan kategoriKendaraanId di sini sebelum menavigasi
+                kodeBooking = kodeBooking;
+                kategoriKendaraanId = kategoriKendaraanId;
+                // Mulai waktu dan tampilkan body
+                startTime = DateTime.now();
 
+                // Navigasi ke MyStepperPage dengan meneruskan argumen
+              });
+            },
+            child: Text('Start'),
+          ),
+
+        // Tambahkan widget untuk menampilkan kode_booking di sini
+        if (kodeBooking != null)
+          Text('Kode Booking: $kodeBooking'),
+
+        if (startTime != null)
+          Text('Waktu Mulai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
+              startTime!)}'),
+
+        if (startTime != null)
+          ElevatedButton(
+            onPressed: () {
+              // Set waktu selesai saat tombol "Stop" ditekan
+              setState(() {
+                stopTime = DateTime.now();
+              });
+            },
+            child: Text('Stop'),
+          ),
+
+        // Tampilkan waktu selesai jika sudah ditetapkan
+        if (stopTime != null)
+          Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
+              stopTime!)}'),
+      ],
+    );
+  }
+}
+
+// Definisikan model untuk item dropdown
+class DropdownItem {
+  String selectedValue;
+  List<String> options;
+
+  DropdownItem(this.selectedValue, this.options);
 }

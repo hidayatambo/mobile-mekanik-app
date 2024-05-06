@@ -29,7 +29,8 @@ class _ChatViewState extends State<ChatView> {
               ),
             ),
             SliverFillRemaining(
-              child: MyStepperPage()
+              child: null
+              // MyStepperPage()
             ),
           ],
         ),

@@ -9,7 +9,7 @@ import '../../../data/data_endpoint/gc_mekanik.dart';
 import '../../../data/endpoint.dart';
 
 class MyStepperPage extends StatefulWidget {
-  const MyStepperPage({Key? key}) : super(key: key);
+  const MyStepperPage({Key? key,}) : super(key: key);
 
   @override
   _MyStepperPageState createState() => _MyStepperPageState();
@@ -41,6 +41,8 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   bool isSubmitting = false;
   late String kodeBooking;
   late String kategoriKendaraanId;
+  late String _kodeBooking;
+  late String _kategoriKendaraanId;
   final List<String> stepTitles = [
     'Mesin',
     'Mesin',

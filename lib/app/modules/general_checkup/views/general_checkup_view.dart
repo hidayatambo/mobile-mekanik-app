@@ -494,8 +494,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             },
             child: Text('Start'),
           ),
-
-
         if (startTime != null)
           ElevatedButton(
             onPressed: () async {
@@ -529,7 +527,39 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             },
             child: Text('Stop'),
           ),
-
+        if (stopTime != null)
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                print('Kode Jasa: $selectedKodeJasa');
+                print('kodeBooking: $kodeBooking');
+                // Dapatkan nilai terpilih dari dropdown
+                final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
+                print('ID Mekanik: $selectedIdMekanik');
+                var response = await API.promekID(
+                  role: 'start',
+                  kodebooking: kodeBooking ?? '',
+                  kodejasa: selectedKodeJasa,
+                  idmekanik: selectedIdMekanik,
+                );
+                // Mengatur status tampilan dan waktu mulai
+                showBody = true;
+                kodeBooking = kodeBooking;
+                kategoriKendaraanId = kategoriKendaraanId;
+                setState(() {});
+                print('Response: ${response.toString()}');
+              } catch (e) {
+                print('Error: $e');
+              }
+              showBody = true;
+              kodeBooking = kodeBooking;
+              kategoriKendaraanId = kategoriKendaraanId;
+              startTime = DateTime.now();
+              Navigator.pop(context);
+              setState(() {});
+            },
+            child: Text('start'),
+          ),
         Divider(color: Colors.grey,),
         const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
         SizedBox(height: 20,),
@@ -558,7 +588,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.startPromek != null) {
                       final startPromek = firstData.startPromek;
-                      return Text('Waktu Mulai: ${startPromek}');
+                      return Text('Waktu Mulai: ${startPromek}',style: TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu start tidak tersedia');
                     }
@@ -596,7 +626,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.stopPromek != null) {
                       final stopPromek = firstData.stopPromek;
-                      return Text('Waktu selesai: ${stopPromek}');
+                      return Text('Waktu selesai: ${stopPromek}',style: TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu stop tidak tersedia');
                     }

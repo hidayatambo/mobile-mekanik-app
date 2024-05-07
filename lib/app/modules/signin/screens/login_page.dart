@@ -64,9 +64,31 @@ class _LoginPageState extends State<LoginPage> {
           SystemNavigator.pop();
           return true;
         },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/bg_welcome.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child:
+          SingleChildScrollView(
+            child: Container(
+              height: 700,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.white.withOpacity(0.0), // Warna transparan di bagian atas
+                    Colors.white.withOpacity(0.9), // Warna pudar di bagian bawah
+                    Colors.white, // Warna pudar di bagian bawah
+
+                  ],
+                ),
+              ),
+            child : Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,17 +184,14 @@ class _LoginPageState extends State<LoginPage> {
 
                                     if (aksesPX.status != false) {
                                       if (aksesPX.token != null) {
-                                        // await LocalStorages.deleteToken();
                                         Get.offAllNamed(Routes.HOME);
                                       }
                                     } else {
-                                      // Menampilkan pesan kesalahan sesuai dengan respons server
                                       String errorMessage = aksesPX.message ?? 'Terjadi kesalahan saat login';
                                       Object errorDetail = aksesPX.data ?? '';
                                       Get.snackbar('Error', '$errorMessage: $errorDetail');
                                     }
                                   } catch (e) {
-                                    // Menampilkan pesan kesalahan saat terjadi error
                                     print('Error during login: $e');
                                     Get.snackbar('Gagal Login', 'Terjadi kesalahan saat login');
                                   }
@@ -194,10 +213,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 305,
                   ),
                 ],
               ),
+            ),
             ),
           ),
         ),

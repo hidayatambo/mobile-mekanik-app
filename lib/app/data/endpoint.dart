@@ -21,6 +21,7 @@ import 'data_endpoint/submit_finish.dart';
 import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
 import 'localstorage.dart';
+import 'package:http/http.dart' as http;
 
 class API {
   static const _url = 'https://mobile.techthinkhub.id';
@@ -45,6 +46,7 @@ class API {
   static final _controller = Publics.controller;
 
 
+
   static Future<Token> login({required String email, required String password}) async {
     final data = {
       "email": email,
@@ -52,19 +54,16 @@ class API {
     };
 
     try {
-      var response = await Dio().post(
-        _getLogin,
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            // 'Cookie': 'PHPSESSID=4p7dvd8adhtocikl945vpcb991'
-          },
-        ),
-        data: data,
+      var response = await http.post(
+        Uri.parse(_getLogin),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(data),
       );
 
       if (response.statusCode == 200) {
-        final responseData = response.data;
+        final responseData = json.decode(response.body);
 
         if (responseData['status'] == false) {
           // Tangani kasus email atau password salah
@@ -86,16 +85,14 @@ class API {
         }
       } else {
         print('Failed to load data, status code: ${response.statusCode}');
-        throw DioError(
-          requestOptions: RequestOptions(path: _getLogin),
-          response: response,
-        );
+        throw Exception('Failed to load data, status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error during login: $e');
       throw e;
     }
   }
+
 
 //beda
   static Future<Profile> profileiD() async {

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mekanik/app/componen/color.dart';
 
 class Common {
   Color maincolor = const Color(0xFF35C2C1);
   Color white = const Color(0xFFF5F5F5);
   Color black = const Color(0xFF2B407D);
 
-  TextStyle titelTheme = const TextStyle(
+  TextStyle titelTheme =  TextStyle(
       fontSize: 30,
       fontFamily: "Urbanist",
       fontWeight: FontWeight.bold,
-      color: Colors.black);
+      color: MyColors.appPrimaryColor);
   TextStyle mediumTheme = const TextStyle(
       fontSize: 15,
       fontFamily: "Urbanist-Bold",

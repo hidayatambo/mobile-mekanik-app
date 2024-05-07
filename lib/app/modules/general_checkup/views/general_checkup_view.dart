@@ -23,6 +23,8 @@ class GeneralCheckupView extends StatefulWidget {
 class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Map<String, String?> status = {};
   String? selectedMechanic;
+  String? selectedKodeJasa; // Menyimpan kode jasa terpilih
+  String? selectedIdMekanik; // Menyimpan id mekanik terpilih
   bool showBody = false; // State to control visibility of body
   List<List<String>> dropdownOptionsList = [[]];
   List<String?> selectedValuesList = [null];
@@ -325,7 +327,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
                   RadioListTile(
                     title: Text('General check / P2H'),
-                    controlAffinity: ListTileControlAffinity.trailing, // Teks berada di sebelah kanan tombol radio
+                    controlAffinity: ListTileControlAffinity.trailing,
                     value: true,
                     groupValue: _isSelected,
                     onChanged: (value) {
@@ -334,14 +336,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       });
                     },
                   ),
-                ],),
+                ],
+              ),
               Divider(color: Colors.grey,),
-
               Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold), ),]),
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold),),
+                ],
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 width: double.infinity,
@@ -382,17 +386,21 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           return Text('Error: ${snapshot.error}');
                         } else {
                           final dataMekanik = snapshot.data?.dataMekanik;
+                          final dataJasa = snapshot.data?.dataJasa;
 
-                          if (dataMekanik != null && dataMekanik.isNotEmpty) {
+                          if (dataMekanik != null && dataMekanik.isNotEmpty && dataJasa != null && dataJasa.isNotEmpty) {
                             List<String> namaMekanikList = dataMekanik.map((mekanik) => mekanik.nama!).toList();
-                            dropdownOptionsList[index] = namaMekanikList;
+                            List<String> idMekanikList = dataMekanik.map((mekanik) => mekanik.idMekanik.toString()).toList();
+                            List<String> kodeJasaList = dataJasa.map((jasa) => jasa.kodeJasa.toString()).toList();
 
-                            // Update selected value if not set yet
+                            // Membuat map dari id mekanik dan nama mekanik
+                            Map<String, String> mekanikMap = Map.fromIterables(idMekanikList, namaMekanikList);
+                            dropdownOptionsList[index] = namaMekanikList;
                             if (selectedValuesList[index] == null && namaMekanikList.isNotEmpty) {
                               selectedValuesList[index] = namaMekanikList.first;
                             }
 
-                            return _buildDropdown(
+                            return  _buildDropdown(
                               index + 1,
                               dropdownOptionsList[index],
                               selectedValuesList[index],
@@ -401,9 +409,13 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                   selectedValuesList[index] = newValue;
                                 });
                               },
+                              idMekanikList, // Daftar ID mekanik
+                              mekanikMap, // Daftar nama mekanik dalam bentuk map
+                              kodeJasaList[index], // Menambahkan kode jasa dari kodeJasaList
+                              index,
                             );
                           } else {
-                            return Center(child: Text('Mekanik tidak ada'));
+                            return Center(child: Text('Mekanik atau jasa tidak ada'));
                           }
                         }
                       },
@@ -418,8 +430,19 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     );
   }
 
-  Widget _buildDropdown(int dropdownIndex, List<String>? dropdownOptions,
-      String? selectedValue, Function(String?)? onChanged) {
+  Widget _buildDropdown(
+      int dropdownIndex,
+      List<String>? dropdownOptions,
+      String? selectedValue,
+      Function(String?)? onChanged,
+      List<String> idMekanikList,
+      Map<String, String> mekanikMap,
+      String kodeJasa, // Mengubah kodeJasaList menjadi kodeJasa
+      int index,
+      ) {
+    final List<String> namaMekanikList = mekanikMap.keys.toList();
+    final selectedIdMekanik = idMekanikList[index]; // Menggunakan index untuk mengakses ID mekanik
+    final selectedKodeJasa = kodeJasa; // Menggunakan kode jasa dari argumen kodeJasa
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -428,26 +451,30 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           DropdownButton<String>(
             value: selectedValue ?? dropdownOptions.first,
             onChanged: onChanged,
-            items: dropdownOptions
-                .map<DropdownMenuItem<String>>((String value) {
+            items: List.generate(dropdownOptions.length, (index) {
               return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
+                value: dropdownOptions[index],
+                child: Row(
+                  children: [
+                    Text(dropdownOptions[index]),
+                  ],
+                ),
               );
-            }).toList(),
+            }),
           ),
         if (startTime == null)
           ElevatedButton(
-            onPressed: () async{
+            onPressed: () async {
               try {
-                List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
-                String idMekanik = selectedMekanikList.join(',');
-                String kodeJasa = _isSelected ? 'General check / P2H' : '';
+                print('kodeBooking: $kodeBooking');
+                final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
+                print('ID Mekanik: $selectedIdMekanik');
+                print('Kode Jasa: $selectedKodeJasa');
                 var response = await API.promekID(
                   role: 'start',
                   kodebooking: kodeBooking ?? '',
-                  kodejasa: kodeJasa,
-                  idmekanik: idMekanik,
+                  kodejasa: selectedKodeJasa!,
+                  idmekanik: selectedIdMekanik,
                 );
                 // Mengatur status tampilan dan waktu mulai
                 showBody = true;
@@ -467,47 +494,56 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             },
             child: Text('Start'),
           ),
+
+
         if (startTime != null)
           ElevatedButton(
             onPressed: () async {
               try {
-                List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
-                String idMekanik = selectedMekanikList.join(',');
-                String kodeJasa = _isSelected ? 'General check / P2H' : '';
+                print('Kode Jasa: $selectedKodeJasa');
+                print('kodeBooking: $kodeBooking');
+                // Dapatkan nilai terpilih dari dropdown
+                final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
+                print('ID Mekanik: $selectedIdMekanik');
                 var response = await API.promekID(
                   role: 'stop',
                   kodebooking: kodeBooking ?? '',
-                  kodejasa: kodeJasa,
-                  idmekanik: idMekanik,
+                  kodejasa: selectedKodeJasa,
+                  idmekanik: selectedIdMekanik,
                 );
                 // Mengatur status tampilan dan waktu mulai
                 showBody = true;
                 kodeBooking = kodeBooking;
                 kategoriKendaraanId = kategoriKendaraanId;
-                startTime = DateTime.now();
-                Navigator.pop(context);
                 setState(() {});
                 print('Response: ${response.toString()}');
               } catch (e) {
                 print('Error: $e');
               }
+              showBody = true;
+              kodeBooking = kodeBooking;
+              kategoriKendaraanId = kategoriKendaraanId;
+              startTime = DateTime.now();
+              Navigator.pop(context);
+              setState(() {});
             },
-            child: Text('stop'),
+            child: Text('Stop'),
           ),
 
         Divider(color: Colors.grey,),
         const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
         SizedBox(height: 20,),
+
         if (startTime != null)
           FutureBuilder<PromekProses>(
             future: (() async {
-              // Ambil nilai dari dropdown untuk kodeJasa
-              String kodeJasa = _isSelected ? 'General check / P2H' : '';
-              print('Kode Jasa: $kodeJasa');
+              final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
+              print('ID Mekanik: $selectedIdMekanik');
+              print('kodeBooking: $kodeBooking');
               return await API.PromekProsesID(
                 kodebooking: kodeBooking ?? '',
-                kodejasa: "2A0000",
-                idmekanik: '14',
+                kodejasa: selectedKodeJasa,
+                idmekanik: selectedIdMekanik,
               );
             })(),
             builder: (context, snapshot) {
@@ -524,7 +560,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       final startPromek = firstData.startPromek;
                       return Text('Waktu Mulai: ${startPromek}');
                     } else {
-                      return const Text('Waktu Mulai tidak tersedia');
+                      return const Text('Waktu start tidak tersedia');
                     }
                   } else {
                     return const Text('Tidak ada data');
@@ -536,18 +572,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             },
           ),
 
-        // Text('Waktu Mulai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
-        //       startTime!)}'),
-        if (stopTime != null)
+        if (startTime != null)
           FutureBuilder<PromekProses>(
             future: (() async {
-              List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
-              String idMekanik = selectedMekanikList.join(',');
-              String kodeJasa = _isSelected ? 'General check / P2H' : '';
+              final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
+              print('ID Mekanik: $selectedIdMekanik');
+              print('kodeBooking: $kodeBooking');
               return await API.PromekProsesID(
                 kodebooking: kodeBooking ?? '',
-                kodejasa: kodeJasa,
-                idmekanik: idMekanik,
+                kodejasa: selectedKodeJasa,
+                idmekanik: selectedIdMekanik,
               );
             })(),
             builder: (context, snapshot) {
@@ -560,11 +594,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   final List<DataPromek> dataList = snapshot.data!.dataPromek!;
                   if (dataList.isNotEmpty) {
                     final DataPromek firstData = dataList[0];
-                    if (firstData.startPromek != null) {
-                      final stoppromek = firstData.startPromek;
-                      return Text('Waktu Selesai: ${stoppromek}');
+                    if (firstData.stopPromek != null) {
+                      final stopPromek = firstData.stopPromek;
+                      return Text('Waktu selesai: ${stopPromek}');
                     } else {
-                      return const Text('Waktu Mulai tidak tersedia');
+                      return const Text('Waktu stop tidak tersedia');
                     }
                   } else {
                     return const Text('Tidak ada data');
@@ -575,9 +609,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               }
             },
           ),
-
-          // Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
-          //     stopTime!)}'),
+        // Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
+        //     stopTime!)}'),
         TextField(
           decoration: const InputDecoration(
             hintText: 'Keterangan',
@@ -586,6 +619,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       ],
     );
   }
+
+
 }
 
 // Definisikan model untuk item dropdown

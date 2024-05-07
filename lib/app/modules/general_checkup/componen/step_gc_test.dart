@@ -107,6 +107,11 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   }
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    // Menggunakan data argument
+    final String kodeBooking = args?['kodeBooking'] ?? '';
+    final String kategoriKendaraanId = args?['kategoriKendaraanId'] ?? '';
+    final String kendaraan = args?['kendaraan'] ?? '';
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -124,25 +129,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
           body: SingleChildScrollView(child:
           Column(children: [
             SizedBox(height: 10,),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     ElevatedButton(
-            //       style: ElevatedButton.styleFrom(
-            //         foregroundColor: Colors.white, backgroundColor: Colors.green, // foreground
-            //       ),
-            //       onPressed: startTimer,
-            //       child: Text('Start'),
-            //     ),
-            //     ElevatedButton(
-            //       style: ElevatedButton.styleFrom(
-            //         foregroundColor: Colors.white, backgroundColor: Colors.red, // foreground
-            //       ),
-            //       onPressed: stopTimer,
-            //       child: Text('Stop'),
-            //     ),
-            //   ],
-            // ),
             Stepper(
               currentStep: currentStep,
               physics: NeverScrollableScrollPhysics(),

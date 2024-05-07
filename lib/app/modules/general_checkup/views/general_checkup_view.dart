@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   bool showBody = false; // State to control visibility of body
   List<List<String>> dropdownOptionsList = [[]];
   List<String?> selectedValuesList = [null];
-
+  bool _isSelected = false;
   DateTime? startTime;
   DateTime? stopTime;
 
@@ -34,6 +35,12 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   String? kategoriKendaraanId;
   String? kendaraan;
   String? nama_tipe;
+
+  void refreshMyStepperPage() {
+    kodeBooking = kodeBooking;
+    kategoriKendaraanId = kategoriKendaraanId;
+    startTime = DateTime.now();
+  }
 
   @override
   void initState() {
@@ -45,6 +52,32 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     kendaraan = args?['kategori_kendaraan'];
     nama_jenissvc = args?['nama_jenissvc'];
     nama_tipe = args?['nama_tipe'];
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true, // Membuat bottom sheet fullscreen
+        useRootNavigator: true, // Menggunakan navigator root
+        builder: (BuildContext context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _buildBottomSheet()
+                ]
+              ),
+            ),
+          );
+        },
+      );
+
+    });
   }
 
   void updateStatus(String key, String? value) {
@@ -52,7 +85,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       status[key] = value;
     });
   }
-
   void handleSubmit() {
     showModalBottomSheet(
       enableDrag: true,
@@ -186,21 +218,30 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       backgroundColor: Colors.blue, // foreground
                     ),
                     onPressed: () {
-                      showModalBottomSheet(
-                        useSafeArea: true,
-                        backgroundColor: Colors.white,
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20),
-                          ),
-                        ),
+                      showModalBottomSheet<void>(
                         showDragHandle: true,
-                        enableDrag: true,
+                        context: context,
+                        backgroundColor: Colors.white,
+                        isScrollControlled: true, // Membuat bottom sheet fullscreen
+                        useRootNavigator: true, // Menggunakan navigator root
                         builder: (BuildContext context) {
                           return Container(
-                            height: MediaQuery.of(context).size.height,
-                            child: _buildBottomSheet(),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            height: 700,
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.all(32.0),
+                              child: SingleChildScrollView(child:
+                              Column(
+                                  children: <Widget>[
+                                    _buildBottomSheet()
+                                  ]
+                              ),
+                              )
+
+                            ),
                           );
                         },
                       );
@@ -236,7 +277,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           centerTitle: false,
           actions: const [],
         ),
-        body: showBody ? MyStepperPage() : Container(),
+        body: MyStepperPage(),
       ),
     );
   }
@@ -248,10 +289,41 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         return Container(
           color: Colors.white,
           height: Get.height * 0.9,
+          width: double.infinity,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
+              SizedBox(height: 30,),
+              Text('Produktivitas Mekanik Booking', style: TextStyle(fontWeight: FontWeight.bold),),
+              SizedBox(height: 30,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
+                  RadioListTile(
+                    title: Text('General check / P2H'),
+                    controlAffinity: ListTileControlAffinity.trailing, // Teks berada di sebelah kanan tombol radio
+                    value: true,
+                    groupValue: _isSelected,
+                    onChanged: (value) {
+                      setState(() {
+                        _isSelected = value!;
+                      });
+                    },
+                  ),
+              ],),
+              Divider(color: Colors.grey,),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold), ),]),
+              Container(
                 padding: const EdgeInsets.all(10),
+                width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -268,21 +340,14 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.add),
-                          Text('Tambah mekanik'),
+                          Text('Tambah Mekanik'),
                         ],
                       ),
-                    ),
-
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Get.back(); // Close the bottom sheet
-                      },
                     ),
                   ],
                 ),
               ),
+              SizedBox(height: 20,),
               Expanded(
                 child: ListView.builder(
                   itemCount: dropdownOptionsList.length,
@@ -354,42 +419,45 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           ElevatedButton(
             onPressed: () {
               showBody = true;
-              setState(() {
-                // Tetapkan nilai kodeBooking dan kategoriKendaraanId di sini sebelum menavigasi
-                kodeBooking = kodeBooking;
-                kategoriKendaraanId = kategoriKendaraanId;
-                // Mulai waktu dan tampilkan body
-                startTime = DateTime.now();
-
-                // Navigasi ke MyStepperPage dengan meneruskan argumen
-              });
+              kodeBooking = kodeBooking;
+              kategoriKendaraanId = kategoriKendaraanId;
+              startTime = DateTime.now();
+              Navigator.pop(context);
+              setState(() {});
             },
             child: Text('Start'),
           ),
-
-        // Tambahkan widget untuk menampilkan kode_booking di sini
-        if (kodeBooking != null)
-          Text('Kode Booking: $kodeBooking'),
-
+        if (startTime != null)
+        ElevatedButton(
+          onPressed: () {
+            // Set waktu selesai saat tombol "Stop" ditekan
+            setState(() {
+              stopTime = DateTime.now();
+              showBody = false;
+              Navigator.pop(context);
+            });
+          },
+          child: Text('Stop'),
+        ),
+          Divider(color: Colors.grey,),
+        const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
+        SizedBox(height: 20,),
         if (startTime != null)
           Text('Waktu Mulai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
               startTime!)}'),
-
-        if (startTime != null)
-          ElevatedButton(
-            onPressed: () {
-              // Set waktu selesai saat tombol "Stop" ditekan
-              setState(() {
-                stopTime = DateTime.now();
-              });
-            },
-            child: Text('Stop'),
-          ),
-
-        // Tampilkan waktu selesai jika sudah ditetapkan
         if (stopTime != null)
           Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
               stopTime!)}'),
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'Keterangan',
+          ),
+        ),
+
+
+
+        // Tampilkan waktu selesai jika sudah ditetapkan
+
       ],
     );
   }

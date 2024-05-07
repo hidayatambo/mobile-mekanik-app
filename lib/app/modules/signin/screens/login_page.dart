@@ -174,11 +174,10 @@ class _LoginPageState extends State<LoginPage> {
                                   } catch (e) {
                                     // Menampilkan pesan kesalahan saat terjadi error
                                     print('Error during login: $e');
-                                    Get.snackbar('Error', 'Terjadi kesalahan saat login',
-                                        backgroundColor: const Color(0xffe5f3e7));
+                                    Get.snackbar('Gagal Login', 'Terjadi kesalahan saat login');
                                   }
                                 } else {
-                                  Get.snackbar('404', 'Username dan Password harus diisi');
+                                  Get.snackbar('Gagal Login', 'Username dan Password harus diisi');
                                 }
 
                                 setState(() {

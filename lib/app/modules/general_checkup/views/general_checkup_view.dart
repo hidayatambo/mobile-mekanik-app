@@ -500,7 +500,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               try {
                 print('Kode Jasa: $selectedKodeJasa');
                 print('kodeBooking: $kodeBooking');
-                // Dapatkan nilai terpilih dari dropdown
                 final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
                 print('ID Mekanik: $selectedIdMekanik');
                 var response = await API.promekID(
@@ -509,7 +508,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   kodejasa: selectedKodeJasa,
                   idmekanik: selectedIdMekanik,
                 );
-                // Mengatur status tampilan dan waktu mulai
                 showBody = true;
                 kodeBooking = kodeBooking;
                 kategoriKendaraanId = kategoriKendaraanId;
@@ -533,7 +531,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               try {
                 print('Kode Jasa: $selectedKodeJasa');
                 print('kodeBooking: $kodeBooking');
-                // Dapatkan nilai terpilih dari dropdown
                 final selectedIdMekanik = idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
                 print('ID Mekanik: $selectedIdMekanik');
                 var response = await API.promekID(
@@ -542,7 +539,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   kodejasa: selectedKodeJasa,
                   idmekanik: selectedIdMekanik,
                 );
-                // Mengatur status tampilan dan waktu mulai
                 showBody = true;
                 kodeBooking = kodeBooking;
                 kategoriKendaraanId = kategoriKendaraanId;

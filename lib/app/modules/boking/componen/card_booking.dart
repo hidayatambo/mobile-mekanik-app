@@ -184,14 +184,26 @@ class BokingList extends StatelessWidget {
 class StatusColor {
   static Color getColor(String status) {
     switch (status.toLowerCase()) {
+      case 'booking':
+        return Colors.blue;
+      case 'approve':
+        return Colors.green;
       case 'diproses':
         return Colors.orange;
       case 'estimasi':
-        return Colors.lime;
-      case 'dikerjakan':
-        return Colors.orange;
-      case 'invoice':
         return Colors.blue;
+      case 'estimasi':
+        return Colors.orange;
+        case 'selesai dikerjakan':
+        return Colors.blue;
+      case 'pkb':
+        return Colors.yellow;
+        case 'pkb tutup':
+        return Colors.yellow;
+        case 'invoice':
+        return Colors.yellow;
+        case 'lunas':
+        return Colors.yellow;
       case 'ditolak by sistem':
         return Colors.red;
       case 'ditolak':

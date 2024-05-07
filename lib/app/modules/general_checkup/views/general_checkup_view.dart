@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik.dart';
+import '../../../data/data_endpoint/proses_promax.dart';
 import '../../../data/endpoint.dart';
 import '../componen/step_gc_test.dart';
 
@@ -67,10 +68,30 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _buildBottomSheet()
-                ]
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    WillPopScope(
+                        onWillPop: () async {
+                          QuickAlert.show(
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            type: QuickAlertType.confirm,
+                            headerBackgroundColor: Colors.yellow,
+                            text:
+                            'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
+                            confirmBtnText: 'Kembali',
+                            title: 'Penting !!',
+                            cancelBtnText: 'Keluar',
+                            onCancelBtnTap: () {
+                              Navigator.of(context).popUntil((route) => route.isFirst);
+                            },
+                            confirmBtnColor: Colors.green,
+                          );
+                          return false;
+                        },
+                        child:
+                        _buildBottomSheet()),
+                  ]
               ),
             ),
           );
@@ -232,14 +253,14 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             height: 700,
                             width: double.infinity,
                             child: Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: SingleChildScrollView(child:
-                              Column(
-                                  children: <Widget>[
-                                    _buildBottomSheet()
-                                  ]
-                              ),
-                              )
+                                padding: const EdgeInsets.all(32.0),
+                                child: SingleChildScrollView(child:
+                                Column(
+                                    children: <Widget>[
+                                      _buildBottomSheet()
+                                    ]
+                                ),
+                                )
 
                             ),
                           );
@@ -301,7 +322,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
                   RadioListTile(
                     title: Text('General check / P2H'),
                     controlAffinity: ListTileControlAffinity.trailing, // Teks berada di sebelah kanan tombol radio
@@ -313,14 +334,14 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       });
                     },
                   ),
-              ],),
+                ],),
               Divider(color: Colors.grey,),
 
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold), ),]),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold), ),]),
               Container(
                 padding: const EdgeInsets.all(10),
                 width: double.infinity,
@@ -417,7 +438,26 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           ),
         if (startTime == null)
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async{
+              try {
+                List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
+                String idMekanik = selectedMekanikList.join(',');
+                String kodeJasa = _isSelected ? 'General check / P2H' : '';
+                var response = await API.promekID(
+                  role: 'start',
+                  kodebooking: kodeBooking ?? '',
+                  kodejasa: kodeJasa,
+                  idmekanik: idMekanik,
+                );
+                // Mengatur status tampilan dan waktu mulai
+                showBody = true;
+                kodeBooking = kodeBooking;
+                kategoriKendaraanId = kategoriKendaraanId;
+                setState(() {});
+                print('Response: ${response.toString()}');
+              } catch (e) {
+                print('Error: $e');
+              }
               showBody = true;
               kodeBooking = kodeBooking;
               kategoriKendaraanId = kategoriKendaraanId;
@@ -428,36 +468,121 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             child: Text('Start'),
           ),
         if (startTime != null)
-        ElevatedButton(
-          onPressed: () {
-            // Set waktu selesai saat tombol "Stop" ditekan
-            setState(() {
-              stopTime = DateTime.now();
-              showBody = false;
-              Navigator.pop(context);
-            });
-          },
-          child: Text('Stop'),
-        ),
-          Divider(color: Colors.grey,),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
+                String idMekanik = selectedMekanikList.join(',');
+                String kodeJasa = _isSelected ? 'General check / P2H' : '';
+                var response = await API.promekID(
+                  role: 'stop',
+                  kodebooking: kodeBooking ?? '',
+                  kodejasa: kodeJasa,
+                  idmekanik: idMekanik,
+                );
+                // Mengatur status tampilan dan waktu mulai
+                showBody = true;
+                kodeBooking = kodeBooking;
+                kategoriKendaraanId = kategoriKendaraanId;
+                startTime = DateTime.now();
+                Navigator.pop(context);
+                setState(() {});
+                print('Response: ${response.toString()}');
+              } catch (e) {
+                print('Error: $e');
+              }
+            },
+            child: Text('stop'),
+          ),
+
+        Divider(color: Colors.grey,),
         const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
         SizedBox(height: 20,),
         if (startTime != null)
-          Text('Waktu Mulai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
-              startTime!)}'),
+          FutureBuilder<PromekProses>(
+            future: (() async {
+              // Ambil nilai dari dropdown untuk kodeJasa
+              String kodeJasa = _isSelected ? 'General check / P2H' : '';
+              print('Kode Jasa: $kodeJasa');
+              return await API.PromekProsesID(
+                kodebooking: kodeBooking ?? '',
+                kodejasa: "2A0000",
+                idmekanik: '14',
+              );
+            })(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                if (snapshot.data != null && snapshot.data!.dataPromek != null) {
+                  final List<DataPromek> dataList = snapshot.data!.dataPromek!;
+                  if (dataList.isNotEmpty) {
+                    final DataPromek firstData = dataList[0];
+                    if (firstData.startPromek != null) {
+                      final startPromek = firstData.startPromek;
+                      return Text('Waktu Mulai: ${startPromek}');
+                    } else {
+                      return const Text('Waktu Mulai tidak tersedia');
+                    }
+                  } else {
+                    return const Text('Tidak ada data');
+                  }
+                } else {
+                  return const Text('Tidak ada data');
+                }
+              }
+            },
+          ),
+
+        // Text('Waktu Mulai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
+        //       startTime!)}'),
         if (stopTime != null)
-          Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
-              stopTime!)}'),
+          FutureBuilder<PromekProses>(
+            future: (() async {
+              List<String?> selectedMekanikList = selectedValuesList.where((element) => element != null).toList();
+              String idMekanik = selectedMekanikList.join(',');
+              String kodeJasa = _isSelected ? 'General check / P2H' : '';
+              return await API.PromekProsesID(
+                kodebooking: kodeBooking ?? '',
+                kodejasa: kodeJasa,
+                idmekanik: idMekanik,
+              );
+            })(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                if (snapshot.data != null && snapshot.data!.dataPromek != null) {
+                  final List<DataPromek> dataList = snapshot.data!.dataPromek!;
+                  if (dataList.isNotEmpty) {
+                    final DataPromek firstData = dataList[0];
+                    if (firstData.startPromek != null) {
+                      final stoppromek = firstData.startPromek;
+                      return Text('Waktu Selesai: ${stoppromek}');
+                    } else {
+                      return const Text('Waktu Mulai tidak tersedia');
+                    }
+                  } else {
+                    return const Text('Tidak ada data');
+                  }
+                } else {
+                  return const Text('Tidak ada data');
+                }
+              }
+            },
+          ),
+
+          // Text('Waktu Selesai: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(
+          //     stopTime!)}'),
         TextField(
           decoration: const InputDecoration(
             hintText: 'Keterangan',
           ),
         ),
-
-
-
-        // Tampilkan waktu selesai jika sudah ditetapkan
-
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:mekanik/app/data/data_endpoint/update_keterangan.dart';
 import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
 import 'data_endpoint/approve.dart';
@@ -14,6 +15,8 @@ import 'data_endpoint/kategory.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
+import 'data_endpoint/promax.dart';
+import 'data_endpoint/proses_promax.dart';
 import 'data_endpoint/submit_finish.dart';
 import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
@@ -36,6 +39,9 @@ class API {
   static const _gethistory = '$_baseUrl/mekanik/get-history-mekanik';
   static const _getKategory = '$_baseUrl/mekanik/kategori-kendaraan';
   static const _getGCMekanik = '$_baseUrl/mekanik/general-checkup-mekanik';
+  static const _postpromek = '$_baseUrl/mekanik/insert-promek';
+  static const _getprosespromek = '$_baseUrl/mekanik/get-proses-promek';
+  static const _postprosespromek = '$_baseUrl/mekanik/update-keterangan-promek';
   static final _controller = Publics.controller;
 
 
@@ -582,6 +588,127 @@ class API {
       throw e;
     }
   }
+//Beda
+  static Future<Promek> promekID({
+    required String role,
+    required String kodebooking,
+    required String kodejasa,
+    required String idmekanik,
+  }) async {
+    final data = {
+      "role": role,
+      "kode_booking": kodebooking,
+      "kode_jasa": kodejasa,
+      "id_mekanik": idmekanik,
+    };
 
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
 
+      var response = await Dio().post(
+        _postpromek,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = Promek.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+  //Beda
+  static Future<PromekProses> PromekProsesID({
+    required String kodebooking,
+    required String kodejasa,
+    required String idmekanik,
+  }) async {
+    final data = {
+      "kode_booking": kodebooking,
+      "kode_jasa": kodejasa,
+      "id_mekanik": idmekanik,
+    };
+
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().get(
+        _getprosespromek,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = PromekProses.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
+  //Beda
+  static Future<UpdateKeterangan> UpdateKeteranganID() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+
+      var response = await Dio().post(
+        _postprosespromek,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = UpdateKeterangan.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e'); // Cetak kesalahan jika terjadi
+      throw e;
+    }
+  }
 }

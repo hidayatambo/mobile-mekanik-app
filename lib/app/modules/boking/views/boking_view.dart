@@ -53,14 +53,14 @@ import '../componen/card_booking.dart';
 
     @override
     void initState() {
-      _refreshControllers = List.generate(7, (index) => RefreshController());
+      _refreshControllers = List.generate(13, (index) => RefreshController());
       super.initState();
     }
 
     @override
     Widget build(BuildContext context) {
       return DefaultTabController(
-        length: 7,
+        length: 11,
         child: Scaffold(
           appBar: AppBar(
             centerTitle: false,
@@ -162,11 +162,15 @@ import '../componen/card_booking.dart';
               isScrollable: true,
               tabs: [
                 Tab(text: 'Semua'),
+                Tab(text: 'Booking'),
+                Tab(text: 'Approve'),
                 Tab(text: 'Diproses'),
-                Tab(text: 'Dikerjakan'),
                 Tab(text: 'Estimasi'),
+                Tab(text: 'pkb'),
+                Tab(text: 'pkb tutup'),
                 Tab(text: 'Selesai Dikerjakan'),
                 Tab(text: 'Invoice'),
+                Tab(text: 'Lunas'),
                 Tab(text: 'Ditolak'),
               ],
             ),
@@ -174,11 +178,15 @@ import '../componen/card_booking.dart';
           body: TabBarView(
             children: [
               _buildTabContent(null), // Semua
+              _buildTabContent('booking'), // Diproses
+              _buildTabContent('approve'), // Diproses
               _buildTabContent('diproses'), // Diproses
-              _buildTabContent('dikerjakan'), // Dikerjakan
               _buildTabContent('estimasi'), // Estimasi
+              _buildTabContent('pkb'), // Estimasi
+              _buildTabContent('pkb tutup'), // Estimasi
               _buildTabContent('selesai dikerjakan'), // Selesai Dikerjakan
               _buildTabContent('invoice'), // Invoice
+              _buildTabContent('lunas'), // Invoice
               _buildTabContent('ditolak'), // Ditolak
             ],
           ),
@@ -248,7 +256,7 @@ import '../componen/card_booking.dart';
                                 print('Nilai e.namaJenissvc: ${e.namaService??''}');
                               }
                               if (e.bookingStatus != null && e.namaService != null) {
-                                if (e.bookingStatus!.toLowerCase() == 'diproses' &&
+                                if (e.bookingStatus!.toLowerCase() == 'booking' &&
                                     e.namaService!.toLowerCase() !=
                                         'repair & maintenance') {
                                   Get.toNamed(
@@ -276,7 +284,7 @@ import '../componen/card_booking.dart';
                                       'status': e.bookingStatus??'',
                                     },
                                   );
-                                } else if (e.bookingStatus!.toLowerCase() == 'diproses' &&
+                                } else if (e.bookingStatus!.toLowerCase() == 'booking' &&
                                     e.namaService!.toLowerCase() !=
                                         'general check up/p2h') {
                                   Get.toNamed(
@@ -317,7 +325,7 @@ import '../componen/card_booking.dart';
                               }
                               if (e.bookingStatus != null && e.namaService != null) {
                                 if (e.bookingStatus!.toLowerCase() ==
-                                    'dikerjakan' &&
+                                    'approve' &&
                                     e.namaService!.toLowerCase() !=
                                         'repair & maintenance') {
                                   final generalData = await API.kategoriID();
@@ -365,7 +373,7 @@ import '../componen/card_booking.dart';
                                     },
                                   );
                                 } else if (e.bookingStatus!.toLowerCase() ==
-                                    'dikerjakan' &&
+                                    'approve' &&
                                     e.namaService!.toLowerCase() !=
                                         'general check up/p2h') {
                                   final generalData = await API.kategoriID();
@@ -450,20 +458,39 @@ import '../componen/card_booking.dart';
 
     int _getStatusIndex(String? status) {
       switch (status) {
-        case 'diproses':
+        case 'booking':
           return 1;
-        case 'dikerjakan':
+        case 'approve':
           return 2;
-        case 'estimasi':
+        case 'diproses':
           return 3;
-        case 'selesai dikerjakan':
+        case 'estimasi':
           return 4;
-        case 'Invoice':
+        case 'selesai dikerjakan':
           return 5;
-        case 'ditolak':
+        case 'pkb':
           return 6;
+        case 'pkb tutup':
+          return 7;
+          case 'invoice':
+          return 8;
+          case 'lunas':
+          return 9;
+          case 'ditolak':
+          return 10;
         default:
           return 0; // Semua
       }
     }
   }
+  // _buildTabContent(null), // Semua
+  // _buildTabContent('booking'), // Diproses
+  // _buildTabContent('approve'), // Diproses
+  // _buildTabContent('diproses'), // Diproses
+  // _buildTabContent('selesai dikerjakan'), // Selesai Dikerjakan
+  // _buildTabContent('estimasi'), // Estimasi
+  // _buildTabContent('pkb'), // Estimasi
+  // _buildTabContent('pkb tutup'), // Estimasi
+  // _buildTabContent('invoice'), // Invoice
+  // _buildTabContent('lunas'), // Invoice
+  // _buildTabContent('ditolak'), // Ditolak

@@ -41,8 +41,6 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   bool isSubmitting = false;
   late String kodeBooking;
   late String kategoriKendaraanId;
-  late String _kodeBooking;
-  late String _kategoriKendaraanId;
   final List<String> stepTitles = [
     'Mesin',
     'Mesin',
@@ -108,10 +106,7 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic>? args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    // Menggunakan data argument
-    final String kodeBooking = args?['kodeBooking'] ?? '';
-    final String kategoriKendaraanId = args?['kategoriKendaraanId'] ?? '';
-    final String kendaraan = args?['kendaraan'] ?? '';
+    final String bookingId = args?['booking_id'] ?? '';
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -150,17 +145,17 @@ class _MyStepperPageState extends State<MyStepperPage> with TickerProviderStateM
                       onConfirmBtnTap: () async {
                         try {
                           if (kDebugMode) {
-                            print('kode_booking: $kodeBooking');
+                            print('kode_booking: $bookingId');
                           }
                           QuickAlert.show(
                             context: Get.context!,
                             type: QuickAlertType.loading,
                             headerBackgroundColor: Colors.yellow,
-                            text: 'Gwnweal CheckUp...',
+                            text: 'General CheckUp...',
                             confirmBtnText: '',
                           );
                           await API.submitGCFinishId(
-                              bookingId: kodeBooking
+                              bookingId: bookingId
                           );
                           Navigator.of(context).popUntil((route) => route.isFirst);
                           QuickAlert.show(

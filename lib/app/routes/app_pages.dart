@@ -4,8 +4,12 @@ import '../modules/approve/bindings/approve_binding.dart';
 import '../modules/approve/views/approve_view.dart';
 import '../modules/boking/bindings/boking_binding.dart';
 import '../modules/boking/views/boking_view.dart';
+import '../modules/bookingmasuk/bindings/bookingmasuk_binding.dart';
+import '../modules/bookingmasuk/views/bookingmasuk_view.dart';
 import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
+import '../modules/detailhistory/bindings/detailhistory_binding.dart';
+import '../modules/detailhistory/views/detailhistory_view.dart';
 import '../modules/general_checkup/bindings/general_checkup_binding.dart';
 import '../modules/general_checkup/views/general_checkup_view.dart';
 import '../modules/history/bindings/history_binding.dart';
@@ -17,6 +21,10 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/repair_maintenen/bindings/repair_maintenen_binding.dart';
 import '../modules/repair_maintenen/views/repair_maintenen_view.dart';
+import '../modules/selesaidikerjakan/bindings/selesaidikerjakan_binding.dart';
+import '../modules/selesaidikerjakan/views/selesaidikerjakan_view.dart';
+import '../modules/selesaiservice/bindings/selesaiservice_binding.dart';
+import '../modules/selesaiservice/views/selesaiservice_view.dart';
 import '../modules/signin/bindings/signin_binding.dart';
 import '../modules/signin/views/signin_view.dart';
 import '../modules/splashcreen/bindings/splashcreen_binding.dart';
@@ -46,7 +54,7 @@ class AppPages {
       binding: ProfileBinding(),
     ),
     GetPage(
-      transition: Transition.rightToLeft,
+      transition: Transition.rightToLeftWithFade,
       name: _Paths.BOKING,
       page: () => BokingView(),
       binding: BokingBinding(),
@@ -84,6 +92,30 @@ class AppPages {
       name: _Paths.APPROVE,
       page: () => ApproveView(),
       binding: ApproveBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeftWithFade,
+      name: _Paths.BOOKINGMASUK,
+      page: () => const BookingmasukView(),
+      binding: BookingmasukBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeftWithFade,
+      name: _Paths.SELESAISERVICE,
+      page: () => const SelesaiserviceView(),
+      binding: SelesaiserviceBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeftWithFade,
+      name: _Paths.SELESAIDIKERJAKAN,
+      page: () => const SelesaidikerjakanView(),
+      binding: SelesaidikerjakanBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeftWithFade,
+      name: _Paths.DETAILHISTORY,
+      page: () => const DetailhistoryView(),
+      binding: DetailhistoryBinding(),
     ),
   ];
 }

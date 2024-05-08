@@ -443,7 +443,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     ),
                     SizedBox(height: 20,),
                     SizedBox( // Menggunakan SizedBox untuk menetapkan batasan ketinggian
-                      height: 500, // Atur ketinggian sesuai kebutuhan Anda
+                      height: 400, // Atur ketinggian sesuai kebutuhan Anda
                       child: ListView.builder(
                         itemCount: dropdownOptionsList.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -479,18 +479,18 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                   }
 
                                   return  _buildDropdown(
-                                      index,
-                                      dropdownOptionsList[index],
-                                      selectedValuesList[index],
-                                          (String? newValue) {
-                                        setState(() {
-                                          selectedValuesList[index] = newValue;
-                                        });
-                                      },
-                                      idMekanikList,
-                                      mekanikMap,
-                                      kodeJasaList[index],
-                                      index,
+                                    index,
+                                    dropdownOptionsList[index],
+                                    selectedValuesList[index],
+                                        (String? newValue) {
+                                      setState(() {
+                                        selectedValuesList[index] = newValue;
+                                      });
+                                    },
+                                    idMekanikList,
+                                    mekanikMap,
+                                    kodeJasaList[index],
+                                    index,
                                   );
                                 } else {
                                   return Center(child: Text('Mekanik atau jasa tidak ada'));
@@ -500,7 +500,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           );
                         },
                       ),
-
                     ),
                   ],
                 ),

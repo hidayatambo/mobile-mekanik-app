@@ -13,6 +13,10 @@ abstract class Routes {
   static const SPLASHCREEN = _Paths.SPLASHCREEN;
   static const REPAIR_MAINTENEN = _Paths.REPAIR_MAINTENEN;
   static const APPROVE = _Paths.APPROVE;
+  static const BOOKINGMASUK = _Paths.BOOKINGMASUK;
+  static const SELESAISERVICE = _Paths.SELESAISERVICE;
+  static const SELESAIDIKERJAKAN = _Paths.SELESAIDIKERJAKAN;
+  static const DETAILHISTORY = _Paths.DETAILHISTORY;
 }
 
 abstract class _Paths {
@@ -27,4 +31,8 @@ abstract class _Paths {
   static const SPLASHCREEN = '/splashcreen';
   static const REPAIR_MAINTENEN = '/repair-maintenen';
   static const APPROVE = '/approve';
+  static const BOOKINGMASUK = '/bookingmasuk';
+  static const SELESAISERVICE = '/selesaiservice';
+  static const SELESAIDIKERJAKAN = '/selesaidikerjakan';
+  static const DETAILHISTORY = '/detailhistory';
 }

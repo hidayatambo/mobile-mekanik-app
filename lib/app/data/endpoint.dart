@@ -7,6 +7,8 @@ import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
 import 'data_endpoint/approve.dart';
 import 'data_endpoint/boking.dart';
+import 'data_endpoint/bookingmasuk.dart';
+import 'data_endpoint/detailhistory.dart';
 import 'data_endpoint/estimasi.dart';
 import 'data_endpoint/gc_mekanik.dart';
 import 'data_endpoint/general_chackup.dart';
@@ -17,6 +19,8 @@ import 'data_endpoint/mekanik.dart';
 import 'data_endpoint/profile.dart';
 import 'data_endpoint/promax.dart';
 import 'data_endpoint/proses_promax.dart';
+import 'data_endpoint/servicedikerjakan.dart';
+import 'data_endpoint/serviceselesai.dart';
 import 'data_endpoint/submit_finish.dart';
 import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
@@ -43,6 +47,10 @@ class API {
   static const _postpromek = '$_baseUrl/mekanik/insert-promek';
   static const _getprosespromek = '$_baseUrl/mekanik/get-proses-promek';
   static const _postprosespromek = '$_baseUrl/mekanik/update-keterangan-promek';
+  static const _getBookingMasuk = '$_baseUrl/mekanik/get-booking-masuk';
+    static const _getServiceSelesai = '$_baseUrl/mekanik/get-service-selesai';
+  static const _getDikerjakan = '$_baseUrl/mekanik/get-dikerjakan';
+  static const _getDetailhistory = '$_baseUrl/mekanik/get-detail-history';
   static final _controller = Publics.controller;
 
 
@@ -66,10 +74,9 @@ class API {
         final responseData = json.decode(response.body);
 
         if (responseData['status'] == false) {
-          // Tangani kasus email atau password salah
           Get.snackbar('Error', responseData['message'],
               backgroundColor: const Color(0xffe5f3e7));
-          return Token(status: false); // Token dengan status false
+          return Token(status: false);
         } else {
           final obj = Token.fromJson(responseData);
           if (obj.token != null) {
@@ -236,7 +243,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postApprovek,
@@ -262,7 +269,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -279,7 +286,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postUpprovek,
@@ -292,7 +299,7 @@ class API {
         ),
       );
 
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+      print('Response: ${response.data}');
 
       final obj = Unapprove.fromJson(response.data);
 
@@ -305,7 +312,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -385,7 +392,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postestimasi,
@@ -398,7 +405,7 @@ class API {
         ),
       );
 
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+      print('Response: ${response.data}');
 
       final obj = Estimasi.fromJson(response.data);
 
@@ -411,7 +418,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -435,18 +442,17 @@ class API {
         ),
       );
 
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+      print('Response: ${response.data}');
 
       if (response.statusCode == 200) {
         final data = response.data;
         final submitGCData = SubmitGC.fromJson(data);
         return submitGCData;
       } else {
-        // Tangani respon yang tidak sesuai dengan harapan
         throw Exception('Failed to submit general checkup');
       }
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -461,7 +467,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postSubmitGCFinish,
@@ -474,7 +480,7 @@ class API {
         ),
       );
 
-      print('Response: ${response.data}'); // Cetak respons untuk memeriksa tanggapan dari server
+      print('Response: ${response.data}');
 
       final obj = Gcfinish.fromJson(response.data);
 
@@ -487,7 +493,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -565,7 +571,7 @@ class API {
         options: Options(
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer $token", // Menambahkan token dalam header
+            "Authorization": "Bearer $token",
           },
         ),
       );
@@ -601,7 +607,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postpromek,
@@ -627,7 +633,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -645,7 +651,7 @@ class API {
 
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().get(
         _getprosespromek,
@@ -671,7 +677,7 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
       throw e;
     }
   }
@@ -679,7 +685,7 @@ class API {
   static Future<UpdateKeterangan> UpdateKeteranganID() async {
     try {
       final token = Publics.controller.getToken.value ?? '';
-      print('Token: $token'); // Cetak token untuk memeriksa kevalidan
+      print('Token: $token');
 
       var response = await Dio().post(
         _postprosespromek,
@@ -704,7 +710,141 @@ class API {
       }
       return obj;
     } catch (e) {
-      print('Error: $e'); // Cetak kesalahan jika terjadi
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
+  static Future<MasukBooking> BookingMasukID() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+
+      var response = await Dio().get(
+        _getBookingMasuk,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = MasukBooking.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
+  static Future<ServiceSelesai> ServiceSelesaiID() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+
+      var response = await Dio().get(
+        _getServiceSelesai,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = ServiceSelesai.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  } //Beda
+  static Future<ServiceDikerjakan> DikerjakanID() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+      var response = await Dio().get(
+        _getDikerjakan,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      print('Response: ${response.data}');
+      final obj = ServiceDikerjakan.fromJson(response.data);
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
+  static Future<DetailHistory> DetailhistoryID({
+    required String kodesvc,
+  }) async {
+    final data = {
+      "kode_svc": kodesvc,
+    };
+
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+
+      var response = await Dio().get(
+        _getDetailhistory,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = DetailHistory.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
       throw e;
     }
   }

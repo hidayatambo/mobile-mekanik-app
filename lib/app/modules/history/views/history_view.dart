@@ -13,6 +13,7 @@ import '../../../data/data_endpoint/history.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
+import '../../detailhistory/views/detailhistorygcu.dart';
 import '../componen/card_history.dart';
 
 class HistoryView extends StatefulWidget {
@@ -48,7 +49,7 @@ class HistoryView2 extends StatefulWidget {
 class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String selectedStatus = 'Semua';
-  late String? selectedService;
+  String selectedService = 'Repair & Maintenance'; // Set default value
   late List<RefreshController> _refreshControllers;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -56,19 +57,24 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabSelection);
-    selectedService = 'Repair & Maintenance'; // Set to 'Repair & Maintenance' as default value
     _refreshControllers = List.generate(2, (index) => RefreshController()); // Adjust the number of RefreshControllers according to the number of tabs
     super.initState();
   }
 
-  String? _getTabService(int index) {
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  String _getTabService(int index) {
     switch (index) {
       case 0:
         return 'Repair & Maintenance';
       case 1:
         return 'General Check UP/P2H';
       default:
-        return null;
+        return 'Repair & Maintenance'; // Default to 'Repair & Maintenance'
     }
   }
 
@@ -78,6 +84,31 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
       selectedService = _getTabService(_tabController.index);
     });
   }
+
+  void _onTapHistoryItem(DataHistory e) {
+    print('Selected Service: $selectedService');
+    print('Selected Status: $selectedStatus');
+    if (selectedService == 'General Check UP/P2H') {
+      print('Navigating to DETAIL HISTORY for General Check UP/P2H with kode_svc: ${e.kodeSvc ?? ""}');
+      Get.toNamed(
+        Routes.DETAILHISTORY,
+        arguments: {
+          'kode_svc': e.kodeSvc ?? '',
+        },
+      );
+    } else if (selectedService == 'Repair & Maintenance') {
+      print('Navigating to DETAIL HISTORY for Repair & Maintenance with kode_svc: ${e.kodeSvc ?? ""}');
+      Get.toNamed(
+        Routes.DETAILHISTORY,
+        arguments: {
+          'kode_svc': e.kodeSvc ?? '',
+        },
+      );
+    } else {
+      print('Service is not recognized, current service: $selectedService');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -283,12 +314,7 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                               (e) => HistoryList(
                             items: e,
                             onTap: () {
-                              Get.toNamed(
-                                Routes.DETAILHISTORY,
-                                arguments: {
-                                  'kode_svc': e.kodeSvc ?? '',
-                                 }
-                                );
+                              _onTapHistoryItem(e);
                             },
                           ),
                         )

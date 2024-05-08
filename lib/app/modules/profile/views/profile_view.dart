@@ -23,8 +23,6 @@ class _ProfileViewState extends State<ProfileView> {
   Color theme2 = const Color(0xff2E324F);
   Color black = Colors.black;
   late RefreshController _refreshController; // the refresh controller
-  final _scaffoldKey =
-  GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
   @override
   void initState() {
     _refreshController =
@@ -128,10 +126,10 @@ class _ProfileViewState extends State<ProfileView> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10))
                 ),
-                child: Row(
+                child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text('Edit Profile'),
                     Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
                   ],),),
@@ -142,10 +140,10 @@ class _ProfileViewState extends State<ProfileView> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10))
                 ),
-                child: Row(
+                child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text('Pengaturan'),
                     Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
                   ],),),
@@ -180,10 +178,10 @@ class _ProfileViewState extends State<ProfileView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Column(
+                                const Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(
                                       "Continue To Logout?",
                                       style: TextStyle(

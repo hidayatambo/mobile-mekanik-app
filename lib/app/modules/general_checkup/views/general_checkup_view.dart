@@ -39,7 +39,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   String? kategoriKendaraanId;
   String? kendaraan;
   String? nama_tipe;
-
   bool _isRunning = false;
 
   Future<void> _startStopButtonPressed(
@@ -49,10 +48,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       Function(String?)? onChanged,
       List<String> idMekanikList,
       Map<String, String> mekanikMap,
-      String kodeJasa, // Mengubah kodeJasaList menjadi kodeJasa
+      String kodeJasa,
       int index,
       ) async {
-    final selectedKodeJasa = kodeJasa; // Store the value of kodeJasa
+    final selectedKodeJasa = kodeJasa;
 
     setState(() {
       _isRunning = !_isRunning;
@@ -71,7 +70,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           kodejasa: selectedKodeJasa!,
           idmekanik: selectedIdMekanik,
         );
-        // Mengatur status tampilan dan waktu mulai
         showBody = true;
         kodeBooking = kodeBooking;
         kategoriKendaraanId = kategoriKendaraanId;
@@ -316,6 +314,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       showModalBottomSheet<void>(
                         showDragHandle: true,
                         context: context,
+                        enableDrag: false,
                         backgroundColor: Colors.white,
                         isScrollControlled: true, // Membuat bottom sheet fullscreen
                         useRootNavigator: true, // Menggunakan navigator root
@@ -429,8 +428,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             ),
                             onPressed: () {
                               setState(() {
-                                dropdownOptionsList.add([]); // Tambahkan daftar kosong baru ke dropdownOptionsList
-                                selectedValuesList.add(null); // Tambahkan nilai null baru ke selectedValuesList
+                                dropdownOptionsList.add([]);
+                                selectedValuesList.add(null);
                               });
                             },
                             child: Row(
@@ -463,18 +462,15 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                   List<String> namaMekanikList = dataMekanik.map((mekanik) => mekanik.nama!).toList();
                                   List<String> idMekanikList = dataMekanik.map((mekanik) => mekanik.idMekanik.toString()).toList();
                                   List<String> kodeJasaList = dataJasa.map((jasa) => jasa.kodeJasa.toString()).toList();
-
                                   Map<String, String> mekanikMap = Map.fromIterables(idMekanikList, namaMekanikList);
 
-                                  // Pastikan dropdownOptionsList dan selectedValuesList sudah diinisialisasi
-                                  if (dropdownOptionsList.isEmpty) {
+                                  // Memperbaiki panjang list jika diperlukan
+                                  while (dropdownOptionsList.length <= index) {
                                     dropdownOptionsList.add([]);
-                                  }
-                                  if (selectedValuesList.isEmpty) {
                                     selectedValuesList.add(null);
                                   }
 
-                                  // Memastikan panjang list mencukupi sebelum mengakses indeksnya
+                                  // Pastikan panjang list mencukupi sebelum mengakses indeksnya
                                   if (dropdownOptionsList.length > index && selectedValuesList.length > index) {
                                     dropdownOptionsList[index] = namaMekanikList;
                                     if (selectedValuesList[index] == null && namaMekanikList.isNotEmpty) {
@@ -482,22 +478,19 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                     }
                                   }
 
-                                  return SizedBox( // Menggunakan SizedBox untuk menetapkan batasan ketinggian
-                                      height: 500, // Atur ketinggian sesuai kebutuhan Anda
-                                    child : _buildDropdown(
-                                    index,
-                                    dropdownOptionsList[index],
-                                    selectedValuesList[index],
-                                        (String? newValue) {
-                                      setState(() {
-                                        selectedValuesList[index] = newValue;
-                                      });
-                                    },
-                                    idMekanikList,
-                                    mekanikMap,
-                                    kodeJasaList[index],
-                                    index,
-                                    ),
+                                  return  _buildDropdown(
+                                      index,
+                                      dropdownOptionsList[index],
+                                      selectedValuesList[index],
+                                          (String? newValue) {
+                                        setState(() {
+                                          selectedValuesList[index] = newValue;
+                                        });
+                                      },
+                                      idMekanikList,
+                                      mekanikMap,
+                                      kodeJasaList[index],
+                                      index,
                                   );
                                 } else {
                                   return Center(child: Text('Mekanik atau jasa tidak ada'));
@@ -507,6 +500,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           );
                         },
                       ),
+
                     ),
                   ],
                 ),
@@ -571,7 +565,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         Divider(color: Colors.grey,),
         const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
         SizedBox(height: 20,),
-
         if (startTime != null)
           FutureBuilder<PromekProses>(
             future: (() async {
@@ -596,7 +589,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.startPromek != null) {
                       final startPromek = firstData.startPromek;
-                      return Text('Waktu Mulai: ${startPromek}',style: TextStyle(fontWeight: FontWeight.bold),);
+                      return Text('Waktu Mulai: ${startPromek} - prosess',style: TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu start tidak tersedia');
                     }
@@ -609,11 +602,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               }
             },
           ),
-        TextField(
-          decoration: const InputDecoration(
-            hintText: 'Keterangan',
-          ),
-        ),
         if (startTime != null)
           FutureBuilder<PromekProses>(
             future: (() async {
@@ -638,7 +626,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.stopPromek != null) {
                       final stopPromek = firstData.stopPromek;
-                      return Text('Waktu selesai: ${stopPromek}',style: TextStyle(fontWeight: FontWeight.bold),);
+                      return Text('Waktu selesai: ${stopPromek}- selesai',style: TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu stop tidak tersedia');
                     }
@@ -651,6 +639,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               }
             },
           ),
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'Keterangan',
+          ),
+        ),
       ],
     );
   }

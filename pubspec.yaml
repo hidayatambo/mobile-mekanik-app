@@ -66,6 +66,7 @@ dependencies:
   search_choices: ^2.2.7
   animated_custom_dropdown: ^3.0.0
   bubble_tab_indicator: ^0.1.4
+  flutter_local_notifications: ^17.1.2
   horizontal_stepper_flutter: ^1.0.3
 
 dev_dependencies: 
@@ -77,19 +78,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
-    - assets/tenant_dummy/
-    - assets/tenant_dummy/bu_monggo/
-    - assets/tenant_dummy/chicken_ricequ/
-    - assets/tenant_dummy/simpang_raya/
-    - assets/tenant_dummy/nasi_jamplang/
-    - assets/tenant_dummy/warung_makan_selonjoran/
-    - assets/tenant_dummy/rosin_resto/
-    - assets/tenant_dummy/empal_gentong/
-    - assets/tenant_dummy/dapur_nafara/
-    - assets/tenant_dummy/raja_sate/
-    - assets/produk/
-    - assets/319b/
-    - assets/379a/
-    - assets/389b/
+    - assets/sounds/sounds.mp3
+
   uses-material-design: true
 

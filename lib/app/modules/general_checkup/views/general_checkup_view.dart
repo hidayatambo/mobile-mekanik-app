@@ -11,7 +11,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/data_endpoint/proses_promax.dart';
 import '../../../data/endpoint.dart';
-import '../componen/step_gc_test.dart';
+import '../componen/step_gc.dart';
 
 class GeneralCheckupView extends StatefulWidget {
   const GeneralCheckupView({Key? key}) : super(key: key);

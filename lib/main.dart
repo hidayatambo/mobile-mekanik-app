@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,12 +6,21 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'app/componen/color.dart';
+import 'app/data/data_endpoint/boking.dart';
+import 'app/data/data_endpoint/bookingmasuk.dart';
+import 'app/data/endpoint.dart';
 import 'app/data/publik.dart';
 import 'app/routes/app_pages.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
+  startPollingNotifications(); // Mulai polling notifikasi
   await GetStorage.init('token-mekanik');
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -22,7 +32,27 @@ void main() async{
     DeviceOrientation.landscapeRight
   ]);
 
+  // Inisialisasi plugin notifikasi
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  final AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  final InitializationSettings initializationSettings =
+  InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await API();
+  startPollingNotifications();
+
   runApp(const MyApp());
+}
+
+// Fungsi untuk melakukan polling notifikasi secara berkala
+void startPollingNotifications() {
+  const pollingInterval = Duration(minutes: 1); // Atur interval polling (contoh: 5 menit)
+
+  Timer.periodic(pollingInterval, (timer) async {
+    await API.showBookingNotifications();
+  });
 }
 
 class MyHttpOverrides extends HttpOverrides {

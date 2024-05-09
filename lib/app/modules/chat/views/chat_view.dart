@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
-import '../../general_checkup/componen/step_gc_test.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({Key? key}) : super(key: key);

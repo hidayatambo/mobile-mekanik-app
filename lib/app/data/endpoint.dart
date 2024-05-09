@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/data/data_endpoint/update_keterangan.dart';
 import 'package:mekanik/app/data/publik.dart';
@@ -848,4 +849,63 @@ class API {
       throw e;
     }
   }
+
+  static Future<void> showBookingNotifications() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      var data = {"token": token};
+      var response = await Dio().get(
+        _getTooking,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+        queryParameters: data,
+      );
+
+      if (response.statusCode == 404) {
+        return;
+      }
+
+      final obj = Boking.fromJson(response.data);
+
+      if (obj.status == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.status.toString(),
+          obj.status.toString(),
+        );
+      }
+
+      final bookings = obj.dataBooking ?? [];
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+      for (final booking in bookings) {
+        if (booking.bookingStatus == 'Booking') {
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+            'your channel id',
+            'your channel name',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+            sound: RawResourceAndroidNotificationSound('sounds'),
+          );
+          const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+            0,
+            'Booking Masuk',
+            booking.namaService ?? '',
+            platformChannelSpecifics,
+            payload: 'item x', // optional, used for onClick event
+          );
+        }
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
 }

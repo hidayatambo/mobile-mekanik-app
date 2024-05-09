@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-
 import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '../../../data/data_endpoint/bookingmasuk.dart';
+import '../../../data/data_endpoint/boking.dart';
 import '../../../data/endpoint.dart';
-import '../componen/list_card_booking_masuk.dart';
+import '../componen/card_bookingmasuk.dart';
 
 class BookingmasukView extends StatefulWidget {
   const BookingmasukView({super.key});
@@ -44,74 +42,67 @@ class _BookingmasukViewState extends State<BookingmasukView> {
     header: const WaterDropHeader(),
     onLoading: _onLoading,
     onRefresh: _onRefresh,
-    child:
-      SingleChildScrollView(
+    child: SingleChildScrollView(
         child: FutureBuilder(
-          future: API.BookingMasukID(),
+          future: API.bokingid(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (snapshot.hasData) {
-              MasukBooking? data = snapshot.data as MasukBooking?;
-              if (data != null) {
-                // Anda dapat mengakses atribut status seperti ini jika telah didefinisikan dalam kelas MasukBooking
-                int? status = data.countBookingMasuk;
-                if (status != null) {
-                  if (data.countBookingMasuk == 0) {
-                    return Container(
-                      height: 500,
-                      width: double.infinity,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/icons/bookingorder.png',
-                            width: 100.0,
-                            height: 100.0,
-                            fit: BoxFit.cover,
-                          ),
-                          SizedBox(height: 10,),
-                          Text('Belum ada Booking masuk hari ini', style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),)
-                        ],),
-                    );
-                  } else {
-                    return Column(
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: const Duration(milliseconds: 475),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          child: FadeInAnimation(
-                            child: widget,
-                          ),
-                        ),
-                        children: data.bookingMasuk != null
-                            ? data.bookingMasuk!.map((e) {
-                          return ListBookingMasuk(
-                            items: e,
-                            onTap: () {},
-                          );
-                        }).toList()
-                            : [],
+            if (snapshot.hasData &&
+                snapshot.connectionState !=
+                    ConnectionState.waiting &&
+                snapshot.data != null) {
+              Boking getDataAcc = snapshot.data ?? Boking();
+              List<DataBooking> bookingStatusBookings = getDataAcc.dataBooking!
+                  .where((booking) => booking.bookingStatus == 'Booking')
+                  .toList();
+
+              // Menampilkan widget Container jika daftar booking kosong
+              if (bookingStatusBookings.isEmpty) {
+                return Container(
+                  height: 500,
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/icons/bookingorder.png',
+                        width: 100.0,
+                        height: 100.0,
+                        fit: BoxFit.cover,
                       ),
-                    );
-                  }
-                } else {
-                  return Center(
-                    child: Text('Status is false'),
-                  );
-                }
-              } else {
-                return Center(
-                  child: Text('Data is null'),
+                      SizedBox(height: 10,),
+                      Text(
+                        'Belum ada Booking Masuk hari ini',
+                        style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 );
               }
+
+              // Menampilkan daftar booking jika tidak kosong
+              return Column(
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: const Duration(milliseconds: 475),
+                  childAnimationBuilder: (widget) => SlideAnimation(
+                    child: FadeInAnimation(
+                      child: widget,
+                    ),
+                  ),
+                  children: bookingStatusBookings
+                      .map((e) {
+                    return BokingListMasuk(
+                      items: e,
+                      onTap: () {
+                        // Handler untuk ketika item diklik.
+                      },
+                    );
+                  })
+                      .toList(),
+                ),
+              );
             } else {
+              // Menampilkan indikator loading atau pesan kesalahan jika terjadi
               return SizedBox(
                 height: Get.height - 250,
                 child: SingleChildScrollView(
@@ -123,7 +114,8 @@ class _BookingmasukViewState extends State<BookingmasukView> {
             }
           },
         ),
-      ),
+
+    ),
       ),
     );
   }

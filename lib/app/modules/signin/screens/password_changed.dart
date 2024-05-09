@@ -21,7 +21,6 @@ class _PasswordChangesPageState extends State<PasswordChangesPage> {
       body: SafeArea(
         child: Column(
           children: [
-            LottieBuilder.asset("assets/images/ticker.json"),
             FadeInAnimation(
               delay: 1,
               child: Text(

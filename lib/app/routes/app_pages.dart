@@ -8,8 +8,8 @@ import '../modules/bookingmasuk/bindings/bookingmasuk_binding.dart';
 import '../modules/bookingmasuk/views/bookingmasuk_view.dart';
 import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
-import '../modules/detailhistory/bindings/detailhistory_binding.dart';
-import '../modules/detailhistory/views/detailhistory_view.dart';
+import '../modules/detail_history/bindings/detail_history_binding.dart';
+import '../modules/detail_history/views/detail_history_view.dart';
 import '../modules/general_checkup/bindings/general_checkup_binding.dart';
 import '../modules/general_checkup/views/general_checkup_view.dart';
 import '../modules/history/bindings/history_binding.dart';
@@ -96,7 +96,7 @@ class AppPages {
     GetPage(
       transition: Transition.rightToLeftWithFade,
       name: _Paths.BOOKINGMASUK,
-      page: () => const BookingmasukView(),
+      page: () =>  BookingmasukView(),
       binding: BookingmasukBinding(),
     ),
     GetPage(
@@ -113,9 +113,9 @@ class AppPages {
     ),
     GetPage(
       transition: Transition.rightToLeftWithFade,
-      name: _Paths.DETAILHISTORY,
-      page: () => const DetailhistoryView(),
-      binding: DetailhistoryBinding(),
+      name: _Paths.DETAIL_HISTORY,
+      page: () => const DetailHistoryView(),
+      binding: DetailHistoryBinding(),
     ),
   ];
 }

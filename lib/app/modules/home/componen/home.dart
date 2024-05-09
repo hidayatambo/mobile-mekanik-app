@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mekanik/app/modules/home/componen/stats_grid.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import '../../../componen/color.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
@@ -32,14 +34,14 @@ class _StatsScreenState extends State<StatsScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Dashboard'),
+             Text('Dashboard',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
             FutureBuilder<Profile>(
               future: API.profileiD(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const loadcabang();
                 } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return loadcabang();
                 } else {
                   if (snapshot.data != null) {
                     final cabang = snapshot.data!.data?.cabang ?? "";
@@ -138,6 +140,7 @@ class _StatsScreenState extends State<StatsScreen> {
   }
 
   _onRefresh() {
+    HapticFeedback.lightImpact();
     setState(() {
 // so whatever you want to refresh it must be inside the setState
       const StatsScreen(); // if you only want to refresh the list you can place this, so the two can be inside setState

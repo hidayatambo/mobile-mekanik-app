@@ -129,7 +129,7 @@ class _DynamicFilledButtonState extends State<DynamicFilledButton> {
             padding: const EdgeInsets.symmetric(
               vertical: 10,
             ),
-            color: widget.color ?? Common().black,
+            color: widget.color ?? Common().white,
             onPressed: isLoading ? null : func,
             child:
                 isLoading ? const CupertinoActivityIndicator() : widget.child,

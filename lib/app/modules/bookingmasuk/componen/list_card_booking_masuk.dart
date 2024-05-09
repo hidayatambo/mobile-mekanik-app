@@ -31,71 +31,49 @@ class ListBookingMasuk extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.only(bottom: 10, top: 10, right: 15, left: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.15),
-                          spreadRadius: 5,
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(children: [
+                        Text('Kode Booking'),
+                        Text(items.kodeBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+                      ],),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      ],
-                    ),
-                    child:  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: [
-                            Column(children: [
-                              Text('Kode Booking'),
-                              Text(items.kodeBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
-                            ],),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: statusColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    items.status.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                            Text(
+                              items.status.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],),
+                          ],
+                        ),
+                      ),
+                    ],),
 
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(children: [
-                              Text('Tanggal Booking'),
-                              Text(items.tglBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
-                            ],),
-                            Column(children: [
-                              Text('Jam Booking'),
-                              Text(items.jamBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
-                            ],),
-                          ],),
-                        Divider(color: Colors.grey,),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(children: [
+                        Text('Tanggal Booking'),
+                        Text(items.tglBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+                      ],),
+                      Column(children: [
+                        Text('Jam Booking'),
+                        Text(items.jamBooking?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+                      ],),
+                    ],),
+                  Divider(color: Colors.grey,),
                 ],
             ),
         ),

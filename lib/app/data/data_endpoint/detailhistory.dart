@@ -4,9 +4,9 @@ class DetailHistory {
   DataSvc? dataSvc;
   List<Null>? dataSvcPaket;
   List<Null>? dataSvcDtlPart;
-  List<Null>? dataSvcDtlJasa;
+  List<DataSvcDtlJasa>? dataSvcDtlJasa;
   List<Null>? paket;
-  Null? deskripsiMembership;
+  String? deskripsiMembership;
 
   DetailHistory(
       {this.status,
@@ -37,9 +37,9 @@ class DetailHistory {
       });
     }
     if (json['data_svc_dtl_jasa'] != null) {
-      dataSvcDtlJasa = <Null>[];
+      dataSvcDtlJasa = <DataSvcDtlJasa>[];
       json['data_svc_dtl_jasa'].forEach((v) {
-        dataSvcDtlJasa!.add((v));
+        dataSvcDtlJasa!.add(new DataSvcDtlJasa.fromJson(v));
       });
     }
     if (json['paket'] != null) {
@@ -68,10 +68,10 @@ class DetailHistory {
     }
     if (this.dataSvcDtlJasa != null) {
       data['data_svc_dtl_jasa'] =
-          this.dataSvcDtlJasa!.map((v) => ()).toList();
+          this.dataSvcDtlJasa!.map((v) => v.toJson()).toList();
     }
     if (this.paket != null) {
-      data['paket'] = this.paket!.map((v) =>()).toList();
+      data['paket'] = this.paket!.map((v) => ()).toList();
     }
     data['deskripsi_membership'] = this.deskripsiMembership;
     return data;
@@ -87,32 +87,32 @@ class DataSvc {
   String? kodePkb;
   String? kodePelanggan;
   String? kodeKendaraan;
-  Null? odometer;
-  Null? pic;
-  Null? hpPic;
-  Null? kodeMembership;
-  Null? kodePaketmember;
+  String? odometer;
+  String? pic;
+  String? hpPic;
+  String? kodeMembership;
+  String? kodePaketmember;
   String? tipeSvc;
   String? tipePelanggan;
   String? referensi;
-  Null? referensiTeman;
-  Null? poNumber;
-  Null? paketSvc;
-  Null? tglKeluar;
-  Null? tglKembali;
-  Null? kmKeluar;
-  Null? kmKembali;
-  Null? keluhan;
-  Null? perintahKerja;
-  Null? pergantianPart;
-  Null? saran;
-  Null? ppn;
+  String? referensiTeman;
+  String? poNumber;
+  String? paketSvc;
+  String? tglKeluar;
+  String? tglKembali;
+  String? kmKeluar;
+  String? kmKembali;
+  String? keluhan;
+  String? perintahKerja;
+  String? pergantianPart;
+  String? saran;
+  String? ppn;
   String? penanggungJawab;
   String? tglEstimasi;
   String? tglPkb;
-  Null? tglTutup;
-  Null? jamEstimasiSelesai;
-  Null? jamSelesai;
+  String? tglTutup;
+  String? jamEstimasiSelesai;
+  String? jamSelesai;
   int? pkb;
   int? tutup;
   int? faktur;
@@ -122,7 +122,7 @@ class DataSvc {
   String? createdByPkb;
   String? createdAt;
   String? updatedBy;
-  Null? updatedAt;
+  String? updatedAt;
   String? kode;
   String? noPolisi;
   int? idMerk;
@@ -130,30 +130,30 @@ class DataSvc {
   String? tahun;
   String? warna;
   String? transmisi;
-  Null? noRangka;
-  Null? noMesin;
-  Null? modelKaroseri;
+  String? noRangka;
+  String? noMesin;
+  String? modelKaroseri;
   String? drivingMode;
-  Null? power;
+  String? power;
   String? kategoriKendaraan;
-  Null? jenisKontrak;
-  Null? idCustomer;
+  String? jenisKontrak;
+  String? idCustomer;
   String? nama;
   String? alamat;
-  Null? telp;
+  String? telp;
   String? hp;
   String? email;
-  Null? kontak;
+  String? kontak;
   int? due;
-  Null? jenisKontrakX;
+  String? jenisKontrakX;
   String? namaTagihan;
-  Null? alamatTagihan;
-  Null? telpTagihan;
-  Null? npwpTagihan;
-  Null? picTagihan;
+  String? alamatTagihan;
+  String? telpTagihan;
+  String? npwpTagihan;
+  String? picTagihan;
   String? password;
-  Null? rememberToken;
-  Null? emailVerifiedAt;
+  String? rememberToken;
+  String? emailVerifiedAt;
   String? otp;
   String? otpExpiry;
   String? gambar;
@@ -411,6 +411,79 @@ class DataSvc {
     data['nama_merk'] = this.namaMerk;
     data['nama_tipe'] = this.namaTipe;
     data['nama_cabang'] = this.namaCabang;
+    return data;
+  }
+}
+
+class DataSvcDtlJasa {
+  int? id;
+  String? kodeSvc;
+  String? kodeJasa;
+  String? namaJasa;
+  int? qtyJasa;
+  int? hargaJasa;
+  int? diskonJasa;
+  String? hidJasa;
+  String? createdAt;
+  String? updatedAt;
+  int? biaya;
+  int? jam;
+  String? divisiJasa;
+  int? deleted;
+  String? createdBy;
+
+  DataSvcDtlJasa(
+      {this.id,
+        this.kodeSvc,
+        this.kodeJasa,
+        this.namaJasa,
+        this.qtyJasa,
+        this.hargaJasa,
+        this.diskonJasa,
+        this.hidJasa,
+        this.createdAt,
+        this.updatedAt,
+        this.biaya,
+        this.jam,
+        this.divisiJasa,
+        this.deleted,
+        this.createdBy});
+
+  DataSvcDtlJasa.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    kodeSvc = json['kode_svc'];
+    kodeJasa = json['kode_jasa'];
+    namaJasa = json['nama_jasa'];
+    qtyJasa = json['qty_jasa'];
+    hargaJasa = json['harga_jasa'];
+    diskonJasa = json['diskon_jasa'];
+    hidJasa = json['hid_jasa'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    biaya = json['biaya'];
+    jam = json['jam'];
+    divisiJasa = json['divisi_jasa'];
+    deleted = json['deleted'];
+    createdBy = json['created_by'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['kode_svc'] = this.kodeSvc;
+    data['kode_jasa'] = this.kodeJasa;
+    data['nama_jasa'] = this.namaJasa;
+    data['qty_jasa'] = this.qtyJasa;
+    data['harga_jasa'] = this.hargaJasa;
+    data['diskon_jasa'] = this.diskonJasa;
+    data['hid_jasa'] = this.hidJasa;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['biaya'] = this.biaya;
+    data['jam'] = this.jam;
+    data['divisi_jasa'] = this.divisiJasa;
+    data['deleted'] = this.deleted;
+    data['created_by'] = this.createdBy;
     return data;
   }
 }

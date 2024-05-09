@@ -71,6 +71,7 @@ class _HomeViewState extends State<HomeView> {
         animationCurve: Curves.linear,
         animationDuration: const Duration(milliseconds: 600),
         onTap: (index) {
+          HapticFeedback.lightImpact();
           setState(() {
             _page = index;
             _pageController.animateToPage(

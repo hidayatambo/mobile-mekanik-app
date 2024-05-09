@@ -1,4 +1,6 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/data/data_endpoint/profile.dart';
 import 'package:mekanik/app/data/endpoint.dart';
@@ -7,6 +9,8 @@ import '../../../componen/ButtonSubmitWidget.dart';
 import '../../../componen/color.dart';
 import '../../../data/localstorage.dart';
 import '../../../routes/app_pages.dart';
+import '../../signin/screens/forget_password.dart';
+import '../../signin/screens/password_changed.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
@@ -71,7 +75,7 @@ class _ProfileViewState extends State<ProfileView> {
                             child: Text(
                               nama,
                               style: TextStyle(
-                                color: black,
+                                color: MyColors.appPrimaryColor,
                                 fontSize: 26.0,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -119,20 +123,13 @@ class _ProfileViewState extends State<ProfileView> {
                   height: 50.0,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))
-                ),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Edit Profile'),
-                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
-                  ],),),
+              InkWell(
+                 onTap: () {
+                   HapticFeedback.lightImpact();
+                   AppSettings.openAppSettings(type: AppSettingsType.notification);
+                 },
+
+                child:
               Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -146,7 +143,13 @@ class _ProfileViewState extends State<ProfileView> {
                   children: [
                     Text('Pengaturan'),
                     Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
-                  ],),),
+                  ],),),),
+              InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Get.to(ForgetPasswordPage());
+                },
+                child:
               Container(
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -154,15 +157,16 @@ class _ProfileViewState extends State<ProfileView> {
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10))
                 ),
-                child: Row(
+                child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text('Ubah Password'),
                     Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
-                  ],),),
+                  ],),),),
               InkWell(
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   showDialog(
                     context: context,
                     builder: (context) =>
@@ -289,6 +293,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   _onRefresh() {
+    HapticFeedback.lightImpact();
     setState(() {
 // so whatever you want to refresh it must be inside the setState
       const ProfileView(); // if you only want to refresh the list you can place this, so the two can be inside setState

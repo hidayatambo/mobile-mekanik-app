@@ -1,8 +1,10 @@
   import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
   import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
   import 'package:get/get.dart';
   import 'package:google_fonts/google_fonts.dart';
+import 'package:mekanik/app/componen/color.dart';
 import 'package:mekanik/app/data/data_endpoint/kategory.dart';
   import 'package:pull_to_refresh/pull_to_refresh.dart';
   import 'package:search_page/search_page.dart';
@@ -68,14 +70,14 @@ import '../componen/card_booking.dart';
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Booking'),
+                Text('Booking' ,style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
                 FutureBuilder<Profile>(
                   future: API.profileiD(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const loadcabang();
                     } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
+                      return const loadcabang();
                     } else {
                       if (snapshot.data != null) {
                         final cabang = snapshot.data!.data?.cabang ?? "";
@@ -93,7 +95,7 @@ import '../componen/card_booking.dart';
                           ],
                         );
                       } else {
-                        return const Text('Tidak ada data');
+                        return const loadcabang();
                       }
                     }
                   },
@@ -136,7 +138,7 @@ import '../componen/card_booking.dart';
                             builder: (items) => BokingList(items: items, onTap: () {  },),
                           ),
                         ),
-                        child: const Icon(Icons.search_rounded),
+                        child: Icon(Icons.search_rounded, color: MyColors.appPrimaryColor,),
                       );
                     } else {
                       return Center(
@@ -147,20 +149,20 @@ import '../componen/card_booking.dart';
                       );
                     }
                   } else {
-                    return Center(
-                      child: Text(
-                        'Terjadi kesalahan saat mengambil data.',
-                        style: GoogleFonts.nunito(),
-                      ),
+                    return const Center(
+                      child: loadsearch(),
                     );
                   }
                 },
               ),
               const SizedBox(width: 20)
             ],
-            bottom: const TabBar(
+            bottom: TabBar(
               isScrollable: true,
-              tabs: [
+              labelColor: MyColors.appPrimaryColor, // Change label color as needed
+              unselectedLabelColor: Colors.grey, // Change unselected label color as needed
+              indicatorColor: MyColors.appPrimaryColor,
+              tabs: const [
                 Tab(text: 'Semua'),
                 Tab(text: 'Booking'),
                 Tab(text: 'Approve'),
@@ -213,7 +215,7 @@ import '../componen/card_booking.dart';
                       child: Loadingshammer(),
                     );
                   } else if (snapshot.hasError) {
-                    return  Center(
+                    return  const Center(
                       child: Text('Belum ada data booking.'),
                     );
                   } else if (snapshot.hasData) {
@@ -234,11 +236,23 @@ import '../componen/card_booking.dart';
                         : getDataAcc.dataBooking!;
 
                     if (filteredList.isEmpty) {
-                      return Center(
-                        child: Text('Belum ada data booking.'),
+                      return Container(
+                        height: 500,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/icons/booking.png',
+                              width: 100.0,
+                              height: 100.0,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(height: 10,),
+                            Text('Belum ada data Booking', style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),)
+                          ],),
                       );
                     }
-
                     return Column(
                       children: AnimationConfiguration.toStaggeredList(
                         duration: const Duration(milliseconds: 475),
@@ -252,6 +266,7 @@ import '../componen/card_booking.dart';
                               (e) => BokingList(
                             items: e,
                             onTap: () async {
+                              HapticFeedback.lightImpact();
                               if (kDebugMode) {
                                 print('Nilai e.namaJenissvc: ${e.namaService??''}');
                               }
@@ -403,8 +418,7 @@ import '../componen/card_booking.dart';
                                       'jam_booking': e.jamBooking ?? '',
                                       'nama': e.nama ?? '',
                                       'kategori_kendaraan_id': kategoriKendaraanId,
-                                      'kategori_kendaraan': e
-                                          .kategoriKendaraan ?? '',
+                                      'kategori_kendaraan': e.kategoriKendaraan ?? '',
                                       'kode_booking': e.kodeBooking ?? '',
                                       'nama_jenissvc': e.namaService ?? '',
                                       'no_polisi': e.noPolisi ?? '',
@@ -451,6 +465,7 @@ import '../componen/card_booking.dart';
     }
 
     void _onRefresh(String? status) {
+      HapticFeedback.lightImpact();
       API.bokingid();
       widget.clearCachedBoking();
       _refreshControllers[_getStatusIndex(status)].refreshCompleted();

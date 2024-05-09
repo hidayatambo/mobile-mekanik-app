@@ -3,7 +3,7 @@ class ServiceSelesai {
   String? message;
   String? namaSS;
   int? countBookingMasuk;
-  String? serviceSelesai;
+  List<Null>? serviceSelesai;
 
   ServiceSelesai(
       {this.status,
@@ -17,7 +17,12 @@ class ServiceSelesai {
     message = json['message'];
     namaSS = json['namaSS'];
     countBookingMasuk = json['countBookingMasuk'];
-    serviceSelesai = json['serviceSelesai'];
+    if (json['serviceSelesai'] != null) {
+      serviceSelesai = <Null>[];
+      json['serviceSelesai'].forEach((v) {
+        serviceSelesai!.add( (v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -26,7 +31,10 @@ class ServiceSelesai {
     data['message'] = this.message;
     data['namaSS'] = this.namaSS;
     data['countBookingMasuk'] = this.countBookingMasuk;
-    data['serviceSelesai'] = this.serviceSelesai;
+    if (this.serviceSelesai != null) {
+      data['serviceSelesai'] =
+          this.serviceSelesai!.map((v) => ()).toList();
+    }
     return data;
   }
 }

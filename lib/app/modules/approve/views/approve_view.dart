@@ -343,7 +343,7 @@ class ApproveView extends GetView<ApproveController> {
         ),],),
       ),
       appBar: AppBar(
-        title: const Text('Approve'),
+        title: Text('Approve',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
         centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,

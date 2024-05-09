@@ -48,7 +48,7 @@ class API {
   static const _getprosespromek = '$_baseUrl/mekanik/get-proses-promek';
   static const _postprosespromek = '$_baseUrl/mekanik/update-keterangan-promek';
   static const _getBookingMasuk = '$_baseUrl/mekanik/get-booking-masuk';
-    static const _getServiceSelesai = '$_baseUrl/mekanik/get-service-selesai';
+  static const _getServiceSelesai = '$_baseUrl/mekanik/get-service-selesai';
   static const _getDikerjakan = '$_baseUrl/mekanik/get-dikerjakan';
   static const _getDetailhistory = '$_baseUrl/mekanik/get-detail-history';
   static final _controller = Publics.controller;

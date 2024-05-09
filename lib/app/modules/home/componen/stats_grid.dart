@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../data/data_endpoint/bookingmasuk.dart';
@@ -19,179 +20,17 @@ class StatsGrid extends StatelessWidget {
           Flexible(
             child: Row(
               children: <Widget>[
-                FutureBuilder<MasukBooking>(
+                _buildFutureStatCard<MasukBooking>(
                   future: API.BookingMasukID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Expanded(
-                        child : Container(
-                          margin: const EdgeInsets.all(8.0),
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.orange
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.data != null) {
-                        final countBookingMasuk = snapshot.data!.countBookingMasuk?? "";
-                        final namaBM = snapshot.data!.namaBM?? "";
-                        return  Expanded(
-                          child :
-                          InkWell(
-                          onTap: () {
-                            Get.toNamed(Routes.BOOKINGMASUK);
-                          },
-                          child:
-                          Container(
-                            margin: const EdgeInsets.all(8.0),
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.orange
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  namaBM,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  countBookingMasuk.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ),
-                        );
-                      } else {
-                        return const Text('Tidak ada data');
-                      }
-                    }
-                  },
+                  color: Colors.orange,
+                  onTapRoute: Routes.BOOKINGMASUK,
+                  dataLabel: "Booking Masuk",
                 ),
-                FutureBuilder<ServiceSelesai>(
+                _buildFutureStatCard<ServiceSelesai>(
                   future: API.ServiceSelesaiID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Expanded(
-                        child : Container(
-                          margin: const EdgeInsets.all(8.0),
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.red
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.data != null) {
-                        final countBookingMasuk = snapshot.data!.countBookingMasuk?? "";
-                        final namaSS = snapshot.data!.namaSS?? "";
-                        return  Expanded(
-                          child :
-                            InkWell(
-                            onTap: () {
-                              // Get.toNamed(Routes.SELESAISERVICE);
-                        },
-                    child:
-                          Container(
-                            margin: const EdgeInsets.all(8.0),
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.red
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  namaSS,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  countBookingMasuk.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ),
-                        );
-                      } else {
-                        return const Text('Tidak ada data');
-                      }
-                    }
-                  },
+                  color: Colors.blue,
+                  onTapRoute: null??'',
+                  dataLabel: "Service Selesai",
                 ),
               ],
             ),
@@ -199,95 +38,123 @@ class StatsGrid extends StatelessWidget {
           Flexible(
             child: Row(
               children: <Widget>[
-                FutureBuilder<ServiceDikerjakan>(
+                _buildFutureStatCard<ServiceDikerjakan>(
                   future: API.DikerjakanID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Expanded(
-                        child : Container(
-                          margin: const EdgeInsets.all(8.0),
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.green
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      if (snapshot.data != null) {
-                        final countBookingMasuk = snapshot.data!.countDikerjakan?? "";
-                        final namaSD = snapshot.data!.namaSD?? "";
-                        return  Expanded(
-                          child :
-                            InkWell(
-                            onTap: () {
-                              Get.toNamed(Routes.SELESAIDIKERJAKAN);
-                        },
-                    child:
-                          Container(
-                            margin: const EdgeInsets.all(8.0),
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.green
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  namaSD,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  countBookingMasuk.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ),
-                        );
-                      } else {
-                        return const Text('Tidak ada data');
-                      }
-                    }
-                  },
+                  color: Colors.green,
+                  onTapRoute: Routes.SELESAIDIKERJAKAN,
+                  dataLabel: "Service Dikerjakan",
                 ),
                 _buildStatCard('Invoice', '391', Colors.purple),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFutureStatCard<T>({
+    required Future<T> future,
+    required Color color,
+    required String onTapRoute,
+    required String dataLabel,
+  }) {
+    return Expanded(
+      child: FutureBuilder<T>(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _buildLoadingCard(color);
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            var data = snapshot.data;
+            var count = '-';
+            var label = dataLabel;
+
+            if (data is MasukBooking) {
+              count = data.countBookingMasuk?.toString() ?? '-';
+            } else if (data is ServiceSelesai) {
+              count = data.countBookingMasuk?.toString() ?? '-';
+            } else if (data is ServiceDikerjakan) {
+              count = data.countDikerjakan?.toString() ?? '-';
+            }
+
+            return InkWell(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                Get.toNamed(onTapRoute);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'Hari ini',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      count,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingCard(Color color) {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            '',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            '',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -314,6 +181,13 @@ class StatsGrid extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 15.0,
                 fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              'Hari ini',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(

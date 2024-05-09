@@ -1,11 +1,13 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:search_page/search_page.dart';
 
+import '../../../componen/color.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../componen/loading_search_shimmer.dart';
 import '../../../componen/loading_shammer_history.dart';
@@ -13,7 +15,6 @@ import '../../../data/data_endpoint/history.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
-import '../../detailhistory/views/detailhistorygcu.dart';
 import '../componen/card_history.dart';
 
 class HistoryView extends StatefulWidget {
@@ -49,9 +50,9 @@ class HistoryView2 extends StatefulWidget {
 class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String selectedStatus = 'Semua';
-  String selectedService = 'Repair & Maintenance'; // Set default value
+  String selectedService = 'Repair & Maintenance';
+  String selectedServicegc = 'General Check UP/P2H';
   late List<RefreshController> _refreshControllers;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -80,34 +81,11 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
 
   void _handleTabSelection() {
     setState(() {
-      // When tab is selected, set selectedService according to the active tab
       selectedService = _getTabService(_tabController.index);
+      selectedServicegc = _getTabService(_tabController.index);
     });
   }
 
-  void _onTapHistoryItem(DataHistory e) {
-    print('Selected Service: $selectedService');
-    print('Selected Status: $selectedStatus');
-    if (selectedService == 'General Check UP/P2H') {
-      print('Navigating to DETAIL HISTORY for General Check UP/P2H with kode_svc: ${e.kodeSvc ?? ""}');
-      Get.toNamed(
-        Routes.DETAILHISTORY,
-        arguments: {
-          'kode_svc': e.kodeSvc ?? '',
-        },
-      );
-    } else if (selectedService == 'Repair & Maintenance') {
-      print('Navigating to DETAIL HISTORY for Repair & Maintenance with kode_svc: ${e.kodeSvc ?? ""}');
-      Get.toNamed(
-        Routes.DETAILHISTORY,
-        arguments: {
-          'kode_svc': e.kodeSvc ?? '',
-        },
-      );
-    } else {
-      print('Service is not recognized, current service: $selectedService');
-    }
-  }
 
 
   @override
@@ -120,14 +98,14 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('History'),
+              Text('History',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
               FutureBuilder<Profile>(
                 future: API.profileiD(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const loadcabang();
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return loadcabang();
                   } else {
                     if (snapshot.data != null) {
                       final cabang = snapshot.data!.data?.cabang ?? "";
@@ -145,7 +123,7 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                         ],
                       );
                     } else {
-                      return const Text('Tidak ada data');
+                      return const loadcabang();
                     }
                   }
                 },
@@ -190,7 +168,7 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                           builder: (items) => HistoryList(items: items, onTap: () {}),
                         ),
                       ),
-                      child: const Icon(Icons.search_rounded),
+                      child: Icon(Icons.search_rounded, color: MyColors.appPrimaryColor,),
                     );
                   } else {
                     return Center(
@@ -211,12 +189,9 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
           ],
           bottom: TabBar(
             controller: _tabController,
-            labelColor: Colors.blue, // Change label color as needed
+            labelColor: MyColors.appPrimaryColor, // Change label color as needed
             unselectedLabelColor: Colors.grey, // Change unselected label color as needed
-            indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white, // Change indicator color as needed
-            ),
+            indicatorColor: MyColors.appPrimaryColor,
             tabs: const [
               Tab(
                 text: 'Repair & Maintenance',
@@ -262,14 +237,13 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                 onChanged: (selectedValues) {
                   setState(() {
                     // Filtered status options based on the selected service
-                    if (tabService == 'Repair & Maintenance') {
-                      selectedStatus = selectedValues!;
+                    if (tabService == 'Repair & Maintenance' ) {
+                      selectedStatus = selectedValues;
                     } else if (tabService == 'General Check UP/P2H' && (selectedValues == 'Semua' || selectedValues == 'INVOICE'|| selectedValues == 'ESTIMASI'|| selectedValues == 'PKB'|| selectedValues == 'PKB TUTUP')) {
-                      // Only allow 'Semua' and 'INVOICE' options for General Check UP/P2H
-                      selectedStatus = selectedValues!;
+                      selectedServicegc = selectedValues;
                     } else {
-                      // For other services, default to 'Semua'
                       selectedStatus = 'Semua';
+                      selectedServicegc = 'Semua';
                     }
                   });
                 },
@@ -314,11 +288,16 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                               (e) => HistoryList(
                             items: e,
                             onTap: () {
-                              _onTapHistoryItem(e);
+                              HapticFeedback.lightImpact();
+                              Get.toNamed(
+                                Routes.DETAIL_HISTORY,
+                                arguments: {
+                                  'kode_svc': e.kodeSvc ?? '',
+                                },
+                              );
                             },
                           ),
-                        )
-                            .toList(),
+                        ) .toList(),
                       ),
                     );
                   } else {
@@ -340,11 +319,13 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
   }
 
   void _onRefresh(String status) {
+    HapticFeedback.lightImpact();
     API.HistoryID();
     if (status == 'Repair & Maintenance') {
       API.HistoryID();
       widget.clearCachedBoking();
     } else if (status == 'General Check UP/P2H') {
+      HapticFeedback.lightImpact();
       API.HistoryID();
       widget.clearCachedBoking();
     }

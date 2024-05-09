@@ -175,6 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: CustomElevatedButton(
                               message: "Masuk",
                               function: () async {
+                                HapticFeedback.lightImpact();
                                 if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
                                   try {
                                     Token aksesPX = await API.login(

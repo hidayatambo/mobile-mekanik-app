@@ -132,7 +132,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         useRootNavigator: true, // Menggunakan navigator root
         builder: (BuildContext context) {
           return Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
             ),
             height: MediaQuery.of(context).size.height,
@@ -300,7 +300,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         ]),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
@@ -320,7 +320,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         useRootNavigator: true, // Menggunakan navigator root
                         builder: (BuildContext context) {
                           return Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Colors.white,
                             ),
                             height: 700,
@@ -340,10 +340,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         },
                       );
                     },
-                    child: Text('Mekanik'),
+                    child: const Text('Mekanik'),
                   ),
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
               ],
             ),
           ),
@@ -371,7 +371,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
           centerTitle: false,
           actions: const [],
         ),
-        body: MyStepperPage(),
+        body: const MyStepperPage(),
       ),
     );
   }
@@ -387,16 +387,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 30,),
-              Text('Produktivitas Mekanik Booking', style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 30,),
+              const SizedBox(height: 30,),
+              const Text('Produktivitas Mekanik Booking', style: TextStyle(fontWeight: FontWeight.bold),),
+              const SizedBox(height: 30,),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
+                  const Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
                   RadioListTile(
-                    title: Text('General check / P2H'),
+                    title: const Text('General check / P2H'),
                     controlAffinity: ListTileControlAffinity.trailing,
                     value: true,
                     groupValue: _isSelected,
@@ -409,13 +409,13 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   ),
                 ],
               ),
-              Divider(color: Colors.grey,),
+              const Divider(color: Colors.grey,),
               if (_isJasaSelected) // Tampilkan bagian ini hanya jika Jasa telah dipilih
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold),),
+                    const Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold),),
                     Container(
                       width: double.infinity,
                       child: Row(
@@ -432,7 +432,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                 selectedValuesList.add(null);
                               });
                             },
-                            child: Row(
+                            child: const Row(
                               children: [
                                 Text('Tambah Mekanik'),
                               ],
@@ -441,7 +441,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     SizedBox( // Menggunakan SizedBox untuk menetapkan batasan ketinggian
                       height: 400, // Atur ketinggian sesuai kebutuhan Anda
                       child: ListView.builder(
@@ -451,7 +451,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             future: API.MekanikID(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else {
@@ -493,7 +493,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                     index,
                                   );
                                 } else {
-                                  return Center(child: Text('Mekanik atau jasa tidak ada'));
+                                  return const Center(child: Text('Mekanik atau jasa tidak ada'));
                                 }
                               }
                             },
@@ -559,11 +559,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               _isRunning ? Colors.red : Colors.green,
             ),
           ),
-          child: Text(_isRunning ? 'Stop' : 'Start', style: TextStyle(color: Colors.white),),
+          child: Text(_isRunning ? 'Stop' : 'Start', style: const TextStyle(color: Colors.white),),
         ),
-        Divider(color: Colors.grey,),
+        const Divider(color: Colors.grey,),
         const Text('History', style: TextStyle(fontWeight: FontWeight.bold), ),
-        SizedBox(height: 20,),
+        const SizedBox(height: 20,),
         if (startTime != null)
           FutureBuilder<PromekProses>(
             future: (() async {
@@ -578,7 +578,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             })(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
@@ -588,7 +588,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.startPromek != null) {
                       final startPromek = firstData.startPromek;
-                      return Text('Waktu Mulai: ${startPromek} - prosess',style: TextStyle(fontWeight: FontWeight.bold),);
+                      return Text('Waktu Mulai: ${startPromek} - prosess',style: const TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu start tidak tersedia');
                     }
@@ -615,7 +615,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             })(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
@@ -625,7 +625,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     final DataPromek firstData = dataList[0];
                     if (firstData.stopPromek != null) {
                       final stopPromek = firstData.stopPromek;
-                      return Text('Waktu selesai: ${stopPromek}- selesai',style: TextStyle(fontWeight: FontWeight.bold),);
+                      return Text('Waktu selesai: ${stopPromek}- selesai',style: const TextStyle(fontWeight: FontWeight.bold),);
                     } else {
                       return const Text('Waktu stop tidak tersedia');
                     }
@@ -638,8 +638,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               }
             },
           ),
-        TextField(
-          decoration: const InputDecoration(
+        const TextField(
+          decoration: InputDecoration(
             hintText: 'Keterangan',
           ),
         ),

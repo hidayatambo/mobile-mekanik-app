@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mekanik/app/componen/color.dart';
 import 'package:mekanik/app/modules/signin/screens/signup_page.dart';
 
 import '../common/common.dart';
@@ -19,9 +21,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF7EBE1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xffF7EBE1).withAlpha(200),
+        backgroundColor: Colors.white,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.white,
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -74,7 +82,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                             GoRouter.of(context)
                                 .pushNamed(Routers.otpverification.name);
                           },
-                          color: Colors.black,
+                          color: MyColors.appPrimaryColor,
                         ),
                       ),
                     ],
@@ -82,29 +90,6 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 ),
               ),
               const Spacer(),
-              FadeInAnimation(
-                delay: 2.8,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 50),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Belum punya akun?",
-                        style: Common().hinttext,
-                      ),
-                      TextButton(
-                          onPressed: () {
-                            Get.to(const SignupPage());
-                          },
-                          child: Text(
-                            "Daftar sekarang",
-                            style: Common().mediumTheme,
-                          )),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
         ),

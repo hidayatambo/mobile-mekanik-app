@@ -233,7 +233,6 @@ class ApproveView extends GetView<ApproveController> {
                           confirmBtnText: 'Kembali',
                           cancelBtnText: 'Kembali',
                           confirmBtnColor: Colors.green,
-                          onConfirmBtnTap: () => API.bokingid(),
                         );
                       }
                     },

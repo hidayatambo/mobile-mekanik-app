@@ -498,14 +498,3 @@ import '../componen/card_booking.dart';
       }
     }
   }
-  // _buildTabContent(null), // Semua
-  // _buildTabContent('booking'), // Diproses
-  // _buildTabContent('approve'), // Diproses
-  // _buildTabContent('diproses'), // Diproses
-  // _buildTabContent('selesai dikerjakan'), // Selesai Dikerjakan
-  // _buildTabContent('estimasi'), // Estimasi
-  // _buildTabContent('pkb'), // Estimasi
-  // _buildTabContent('pkb tutup'), // Estimasi
-  // _buildTabContent('invoice'), // Invoice
-  // _buildTabContent('lunas'), // Invoice
-  // _buildTabContent('ditolak'), // Ditolak

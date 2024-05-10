@@ -3,6 +3,7 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mekanik/app/componen/color.dart';
+import 'package:mekanik/app/data/endpoint.dart';
 import 'package:mekanik/app/modules/history/views/history_view.dart';
 import 'package:mekanik/app/modules/profile/views/profile_view.dart';
 
@@ -39,7 +40,6 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: _page,
@@ -48,10 +48,6 @@ class _HomeViewState extends State<HomeView> {
             child: Icon(Icons.home_outlined,color: Colors.white,),
             label: 'Home',labelStyle: TextStyle(color: Colors.white),
           ),
-          // CurvedNavigationBarItem(
-          //   child: Icon(Icons.chat_bubble_outline,color: Colors.white,),
-          //   label: 'Chat',labelStyle: TextStyle(color: Colors.white),
-          // ),
           CurvedNavigationBarItem(
             child: Icon(Icons.calendar_month_rounded,color: Colors.white,),
             label: 'Booking',labelStyle: TextStyle(color: Colors.white),
@@ -110,3 +106,51 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
+// class HomePage extends StatelessWidget {
+//   const HomePage({Key? key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // Panggil fungsi notifikasi saat halaman dibangun
+//     // Gunakan FutureBuilder untuk memastikan bahwa fungsi notifikasi telah selesai
+//     return FutureBuilder(
+//       future: API.bokingid(),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.done) {
+//           // Jika notifikasi telah selesai ditampilkan, tampilkan halaman utama
+//           return Scaffold(
+//             appBar: AppBar(
+//               toolbarHeight: 0,
+//               centerTitle: false,
+//               systemOverlayStyle: const SystemUiOverlayStyle(
+//                 statusBarColor: Colors.transparent,
+//                 statusBarIconBrightness: Brightness.dark,
+//                 statusBarBrightness: Brightness.light,
+//                 systemNavigationBarColor: Colors.white,
+//               ),
+//             ),
+//             body: StatsScreen(),
+//           );
+//         } else {
+//           // Selama proses menampilkan notifikasi, tampilkan loading indicator
+//           return Scaffold(
+//             appBar: AppBar(
+//               toolbarHeight: 0,
+//               centerTitle: false,
+//               systemOverlayStyle: const SystemUiOverlayStyle(
+//                 statusBarColor: Colors.transparent,
+//                 statusBarIconBrightness: Brightness.dark,
+//                 statusBarBrightness: Brightness.light,
+//                 systemNavigationBarColor: Colors.white,
+//               ),
+//             ),
+//             body: Center(
+//               child: CircularProgressIndicator(),
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+// }

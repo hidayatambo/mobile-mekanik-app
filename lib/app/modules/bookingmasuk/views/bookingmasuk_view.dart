@@ -6,6 +6,7 @@ import 'package:mekanik/app/componen/color.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../data/data_endpoint/boking.dart';
 import '../../../data/endpoint.dart';
+import '../../../routes/app_pages.dart';
 import '../componen/card_bookingmasuk.dart';
 
 class BookingmasukView extends StatefulWidget {
@@ -94,7 +95,68 @@ class _BookingmasukViewState extends State<BookingmasukView> {
                     return BokingListMasuk(
                       items: e,
                       onTap: () {
-                        // Handler untuk ketika item diklik.
+                        if (e.bookingStatus != null && e.namaService != null) {
+                          if (e.bookingStatus!.toLowerCase() == 'booking' &&
+                              e.namaService!.toLowerCase() !=
+                                  'repair & maintenance') {
+                            Get.toNamed(
+                              Routes.APPROVE,
+                              arguments: {
+                                // 'id': e.id??'',
+                                'tgl_booking': e.tglBooking??'',
+                                'jam_booking': e.jamBooking??'',
+                                'nama': e.nama??'',
+                                'kode_kendaraan': e.kodeKendaraan??'',
+                                'kode_pelanggan': e.kodePelanggan??'',
+                                'kode_booking': e.kodeBooking??'',
+                                'nama_jenissvc': e.namaService??'',
+                                'no_polisi': e.noPolisi??'',
+                                'nama_merk': e.namaMerk??'',
+                                'keluhan': e.keluhan??'',
+                                'kode_booking': e.kodeBooking??'',
+                                'tahun': e.tahun??'',
+                                'warna': e.warna??'',
+                                'booking_id': e.tglBooking??'',
+                                'nama_tipe': e.namaTipe??'',
+                                'alamat': e.alamat??'',
+                                'hp': e.hp??'',
+                                'transmisi': e.transmisi??'',
+                                'status': e.bookingStatus??'',
+                              },
+                            );
+                          } else if (e.bookingStatus!.toLowerCase() == 'booking' &&
+                              e.namaService!.toLowerCase() !=
+                                  'general check up/p2h') {
+                            Get.toNamed(
+                              Routes.APPROVE,
+                              arguments: {
+                                // 'id': e.id??'',
+                                'tgl_booking': e.tglBooking??'',
+                                'booking_id': e.tglBooking??'',
+                                'jam_booking': e.jamBooking??'',
+                                'nama': e.nama??'',
+                                'keluhan': e.keluhan??'',
+                                'kode_kendaraan': e.kodeKendaraan??'',
+                                'kode_pelanggan': e.kodePelanggan??'',
+                                'nama_jenissvc': e.namaService??'',
+                                'no_polisi': e.noPolisi??'',
+                                'kode_booking': e.kodeBooking??'',
+                                'tahun': e.tahun??'',
+                                'warna': e.warna??'',
+                                'ho': e.hp??'',
+                                'kode_booking': e.kodeBooking??'',
+                                'nama_merk': e.namaMerk??'',
+                                'transmisi': e.transmisi??'',
+                                'nama_tipe': e.namaTipe??'',
+                                'alamat': e.alamat??'',
+                                'status': e.bookingStatus??'',
+                                'status': e.bookingStatus??'',
+
+                              },
+                            );
+                          } else {
+                          }
+                        }
                       },
                     );
                   })

@@ -29,7 +29,9 @@ class _DetailHistoryViewState extends State<DetailHistoryView> {
     print(arguments);
 
     return Scaffold(
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,

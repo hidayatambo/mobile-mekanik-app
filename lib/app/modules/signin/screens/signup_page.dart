@@ -20,6 +20,7 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       backgroundColor: const Color(0xffF7EBE1),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         backgroundColor: const Color(0xffF7EBE1).withAlpha(200),
       ),
       body: SafeArea(

@@ -25,10 +25,8 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-
   void clearCachedBoking() {
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -41,13 +39,15 @@ class _HistoryViewState extends State<HistoryView> {
 
 class HistoryView2 extends StatefulWidget {
   final VoidCallback clearCachedBoking;
-  const HistoryView2({Key? key, required this.clearCachedBoking}) : super(key: key);
+  const HistoryView2({Key? key, required this.clearCachedBoking})
+      : super(key: key);
 
   @override
   _HistoryView2State createState() => _HistoryView2State();
 }
 
-class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderStateMixin {
+class _HistoryView2State extends State<HistoryView2>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String selectedStatus = 'Semua';
   String selectedService = 'Repair & Maintenance';
@@ -58,7 +58,10 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabSelection);
-    _refreshControllers = List.generate(2, (index) => RefreshController()); // Adjust the number of RefreshControllers according to the number of tabs
+    _refreshControllers = List.generate(
+        2,
+        (index) =>
+            RefreshController()); // Adjust the number of RefreshControllers according to the number of tabs
     super.initState();
   }
 
@@ -86,19 +89,23 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
           centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('History',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
+              Text(
+                'History',
+                style: TextStyle(
+                    color: MyColors.appPrimaryColor,
+                    fontWeight: FontWeight.bold),
+              ),
               FutureBuilder<Profile>(
                 future: API.profileiD(),
                 builder: (context, snapshot) {
@@ -165,10 +172,14 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                             booking.tglEstimasi,
                             booking.tipeSvc,
                           ],
-                          builder: (items) => HistoryList(items: items, onTap: () {}),
+                          builder: (items) =>
+                              HistoryList(items: items, onTap: () {}),
                         ),
                       ),
-                      child: Icon(Icons.search_rounded, color: MyColors.appPrimaryColor,),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: MyColors.appPrimaryColor,
+                      ),
                     );
                   } else {
                     return Center(
@@ -189,8 +200,10 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
           ],
           bottom: TabBar(
             controller: _tabController,
-            labelColor: MyColors.appPrimaryColor, // Change label color as needed
-            unselectedLabelColor: Colors.grey, // Change unselected label color as needed
+            labelColor:
+                MyColors.appPrimaryColor, // Change label color as needed
+            unselectedLabelColor:
+                Colors.grey, // Change unselected label color as needed
             indicatorColor: MyColors.appPrimaryColor,
             tabs: const [
               Tab(
@@ -216,7 +229,8 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
 
   Widget _buildTabContent(String tabService) {
     return SmartRefresher(
-      controller: _refreshControllers[_getTabIndex(tabService)], // Use _getTabIndex to get the appropriate RefreshController index
+      controller: _refreshControllers[_getTabIndex(
+          tabService)], // Use _getTabIndex to get the appropriate RefreshController index
       enablePullDown: true,
       header: const WaterDropHeader(),
       onRefresh: () => _onRefresh(tabService),
@@ -237,9 +251,14 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                 onChanged: (selectedValues) {
                   setState(() {
                     // Filtered status options based on the selected service
-                    if (tabService == 'Repair & Maintenance' ) {
+                    if (tabService == 'Repair & Maintenance') {
                       selectedStatus = selectedValues;
-                    } else if (tabService == 'General Check UP/P2H' && (selectedValues == 'Semua' || selectedValues == 'INVOICE'|| selectedValues == 'ESTIMASI'|| selectedValues == 'PKB'|| selectedValues == 'PKB TUTUP')) {
+                    } else if (tabService == 'General Check UP/P2H' &&
+                        (selectedValues == 'Semua' ||
+                            selectedValues == 'INVOICE' ||
+                            selectedValues == 'ESTIMASI' ||
+                            selectedValues == 'PKB' ||
+                            selectedValues == 'PKB TUTUP')) {
                       selectedServicegc = selectedValues;
                     } else {
                       selectedStatus = 'Semua';
@@ -248,7 +267,6 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                   });
                 },
               ),
-
               FutureBuilder(
                 future: API.HistoryID(),
                 builder: (context, snapshot) {
@@ -262,44 +280,50 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
                     final data = snapshot.data!.dataHistory ?? [];
                     List<DataHistory> filteredData = [];
                     if (selectedStatus == 'Semua') {
-                      filteredData = data.where((item) => item.tipeSvc == tabService).toList();
+                      filteredData = data
+                          .where((item) => item.tipeSvc == tabService)
+                          .toList();
                     } else {
-                      filteredData =
-                          data.where((item) => item.status == selectedStatus && item.tipeSvc == tabService).toList();
+                      filteredData = data
+                          .where((item) =>
+                              item.status == selectedStatus &&
+                              item.tipeSvc == tabService)
+                          .toList();
                     }
                     return filteredData.isEmpty
                         ? const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // No queues
-                      ],
-                    )
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // No queues
+                            ],
+                          )
                         : Column(
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: const Duration(milliseconds: 475),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          child: FadeInAnimation(
-                            child: widget,
-                          ),
-                        ),
-                        children: filteredData
-                            .map(
-                              (e) => HistoryList(
-                            items: e,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              Get.toNamed(
-                                Routes.DETAIL_HISTORY,
-                                arguments: {
-                                  'kode_svc': e.kodeSvc ?? '',
-                                },
-                              );
-                            },
-                          ),
-                        ) .toList(),
-                      ),
-                    );
+                            children: AnimationConfiguration.toStaggeredList(
+                              duration: const Duration(milliseconds: 475),
+                              childAnimationBuilder: (widget) => SlideAnimation(
+                                child: FadeInAnimation(
+                                  child: widget,
+                                ),
+                              ),
+                              children: filteredData
+                                  .map(
+                                    (e) => HistoryList(
+                                      items: e,
+                                      onTap: () {
+                                        HapticFeedback.lightImpact();
+                                        Get.toNamed(
+                                          Routes.DETAIL_HISTORY,
+                                          arguments: {
+                                            'kode_svc': e.kodeSvc ?? '',
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          );
                   } else {
                     return const Column(
                       children: [],
@@ -315,7 +339,8 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
   }
 
   void _onLoading(String status) {
-    _refreshControllers[_getTabIndex(status)].loadComplete(); // Stop loading animation on the corresponding RefreshController for the active tab
+    _refreshControllers[_getTabIndex(status)]
+        .loadComplete(); // Stop loading animation on the corresponding RefreshController for the active tab
   }
 
   void _onRefresh(String status) {
@@ -329,7 +354,8 @@ class _HistoryView2State extends State<HistoryView2> with SingleTickerProviderSt
       API.HistoryID();
       widget.clearCachedBoking();
     }
-    _refreshControllers[_getTabIndex(status)].refreshCompleted(); // Notify the RefreshController that refreshing is completed
+    _refreshControllers[_getTabIndex(status)]
+        .refreshCompleted(); // Notify the RefreshController that refreshing is completed
   }
 
   int _getTabIndex(String tabService) {

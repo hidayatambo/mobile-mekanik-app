@@ -39,6 +39,7 @@ class _ProfileViewState extends State<ProfileView> {
     final controller = Get.put(ProfileController());
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: 0,
         elevation: 0.0,
       ),
@@ -48,8 +49,7 @@ class _ProfileViewState extends State<ProfileView> {
         header: const WaterDropHeader(),
         onLoading: _onLoading,
         onRefresh: _onRefresh,
-        child:
-        SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               _profilePic(),
@@ -70,8 +70,8 @@ class _ProfileViewState extends State<ProfileView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                8.0, 8.0, 8.0, 4.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 4.0),
                             child: Text(
                               nama,
                               style: TextStyle(
@@ -82,8 +82,8 @@ class _ProfileViewState extends State<ProfileView> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                8.0, 0.0, 8.0, 8.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                             child: Text(
                               cabang,
                               style: const TextStyle(
@@ -124,142 +124,155 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
               InkWell(
-                 onTap: () {
-                   HapticFeedback.lightImpact();
-                   AppSettings.openAppSettings(type: AppSettingsType.notification);
-                 },
-
-                child:
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  AppSettings.openAppSettings(
+                      type: AppSettingsType.notification);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: const Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Pengaturan'),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
                 ),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Pengaturan'),
-                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
-                  ],),),),
+              ),
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
                   Get.to(ForgetPasswordPage());
                 },
-                child:
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: const Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Ubah Password'),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
                 ),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Ubah Password'),
-                    Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey,)
-                  ],),),),
+              ),
               InkWell(
                 onTap: () {
                   HapticFeedback.lightImpact();
                   showDialog(
                     context: context,
-                    builder: (context) =>
-                        Dialog(
-                          backgroundColor: Colors.transparent,
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.all(30),
-                            height: 245,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                    builder: (context) => Dialog(
+                      backgroundColor: Colors.transparent,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.all(30),
+                        height: 245,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Continue To Logout?",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      "Are you sure to logout from this device?",
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                  ],
+                                Text(
+                                  "Continue To Logout?",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                const SizedBox(
-                                  height: 30,
+                                SizedBox(
+                                  height: 20,
                                 ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    ButtonSubmitWidget1(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      title: "No, cancel",
-                                      bgColor: Colors.white,
-                                      textColor: MyColors.appPrimaryColor,
-                                      fontWeight: FontWeight.normal,
-                                      width: 70,
-                                      height: 50,
-                                      borderSide: Colors.transparent,
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    ButtonSubmitWidget2(
-                                      onPressed:() {
-                                        logout();
-                                      },
-                                      title: "Yes, Continue",
-                                      bgColor: MyColors.appPrimaryColor,
-                                      textColor: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                      width: 100,
-                                      height: 50,
-                                      borderSide: Colors.transparent,
-                                    ),
-                                  ],
+                                Text(
+                                  "Are you sure to logout from this device?",
+                                  style: TextStyle(fontSize: 17),
                                 ),
                               ],
                             ),
-                          ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ButtonSubmitWidget1(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  title: "No, cancel",
+                                  bgColor: Colors.white,
+                                  textColor: MyColors.appPrimaryColor,
+                                  fontWeight: FontWeight.normal,
+                                  width: 70,
+                                  height: 50,
+                                  borderSide: Colors.transparent,
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ButtonSubmitWidget2(
+                                  onPressed: () {
+                                    logout();
+                                  },
+                                  title: "Yes, Continue",
+                                  bgColor: MyColors.appPrimaryColor,
+                                  textColor: Colors.white,
+                                  fontWeight: FontWeight.normal,
+                                  width: 100,
+                                  height: 50,
+                                  borderSide: Colors.transparent,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+                      ),
+                    ),
                   );
                 },
-                child:
-                Container(
+                child: Container(
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 30),
                   decoration: const BoxDecoration(
                       color: Colors.redAccent,
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [
-                      Text('Logout', style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),),
-                      Icon(Icons.logout_rounded, color: Colors.white,)
-                    ],),),),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.logout_rounded,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -267,8 +280,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Padding _profilePic() =>
-      Padding(
+  Padding _profilePic() => Padding(
         padding: const EdgeInsets.fromLTRB(50.0, 30.0, 50.0, 15.0),
         child: Stack(
           alignment: const Alignment(0.9, 0.9),
@@ -302,6 +314,7 @@ class _ProfileViewState extends State<ProfileView> {
 // resetFooterState : it will set the footer state from noData to idle
     });
   }
+
   void logout() {
     // Bersihkan cache untuk setiap data yang Anda simpan dalam cache
     LocalStorages.deleteToken();

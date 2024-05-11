@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: 0,
         centerTitle: false,
         systemOverlayStyle: const SystemUiOverlayStyle(

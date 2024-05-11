@@ -27,10 +27,9 @@ class _ChatViewState extends State<ChatView> {
                 expandedHeight: 150,
               ),
             ),
-            SliverFillRemaining(
-              child: null
-              // MyStepperPage()
-            ),
+            SliverFillRemaining(child: null
+                // MyStepperPage()
+                ),
           ],
         ),
       ),
@@ -67,12 +66,15 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
           SizedBox(
             height: appBarSize < kToolbarHeight ? kToolbarHeight : appBarSize,
             child: AppBar(
-              backgroundColor:Colors.white,
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: Colors.white,
               toolbarHeight: 40,
               elevation: 0.0,
               title: Opacity(
                   opacity: hideTitleWhenExpanded ? 1.0 - percent : 1.0,
-                  child: Text("Test",)),
+                  child: Text(
+                    "Test",
+                  )),
             ),
           ),
           Positioned(
@@ -86,85 +88,124 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
                 padding: EdgeInsets.symmetric(horizontal: 10 * percent),
                 child: Container(
                   margin: EdgeInsets.only(top: 0),
-                  child:
-                Container(
-                  decoration: BoxDecoration(
+                  child: Container(
+                    decoration: BoxDecoration(
                       color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.15),
-                        spreadRadius: 5,
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child:Column(
-                      children: [
-                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.15),
+                          spreadRadius: 5,
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
                         children: [
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Nama :', style: TextStyle(fontSize: 13),),
-                                Text('$nama',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                                Text('Kendaraan :',style: TextStyle(fontSize: 13),),
-                                Text('$nama_tipe',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-                              ]),
-
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Jenis Service :', style: TextStyle(fontSize: 13),),
-                                Text('$nama_jenissvc',style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                                Text('Kode Boking :',style: TextStyle(fontSize: 13),),
-                                Text('$bookingId',style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-                              ]),
-                        ],),
-                      SizedBox(height: 5,),
-                      FutureBuilder<Mekanik>(
-                        future: API.MekanikID(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            if (snapshot.hasData && snapshot.data!.dataMekanik != null && snapshot.data!.dataMekanik!.isNotEmpty) {
-                              final List<DataMekanik> _list = snapshot.data!.dataMekanik!;
-                              final List<String> namaMekanikList = _list
-                                  .map((mekanik) => mekanik.nama!)
-                                  .where((nama) => nama != null)
-                                  .toList();
-                              return Column(
-                                children: [
-                                  CustomDropdown<String>.search(
-                                    hintText: 'Pilih mekanik',
-                                    items: namaMekanikList,
-                                    excludeSelected: false,
-                                    onChanged: (value) {
-                                      selectedMechanic = value;
-                                      log('Mengubah nilai menjadi: $value');
-                                    },
-                                  ),
-                                ],
-                              );
-                            } else {
-                              // Menampilkan pesan jika tidak ada data Mekanik
-                              return Center(child: Text('Mekanik tidak ada'));
-                            }
-                          }
-                        },
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Nama :',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    Text(
+                                      '$nama',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'Kendaraan :',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    Text(
+                                      '$nama_tipe',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
+                              Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Jenis Service :',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    Text(
+                                      '$nama_jenissvc',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'Kode Boking :',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    Text(
+                                      '$bookingId',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ]),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          FutureBuilder<Mekanik>(
+                            future: API.MekanikID(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                if (snapshot.hasData &&
+                                    snapshot.data!.dataMekanik != null &&
+                                    snapshot.data!.dataMekanik!.isNotEmpty) {
+                                  final List<DataMekanik> _list =
+                                      snapshot.data!.dataMekanik!;
+                                  final List<String> namaMekanikList = _list
+                                      .map((mekanik) => mekanik.nama!)
+                                      .where((nama) => nama != null)
+                                      .toList();
+                                  return Column(
+                                    children: [
+                                      CustomDropdown<String>.search(
+                                        hintText: 'Pilih mekanik',
+                                        items: namaMekanikList,
+                                        excludeSelected: false,
+                                        onChanged: (value) {
+                                          selectedMechanic = value;
+                                          log('Mengubah nilai menjadi: $value');
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  // Menampilkan pesan jika tidak ada data Mekanik
+                                  return Center(
+                                      child: Text('Mekanik tidak ada'));
+                                }
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ],),
+                    ),
                   ),
-                ),
                 ),
               ),
             ),

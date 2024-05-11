@@ -10,6 +10,7 @@ class SelesaiserviceView extends GetView<SelesaiserviceController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: const Text('SelesaiserviceView'),
         centerTitle: true,
       ),

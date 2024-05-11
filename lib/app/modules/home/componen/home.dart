@@ -18,7 +18,7 @@ class StatsScreen extends StatefulWidget {
 class _StatsScreenState extends State<StatsScreen> {
   late RefreshController _refreshController; // the refresh controller
   final _scaffoldKey =
-  GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
+      GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
   @override
   void initState() {
     _refreshController =
@@ -30,11 +30,16 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         centerTitle: false,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text('Dashboard',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
+            Text(
+              'Dashboard',
+              style: TextStyle(
+                  color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
+            ),
             FutureBuilder<Profile>(
               future: API.profileiD(),
               builder: (context, snapshot) {
@@ -64,7 +69,8 @@ class _StatsScreenState extends State<StatsScreen> {
                 }
               },
             ),
-          ],),
+          ],
+        ),
         backgroundColor: Colors.white,
       ),
       body: SmartRefresher(
@@ -73,8 +79,7 @@ class _StatsScreenState extends State<StatsScreen> {
         header: const WaterDropHeader(),
         onLoading: _onLoading,
         onRefresh: _onRefresh,
-        child:
-        CustomScrollView(
+        child: CustomScrollView(
           physics: const ClampingScrollPhysics(),
           slivers: <Widget>[
             SliverPadding(
@@ -130,10 +135,10 @@ class _StatsScreenState extends State<StatsScreen> {
   SliverPadding _buildStatsTabBar() {
     return const SliverPadding(
       padding: EdgeInsets.all(20.0),
-      sliver: SliverToBoxAdapter(
-      ),
+      sliver: SliverToBoxAdapter(),
     );
   }
+
   _onLoading() {
     _refreshController
         .loadComplete(); // after data returned,set the //footer state to idle

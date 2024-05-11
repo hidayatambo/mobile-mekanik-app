@@ -27,6 +27,7 @@ class _HomeViewState extends State<HomeView> {
       _cachedBoking = null;
     });
   }
+
   int _page = 0;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   final _pageController = PageController();
@@ -45,20 +46,36 @@ class _HomeViewState extends State<HomeView> {
         index: _page,
         items: const [
           CurvedNavigationBarItem(
-            child: Icon(Icons.home_outlined,color: Colors.white,),
-            label: 'Home',labelStyle: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.home_outlined,
+              color: Colors.white,
+            ),
+            label: 'Home',
+            labelStyle: TextStyle(color: Colors.white),
           ),
           CurvedNavigationBarItem(
-            child: Icon(Icons.calendar_month_rounded,color: Colors.white,),
-            label: 'Booking',labelStyle: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.calendar_month_rounded,
+              color: Colors.white,
+            ),
+            label: 'Booking',
+            labelStyle: TextStyle(color: Colors.white),
           ),
           CurvedNavigationBarItem(
-            child: Icon(Icons.history,color: Colors.white,),
-            label: 'History',labelStyle: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.history,
+              color: Colors.white,
+            ),
+            label: 'History',
+            labelStyle: TextStyle(color: Colors.white),
           ),
           CurvedNavigationBarItem(
-            child: Icon(Icons.portrait_outlined,color: Colors.white,),
-            label: 'Profile',labelStyle: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.portrait_outlined,
+              color: Colors.white,
+            ),
+            label: 'Profile',
+            labelStyle: TextStyle(color: Colors.white),
           ),
         ],
         color: MyColors.appPrimaryColor,
@@ -86,7 +103,7 @@ class _HomeViewState extends State<HomeView> {
             _page = index;
           });
         },
-        children:  <Widget>[
+        children: <Widget>[
           const HomePage(),
           // ChatView(),
           const BokingView(),
@@ -95,6 +112,7 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,

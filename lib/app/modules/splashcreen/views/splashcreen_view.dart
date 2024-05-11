@@ -50,6 +50,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
       });
     });
   }
+
   Future<void> _checkTokenAndNavigate() async {
     bool hasToken = await LocalStorages.hasToken();
     await Future.delayed(const Duration(seconds: 2));
@@ -102,6 +103,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
     double w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
@@ -117,14 +119,31 @@ class _SplashcreenViewState extends State<SplashcreenView> {
             AnimatedContainer(
               duration: Duration(milliseconds: _d ? 900 : 2500),
               curve: _d ? Curves.fastLinearToSlowEaseIn : Curves.elasticOut,
-              height: _d ? 0 : _a ? h / 3 : 7,
+              height: _d
+                  ? 0
+                  : _a
+                      ? h / 3
+                      : 7,
               width: 20,
             ),
             AnimatedContainer(
-              duration: Duration(seconds: _d ? 1 : _c ? 2 : 0),
+              duration: Duration(
+                  seconds: _d
+                      ? 1
+                      : _c
+                          ? 2
+                          : 0),
               curve: Curves.fastLinearToSlowEaseIn,
-              height: _d ? h : _c ? 80 : 20,
-              width: _d ? w : _c ? 200 : 20,
+              height: _d
+                  ? h
+                  : _c
+                      ? 80
+                      : 20,
+              width: _d
+                  ? w
+                  : _c
+                      ? 200
+                      : 20,
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
                 image: const DecorationImage(
@@ -134,10 +153,23 @@ class _SplashcreenViewState extends State<SplashcreenView> {
               ),
             ),
             AnimatedContainer(
-              duration: Duration(seconds: _d ? 1 : _c ? 2 : 0),
+              duration: Duration(
+                  seconds: _d
+                      ? 1
+                      : _c
+                          ? 2
+                          : 0),
               curve: Curves.fastLinearToSlowEaseIn,
-              height: _d ? h : _c ? 80 : 20,
-              width: _d ? w : _c ? 200 : 20,
+              height: _d
+                  ? h
+                  : _c
+                      ? 80
+                      : 20,
+              width: _d
+                  ? w
+                  : _c
+                      ? 200
+                      : 20,
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
                 image: const DecorationImage(

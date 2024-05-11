@@ -48,8 +48,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         automaticallyImplyLeading: false,
         toolbarHeight: 0,
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -72,8 +72,7 @@ class _LoginPageState extends State<LoginPage> {
               fit: BoxFit.cover,
             ),
           ),
-          child:
-          SingleChildScrollView(
+          child: SingleChildScrollView(
             child: Container(
               height: 700,
               decoration: BoxDecoration(
@@ -81,144 +80,152 @@ class _LoginPageState extends State<LoginPage> {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.white.withOpacity(0.0), // Warna transparan di bagian atas
-                    Colors.white.withOpacity(0.9), // Warna pudar di bagian bawah
+                    Colors.white
+                        .withOpacity(0.0), // Warna transparan di bagian atas
+                    Colors.white
+                        .withOpacity(0.9), // Warna pudar di bagian bawah
                     Colors.white, // Warna pudar di bagian bawah
-
                   ],
                 ),
               ),
-            child : Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FadeInAnimation(
-                          delay: 1.3,
-                          child: Text(
-                            "Selamat Datang",
-                            style: Common().titelTheme,
-                          ),
-                        ),
-                        FadeInAnimation(
-                          delay: 1.6,
-                          child: Text(
-                            "Bengkelly!!",
-                            style: Common().titelTheme,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Form(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FadeInAnimation(
-                            delay: 1.9,
-                            child: CustomTextFormField(
-                              hinttext: 'Masukkan email Anda',
-                              obsecuretext: false,
-                              controller: _emailController, // Tambahkan controller untuk TextFormField
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          FadeInAnimation(
-                            delay: 2.2,
-                            child: TextFormField(
-                              controller: _passwordController,
-                              obscureText: obscureText,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(18),
-                                hintText: "Masukkan kata sandi Anda",
-                                hintStyle: Common().hinttext,
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                suffixIcon: IconButton(
-                                  onPressed: togglePasswordVisibility,
-                                  icon: Icon(
-                                    obscureText ? Icons.visibility_off : Icons.visibility,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
+                            delay: 1.3,
+                            child: Text(
+                              "Selamat Datang",
+                              style: Common().titelTheme,
                             ),
                           ),
                           FadeInAnimation(
-                            delay: 2.5,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  // Get.to(const ForgetPasswordPage());
-                                },
-                                child: Text(
-                                  "",
-                                  style: Common().semiboldblack,
-                                ),
-                              ),
-                            ),
-                          ),
-                          FadeInAnimation(
-                            delay: 2.8,
-                            child: CustomElevatedButton(
-                              message: "Masuk",
-                              function: () async {
-                                HapticFeedback.lightImpact();
-                                if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-                                  try {
-                                    Token aksesPX = await API.login(
-                                      email: _emailController.text,
-                                      password: _passwordController.text,
-                                    );
-
-                                    if (aksesPX.status != false) {
-                                      if (aksesPX.token != null) {
-                                        Get.offAllNamed(Routes.HOME);
-                                      }
-                                    } else {
-                                      String errorMessage = aksesPX.message ?? 'Terjadi kesalahan saat login';
-                                      Object errorDetail = aksesPX.data ?? '';
-                                      Get.snackbar('Error', '$errorMessage: $errorDetail');
-                                    }
-                                  } catch (e) {
-                                    print('Error during login: $e');
-                                    Get.snackbar('Gagal Login', 'Terjadi kesalahan saat login');
-                                  }
-                                } else {
-                                  Get.snackbar('Gagal Login', 'Username dan Password harus diisi');
-                                }
-
-                                setState(() {
-                                  flag = !flag;
-                                });
-
-                              },
-
-                              color: MyColors.appPrimaryColor,
+                            delay: 1.6,
+                            child: Text(
+                              "Bengkelly!!",
+                              style: Common().titelTheme,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 305,
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Form(
+                        child: Column(
+                          children: [
+                            FadeInAnimation(
+                              delay: 1.9,
+                              child: CustomTextFormField(
+                                hinttext: 'Masukkan email Anda',
+                                obsecuretext: false,
+                                controller:
+                                    _emailController, // Tambahkan controller untuk TextFormField
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            FadeInAnimation(
+                              delay: 2.2,
+                              child: TextFormField(
+                                controller: _passwordController,
+                                obscureText: obscureText,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(18),
+                                  hintText: "Masukkan kata sandi Anda",
+                                  hintStyle: Common().hinttext,
+                                  border: OutlineInputBorder(
+                                    borderSide:
+                                        const BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    onPressed: togglePasswordVisibility,
+                                    icon: Icon(
+                                      obscureText
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            FadeInAnimation(
+                              delay: 2.5,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    // Get.to(const ForgetPasswordPage());
+                                  },
+                                  child: Text(
+                                    "",
+                                    style: Common().semiboldblack,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            FadeInAnimation(
+                              delay: 2.8,
+                              child: CustomElevatedButton(
+                                message: "Masuk",
+                                function: () async {
+                                  HapticFeedback.lightImpact();
+                                  if (_emailController.text.isNotEmpty &&
+                                      _passwordController.text.isNotEmpty) {
+                                    try {
+                                      Token aksesPX = await API.login(
+                                        email: _emailController.text,
+                                        password: _passwordController.text,
+                                      );
+
+                                      if (aksesPX.status != false) {
+                                        if (aksesPX.token != null) {
+                                          Get.offAllNamed(Routes.HOME);
+                                        }
+                                      } else {
+                                        String errorMessage = aksesPX.message ??
+                                            'Terjadi kesalahan saat login';
+                                        Object errorDetail = aksesPX.data ?? '';
+                                        Get.snackbar('Error',
+                                            '$errorMessage: $errorDetail');
+                                      }
+                                    } catch (e) {
+                                      print('Error during login: $e');
+                                      Get.snackbar('Gagal Login',
+                                          'Terjadi kesalahan saat login');
+                                    }
+                                  } else {
+                                    Get.snackbar('Gagal Login',
+                                        'Username dan Password harus diisi');
+                                  }
+
+                                  setState(() {
+                                    flag = !flag;
+                                  });
+                                },
+                                color: MyColors.appPrimaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 305,
+                    ),
+                  ],
+                ),
               ),
-            ),
             ),
           ),
         ),

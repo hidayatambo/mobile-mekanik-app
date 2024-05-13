@@ -26,122 +26,110 @@ class _SelesaidikerjakanViewState extends State<SelesaidikerjakanView> {
         RefreshController(); // we have to use initState because this part of the app have to restart
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
           systemNavigationBarColor: Colors.white,
         ),
-        title: Text(
-          'Service Dikerjakan',
-          style: TextStyle(
-              color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
-        ),
+        title: Text('Service Dikerjakan',style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),),
         centerTitle: false,
       ),
       body: SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: true,
-        header: const WaterDropHeader(),
-        onLoading: _onLoading,
-        onRefresh: _onRefresh,
-        child: SingleChildScrollView(
-          child: FutureBuilder(
-            future: API.DikerjakanID(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else if (snapshot.hasData) {
-                ServiceDikerjakan? data = snapshot.data as ServiceDikerjakan?;
-                if (data != null) {
-                  // Anda dapat mengakses atribut status seperti ini jika telah didefinisikan dalam kelas MasukBooking
-                  int? status = data.countDikerjakan;
-                  if (status != null) {
-                    if (data.countDikerjakan == 0) {
-                      return Container(
-                        height: 500,
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/car.png',
-                              width: 100.0,
-                              height: 100.0,
-                              fit: BoxFit.cover,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Belum ada Service yang Dikerjakan hari ini',
-                              style: TextStyle(
-                                  color: MyColors.appPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 475),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
-                            ),
+    controller: _refreshController,
+    enablePullDown: true,
+    header: const WaterDropHeader(),
+    onLoading: _onLoading,
+    onRefresh: _onRefresh,
+    child:
+      SingleChildScrollView(
+        child: FutureBuilder(
+          future: API.DikerjakanID(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.hasData) {
+              ServiceDikerjakan? data = snapshot.data as ServiceDikerjakan?;
+              if (data != null) {
+                // Anda dapat mengakses atribut status seperti ini jika telah didefinisikan dalam kelas MasukBooking
+                int? status = data.countDikerjakan;
+                if (status != null) {
+                  if (data.countDikerjakan == 0) {
+                    return Container(
+                      height: 500,
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/icons/car.png',
+                            width: 100.0,
+                            height: 100.0,
+                            fit: BoxFit.cover,
                           ),
-                          children: data.dataDikerjakan != null
-                              ? data.dataDikerjakan!.map((e) {
-                                  return ListSelesaiDikerjakan(
-                                    items: e,
-                                    onTap: () {},
-                                  );
-                                }).toList()
-                              : [],
-                        ),
-                      );
-                    }
+                          SizedBox(height: 10,),
+                          Text('Belum ada Service yang Dikerjakan hari ini', style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),)
+                        ],),
+                    );
                   } else {
-                    return Center(
-                      child: Text('Status is false'),
+                    return Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 475),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: data.dataDikerjakan != null
+                            ? data.dataDikerjakan!.map((e) {
+                          return ListSelesaiDikerjakan(
+                            items: e,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                            },
+                          );
+                        }).toList()
+                            : [],
+                      ),
                     );
                   }
                 } else {
                   return Center(
-                    child: Text('Data is null'),
+                    child: Text('Status is false'),
                   );
                 }
               } else {
-                return SizedBox(
-                  height: Get.height - 250,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [],
-                    ),
-                  ),
+                return Center(
+                  child: Text('Data is null'),
                 );
               }
-            },
-          ),
+            } else {
+              return SizedBox(
+                height: Get.height - 250,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [],
+                  ),
+                ),
+              );
+            }
+          },
         ),
+      ),
       ),
     );
   }
-
   _onLoading() {
     _refreshController
         .loadComplete(); // after data returned,set the //footer state to idle

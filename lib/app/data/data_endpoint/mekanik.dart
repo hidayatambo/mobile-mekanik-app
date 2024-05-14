@@ -47,7 +47,7 @@ class DataJasa {
   int? deleted;
   String? createdBy;
   String? createdAt;
-  Null? updatedAt;
+  String? updatedAt;
 
   DataJasa(
       {this.id,

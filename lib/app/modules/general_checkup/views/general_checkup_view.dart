@@ -138,13 +138,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       );
     });
   }
-
   void updateStatus(String key, String? value) {
     setState(() {
       status[key] = value;
     });
   }
-
   void handleSubmit() {
     showModalBottomSheet(
       enableDrag: true,
@@ -369,7 +367,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   future: API.MekanikID(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
@@ -447,10 +445,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       additionalInputControllers[selectedItem] = TextEditingController(); // Initialize a new TextEditingController for additional inputs
                     });
                   },
-                  child: Text('Tambah'),
+                  child: const Text('Tambah'),
                 ),
               if (showDetails)
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               if (showDetails)
                 Expanded(
                   child: ListView.builder(
@@ -478,11 +476,29 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child:Column(children: [
           TextField(
             readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'Selected Item',
-              border: OutlineInputBorder(),
+            decoration: const InputDecoration(
+              labelText: 'Mekanik yang Dipilih',
+              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+              border: const OutlineInputBorder(),
             ),
             controller: TextEditingController(text: item),
           ),
@@ -506,6 +522,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             ),
             controller: controllerstop,
           ),
+
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () async {
@@ -529,12 +546,12 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text("Error"),
-                      content: Text("Please enter additional details before stopping."),
+                      title: const Text("Error"),
+                      content: const Text("Please enter additional details before stopping."),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: Text("OK"),
+                          child: const Text("OK"),
                         ),
                       ],
                     ),
@@ -557,16 +574,18 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
               backgroundColor: isStartedMap[item] ?? false ? Colors.red : Colors.green,
             ),
           ),
+
           if (isStartedMap[item] ?? false)
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
           if (isStartedMap[item] ?? false)
             TextField(
               controller: additionalInputControllers[item],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter additional details',
                 border: OutlineInputBorder(),
               ),
             ),
+              ],),),
         ],
       ),
     );

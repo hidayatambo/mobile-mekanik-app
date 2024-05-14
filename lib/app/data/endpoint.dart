@@ -682,13 +682,22 @@ class API {
     }
   }
   //Beda
-  static Future<UpdateKeterangan> UpdateKeteranganID() async {
+  static Future<UpdateKeterangan> updateketeranganID({
+    required String promekid,
+    required String keteranganpromek,
+  }) async {
+    final data = {
+      "promek_id": promekid,
+      "keterangan_promek": keteranganpromek,
+    };
+
     try {
       final token = Publics.controller.getToken.value ?? '';
       print('Token: $token');
 
-      var response = await Dio().post(
+      var response = await Dio().get(
         _postprosespromek,
+        data: data,
         options: Options(
           headers: {
             "Content-Type": "application/json",
@@ -696,7 +705,6 @@ class API {
           },
         ),
       );
-
       print('Response: ${response.data}');
 
       final obj = UpdateKeterangan.fromJson(response.data);
@@ -714,6 +722,7 @@ class API {
       throw e;
     }
   }
+  //Beda
   //Beda
   static Future<MasukBooking> BookingMasukID() async {
     try {

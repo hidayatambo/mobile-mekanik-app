@@ -32,7 +32,6 @@ void main() async {
     DeviceOrientation.landscapeRight
   ]);
 
-  // Inisialisasi plugin notifikasi
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
   final AndroidInitializationSettings initializationSettingsAndroid =
@@ -45,10 +44,8 @@ void main() async {
 
   runApp(const MyApp());
 }
-
-// Fungsi untuk melakukan polling notifikasi secara berkala
 void startPollingNotifications() {
-  const pollingInterval = Duration(minutes: 1); // Atur interval polling (contoh: 5 menit)
+  const pollingInterval = Duration(minutes: 1);
 
   Timer.periodic(pollingInterval, (timer) async {
     await API.showBookingNotifications();

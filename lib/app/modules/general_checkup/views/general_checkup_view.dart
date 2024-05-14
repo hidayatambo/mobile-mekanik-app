@@ -23,106 +23,71 @@ class GeneralCheckupView extends StatefulWidget {
 class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   Map<String, String?> status = {};
   String? selectedMechanic;
-  bool _isJasaSelected = false;
-  String? selectedKodeJasa; // Menyimpan kode jasa terpilih
-  String? selectedIdMekanik; // Menyimpan id mekanik terpilih
-  bool showBody = false; // State to control visibility of body
+  String? selectedKodeJasa;
+  String? selectedIdMekanik;
+  bool showBody = false;
   List<List<String>> dropdownOptionsList = [[]];
   List<String?> selectedValuesList = [null];
-  bool _isSelected = false;
   DateTime? startTime;
   DateTime? stopTime;
-
+  Map<String, String> startPromekMap = {};
+  Map<String, String> stopPromekMap = {};
   String? kodeBooking;
   String? nama;
   String? nama_jenissvc;
   String? kategoriKendaraanId;
   String? kendaraan;
   String? nama_tipe;
-  bool _isRunning = false;
-
   String selectedItem = '';
-  bool showDetails = false; // Variabel untuk kontrol visibilitas layout
+
+  bool showDetails = false;
   TextEditingController textFieldController = TextEditingController();
   List<String> selectedItems = [];
-  Map<String, bool> isStartedMap = {}; // Tracks the start/stop status for each item
+  Map<String, bool> isStartedMap = {};
   Map<String, TextEditingController> additionalInputControllers = {};
-  Future<void> _startStopButtonPressed(
-      int dropdownIndex,
-      List<String>? dropdownOptions,
-      String? selectedValue,
-      Function(String?)? onChanged,
-      List<String> idMekanikList,
-      Map<String, String> mekanikMap,
-      String kodeJasa,
-      int index,
-      ) async {
-    final selectedKodeJasa = kodeJasa;
 
-    setState(() {
-      _isRunning = !_isRunning;
-    });
+  void updateSelectedIdMekanik(String item) {
+    selectedIdMekanik = itemToIdMekanikMap[item] ?? '';
+  }
 
-    if (_isRunning) {
-      try {
-        print('kodeBooking: $kodeBooking');
-        final selectedIdMekanik =
-        idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
-        print('ID Mekanik: $selectedIdMekanik');
-        print('Kode Jasa: $selectedKodeJasa');
-        var response = await API.promekID(
-          role: 'start',
-          kodebooking: kodeBooking ?? '',
-          kodejasa: selectedKodeJasa!,
-          idmekanik: selectedIdMekanik,
-        );
-        showBody = true;
-        kodeBooking = kodeBooking;
-        kategoriKendaraanId = kategoriKendaraanId;
-        setState(() {});
-        print('Response: ${response.toString()}');
-      } catch (e) {
-        print('Error: $e');
+  Map<String, String> itemToIdMekanikMap = {};
+
+  Future<void> fetchAndCombineData() async {
+    try {
+      final promekResponse = await API.PromekProsesID(
+        kodebooking: kodeBooking ?? '',
+        kodejasa: selectedKodeJasa ?? '',
+        idmekanik: selectedIdMekanik ?? '',
+      );
+
+      final mekanikResponse = await API.MekanikID();
+
+      final List<DataPromek> dataPromek = promekResponse?.dataPromek ?? [];
+      final List<DataMekanik> dataMekanik = mekanikResponse?.dataMekanik ?? [];
+
+      for (var mekanik in dataMekanik) {
+        for (var promek in dataPromek) {
+          if (promek.idMekanik == mekanik.idMekanik) {
+            itemToIdMekanikMap[mekanik.nama ?? ''] = mekanik.idMekanik.toString();
+          }
+        }
       }
-      showBody = true;
-      kodeBooking = kodeBooking;
-      kategoriKendaraanId = kategoriKendaraanId;
-      startTime = DateTime.now();
-      Navigator.pop(context);
-      setState(() {});
-    } else {
-      try {
-        print('Kode Jasa: $selectedKodeJasa');
-        print('kodeBooking: $kodeBooking');
-        final selectedIdMekanik =
-        idMekanikList[dropdownOptionsList[index].indexOf(selectedValue!)];
-        print('ID Mekanik: $selectedIdMekanik');
-        var response = await API.promekID(
-          role: 'stop',
-          kodebooking: kodeBooking ?? '',
-          kodejasa: selectedKodeJasa!,
-          idmekanik: selectedIdMekanik,
-        );
-        showBody = true;
-        kodeBooking = kodeBooking;
-        kategoriKendaraanId = kategoriKendaraanId;
-        setState(() {});
-        print('Response: ${response.toString()}');
-      } catch (e) {
-        print('Error: $e');
+
+      if (dataMekanik.isNotEmpty && selectedItem == '') {
+        setState(() {
+          selectedItem = dataMekanik.first.nama ?? '';
+          selectedIdMekanik = dataMekanik.first.idMekanik.toString();
+        });
       }
-      showBody = true;
-      kodeBooking = kodeBooking;
-      kategoriKendaraanId = kategoriKendaraanId;
-      startTime = DateTime.now();
-      Navigator.pop(context);
-      setState(() {});
+    } catch (error) {
+      print("Error fetching data: $error");
     }
   }
 
   @override
   void initState() {
     super.initState();
+    fetchAndCombineData();
     final Map? args = Get.arguments;
     kodeBooking = args?['kode_booking'];
     nama = args?['nama'];
@@ -320,8 +285,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         enableDrag: false,
                         backgroundColor: Colors.white,
                         isScrollControlled:
-                        true, // Membuat bottom sheet fullscreen
-                        useRootNavigator: true, // Menggunakan navigator root
+                        true,
+                        useRootNavigator: true,
                         builder: (BuildContext context) {
                           return Container(
                             decoration: const BoxDecoration(
@@ -395,11 +360,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 groupValue: showDetails ? true : null,
                 onChanged: (bool? value) {
                   setState(() {
-                    showDetails = true; // Setelah memilih Jasa, atur menjadi true untuk menampilkan layout
+                    showDetails = value ?? false;
                   });
                 },
               ),
-              if (showDetails) // Kontrol visibilitas layout dengan variabel showDetails
+              if (showDetails)
                 FutureBuilder<Mekanik>(
                   future: API.MekanikID(),
                   builder: (context, snapshot) {
@@ -407,49 +372,75 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.data != null) {
-                      final mechanics = snapshot.data!.dataMekanik ?? [];
-                      final dataJasa = snapshot.data!.dataJasa ?? [];
+                    } else {
+                      final mechanics = snapshot.data?.dataMekanik ?? [];
+                      final services = snapshot.data?.dataJasa ?? [];
 
-                      // Create lists of mechanic names and service codes
-                      List<String?> kodeJasaList = dataJasa.map((jasa) => jasa.kodeJasa).toList();
+                      print("Mechanics: ${mechanics.map((m) => m.toJson()).toList()}");
+                      print("Services: ${services.map((s) => s.toJson()).toList()}");
 
-                      // Initial selection if not already set
-                      if (selectedItem.isEmpty && mechanics.isNotEmpty) {
+                      if (mechanics.isNotEmpty && selectedItem == '' && services.isNotEmpty) {
                         selectedItem = mechanics.first.nama ?? '';
                         selectedIdMekanik = mechanics.first.idMekanik.toString();
-                        selectedKodeJasa = kodeJasaList.isNotEmpty ? kodeJasaList.first : null;
+                        selectedKodeJasa = services.first.kodeJasa ?? '';
+                        print("First Mechanic ID: ${mechanics.first.idMekanik}, First Service Code: ${services.first.kodeJasa}");
                       }
 
                       return DropdownButton<String>(
                         value: selectedItem,
                         onChanged: (String? newValue) {
-                          var newMechanic = mechanics;
-                          var newKodeJasa = kodeJasaList;
+                          final selectedMechanic = mechanics.firstWhere(
+                                (mechanic) => mechanic.nama == newValue,
+                            orElse: () => DataMekanik(),
+                          );
+
+                          var matchingService = services.isNotEmpty ? services.first : DataJasa();
 
                           setState(() {
-                            selectedItem = newValue??"";
-                            textFieldController.text = newValue??'';  // Update the text field controller
-                            selectedIdMekanik = newMechanic.toString();
-                            selectedKodeJasa = newKodeJasa.toString();
+                            selectedItem = newValue ?? '';
+                            selectedIdMekanik = selectedMechanic.idMekanik.toString();
+                            selectedKodeJasa = matchingService.kodeJasa ?? '';
                           });
                         },
                         items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
                           return DropdownMenuItem<String>(
-                            value: mechanic.nama ?? '',
+                            value: mechanic.nama,
                             child: Text(mechanic.nama ?? ''),
                           );
                         }).toList(),
                       );
-                    } else {
-                      return Text("No data available");
                     }
                   },
                 ),
-
-              if (showDetails) // Kontrol visibilitas layout dengan variabel showDetails
+              if (showDetails)
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    print('$kodeBooking, $selectedKodeJasa, $selectedIdMekanik');
+                    final promekResponse = await API.PromekProsesID(
+                      kodebooking: kodeBooking ?? '',
+                      kodejasa: selectedKodeJasa ?? '',
+                      idmekanik: selectedIdMekanik ?? '',
+                    );
+                    if (promekResponse != null && promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                      final firstData = promekResponse.dataPromek!.first;
+                      if (firstData.startPromek != null) {
+                        startPromekMap[selectedItem] = firstData.startPromek!;
+                      } else {
+                        startPromekMap[selectedItem] = 'Waktu start tidak tersedia';
+                      }
+                    } else {
+                      startPromekMap[selectedItem] = 'Tidak ada data';
+                    }
+                    if (promekResponse != null && promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                      final firstData = promekResponse.dataPromek!.first;
+                      if (firstData.stopPromek != null) {
+                        stopPromekMap[selectedItem] = firstData.stopPromek!;
+                      } else {
+                        stopPromekMap[selectedItem] = 'Waktu start tidak tersedia';
+                      }
+                    } else {
+                      stopPromekMap[selectedItem] = 'Tidak ada data';
+                    }
                     setState(() {
                       selectedItems.add(selectedItem);
                       isStartedMap[selectedItem] = false; // Initialize start status as false
@@ -458,9 +449,9 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   },
                   child: Text('Tambah'),
                 ),
-              if (showDetails) // Kontrol visibilitas layout dengan variabel showDetails
+              if (showDetails)
                 SizedBox(height: 20),
-              if (showDetails) // Kontrol visibilitas layout dengan variabel showDetails
+              if (showDetails)
                 Expanded(
                   child: ListView.builder(
                     itemCount: selectedItems.length,
@@ -476,162 +467,115 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     );
   }
   Widget buildTextFieldAndStartButton(String item) {
+    String startPromekText = startPromekMap[item] ?? 'Tidak ada data';
+    TextEditingController controllerstart = TextEditingController(text: '$startPromekText');
+    String stopPromekText = stopPromekMap[item] ?? 'Tidak ada data';
+    TextEditingController controllerstop = TextEditingController(text: '$stopPromekText');
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: 'Selected Item',
-                border: OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: item),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Selected Item',
+              border: OutlineInputBorder(),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                // Cek apakah sudah start dan TextField terisi sebelum mengizinkan untuk stop
-                if (isStartedMap[item] ?? false) {
-                  if (additionalInputControllers[item]?.text.isNotEmpty ?? false) {
-                    setState(() async {
-                      isStartedMap[item] = false;  // Hanya berhenti jika TextField terisi
-                    });
-                    var response = await API.promekID(
-                      role: 'stop',
-                      kodebooking: kodeBooking??'',
-                      kodejasa: selectedKodeJasa??'',
-                      idmekanik: selectedIdMekanik??'',
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text("Error"),
-                        content: Text("Please enter additional details before stopping."),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text("OK"),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                } else {
-                  setState(() async {
-                    isStartedMap[item] = true;  // Mulai jika belum start
+            controller: TextEditingController(text: item),
+          ),
+          TextField(
+            readOnly: true,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(17)
+              ),
+            ),
+            controller: controllerstart,
+          ),
+          TextField(
+            readOnly: true,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(17)
+              ),
+            ),
+            controller: controllerstop,
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () async {
+              print('kodeBooking : $kodeBooking, selectedKodeJasa : $selectedKodeJasa, selectedIdMekanik : $selectedIdMekanik');
+              if (isStartedMap[item] ?? false) {
+                if (additionalInputControllers[item]?.text.isNotEmpty ?? false) {
+                  setState(() {
+                    isStartedMap[item] = false;
                   });
                   var response = await API.promekID(
-                    role: 'start',
-                    kodebooking: kodeBooking??'',
-                    kodejasa: selectedKodeJasa??'',
-                    idmekanik: selectedIdMekanik??'',
+                    role: 'stop',
+                    kodebooking: kodeBooking ?? '',
+                    kodejasa: selectedKodeJasa ?? '',
+                    idmekanik: selectedIdMekanik ?? '',
+                  );
+                  var response3 = await API.updateketeranganID(
+                    promekid: '',
+                    keteranganpromek: additionalInputControllers[item]?.text ?? '',
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Error"),
+                      content: Text("Please enter additional details before stopping."),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text("OK"),
+                        ),
+                      ],
+                    ),
                   );
                 }
-              },
-              child: Text(isStartedMap[item] ?? false ? 'Stop' : 'Start'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isStartedMap[item] ?? false ? Colors.red : Colors.green,
+              } else {
+                setState(() {
+                  isStartedMap[item] = true;
+                });
+                var response = await API.promekID(
+                  role: 'start',
+                  kodebooking: kodeBooking ?? '',
+                  kodejasa: selectedKodeJasa ?? '',
+                  idmekanik: selectedIdMekanik ?? '',
+                );
+              }
+            },
+            child: Text(isStartedMap[item] ?? false ? 'Stop' : 'Start'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isStartedMap[item] ?? false ? Colors.red : Colors.green,
+            ),
+          ),
+          if (isStartedMap[item] ?? false)
+            SizedBox(height: 10),
+          if (isStartedMap[item] ?? false)
+            TextField(
+              controller: additionalInputControllers[item],
+              decoration: InputDecoration(
+                labelText: 'Enter additional details',
+                border: OutlineInputBorder(),
               ),
             ),
-            if (isStartedMap[item] ?? false)
-              SizedBox(height: 10),
-            if (isStartedMap[item] ?? false)
-              TextField(
-                controller: additionalInputControllers[item],
-                decoration: InputDecoration(
-                  labelText: 'Enter additional details',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            FutureBuilder<PromekProses>(
-              future: (() async {
-                return await API.PromekProsesID(
-                  kodebooking: kodeBooking ?? '',
-                  kodejasa: selectedKodeJasa??'',
-                  idmekanik: selectedIdMekanik??'',
-                );
-              })(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  if (snapshot.data != null &&
-                      snapshot.data!.dataPromek != null) {
-                    final List<DataPromek> dataList = snapshot.data!.dataPromek!;
-                    if (dataList.isNotEmpty) {
-                      final DataPromek firstData = dataList[0];
-                      if (firstData.startPromek != null) {
-                        final startPromek = firstData.startPromek;
-                        return Text(
-                          'Waktu Mulai: ${startPromek} - prosess',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      } else {
-                        return const Text('Waktu start tidak tersedia');
-                      }
-                    } else {
-                      return const Text('Tidak ada data');
-                    }
-                  } else {
-                    return const Text('Tidak ada data');
-                  }
-                }
-              },
-            ),
-            FutureBuilder<PromekProses>(
-              future: (() async {
-                return await API.PromekProsesID(
-                  kodebooking: kodeBooking ?? '',
-                  kodejasa: selectedKodeJasa??'',
-                  idmekanik: selectedIdMekanik??'',
-                );
-              })(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  if (snapshot.data != null &&
-                      snapshot.data!.dataPromek != null) {
-                    final List<DataPromek> dataList = snapshot.data!.dataPromek!;
-                    if (dataList.isNotEmpty) {
-                      final DataPromek firstData = dataList[0];
-                      if (firstData.stopPromek != null) {
-                        final stopPromek = firstData.stopPromek;
-                        return Text(
-                          'Waktu Selesai: ${stopPromek}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        );
-                      } else {
-                        return const Text('Waktu start tidak tersedia');
-                      }
-                    } else {
-                      return const Text('Tidak ada data');
-                    }
-                  } else {
-                    return const Text('Tidak ada data');
-                  }
-                }
-              },
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 }
 
 class DropdownItem {
-  String selectedValue;
+  String selectedIdMekanik;
   List<String> options;
 
-  DropdownItem(this.selectedValue, this.options);
+  DropdownItem(this.selectedIdMekanik, this.options);
 }

@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
@@ -26,12 +30,27 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dropdown Demo'),
+        title: Text('Dropdown'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    spreadRadius: 5,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child:
           RadioListTile<bool>(
             title: const Text('General check / P2H'),
             controlAffinity: ListTileControlAffinity.trailing,
@@ -42,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showDetails = true; // Setelah memilih Jasa, atur menjadi true untuk menampilkan layout
               });
             },
+          ),
           ),
           if (showDetails) // Kontrol visibilitas layout dengan variabel showDetails
             FutureBuilder<Mekanik>(
@@ -127,18 +147,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       isStartedMap[item] = false;  // Hanya berhenti jika TextField terisi
                     });
                   } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text("Error"),
-                        content: Text("Please enter additional details before stopping."),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text("OK"),
-                          ),
-                        ],
-                      ),
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.warning,
+                      headerBackgroundColor: Colors.yellow,
+                      text:
+                      'Anda Harus isi Keterangan dahulu sebelum Stop',
+                      confirmBtnText: 'Oke',
+                      title: 'Penting !!',
+                      confirmBtnColor: Colors.green,
                     );
                   }
                 } else {

@@ -30,6 +30,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   DateTime? stopTime;
   Map<String, String> startPromekMap = {};
   Map<String, String> stopPromekMap = {};
+  Map<String, String> keterangan = {};
   Map<String, String> promekId = {};
   String? kodeBooking;
   String? nama;
@@ -37,8 +38,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   String? kategoriKendaraanId;
   String? kendaraan;
   String? nama_tipe;
-  String selectedItem = '';
-
+  String selectedItem = 'Pilih Mekanik';
   bool showDetails = false;
   TextEditingController textFieldController = TextEditingController();
   List<String> selectedItems = [];
@@ -101,6 +101,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     kendaraan = args?['kategori_kendaraan'];
     nama_jenissvc = args?['nama_jenissvc'];
     nama_tipe = args?['nama_tipe'];
+    selectedItem = 'Pilih Mekanik';
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       showModalBottomSheet<void>(
         context: context,
@@ -182,10 +183,12 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       startPromekMap[item] = firstData.startPromek ?? 'Waktu start tidak tersedia';
       stopPromekMap[item] = firstData.stopPromek ?? 'Waktu stop tidak tersedia';
       promekId[item] = firstData.promekId?.toString() ?? 'ID tidak tersedia';
+      keterangan[item] = firstData.keterangan ?? 'ID tidak tersedia';
     } else {
       startPromekMap[item] = 'Tidak ada data';
       stopPromekMap[item] = 'Tidak ada data';
       promekId[item] = 'Tidak ada data';
+      keterangan[item] = 'Tidak ada data';
     }
   }
   Future<void> reloadData() async {
@@ -476,6 +479,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             return DropdownButton<String>(
                               value: selectedItem,
                               onChanged: (String? newValue) {
+                                // Dapatkan mechanic sesuai pilihan, atau kembalikan default jika tidak ditemukan
                                 final selectedMechanic = mechanics.firstWhere(
                                       (mechanic) => mechanic.nama == newValue,
                                   orElse: () => DataMekanik(),
@@ -489,12 +493,20 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                   selectedKodeJasa = matchingService.kodeJasa ?? '';
                                 });
                               },
-                              items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
-                                return DropdownMenuItem<String>(
-                                  value: mechanic.nama,
-                                  child: Text(mechanic.nama ?? ''),
-                                );
-                              }).toList(),
+                              items: [
+                                // Tambahkan ini sebagai item pertama untuk 'Pilih Mekanik'
+                                DropdownMenuItem<String>(
+                                  value: 'Pilih Mekanik',
+                                  child: Text('Pilih Mekanik'),
+                                ),
+                                // Tambahkan item mekanik dari list
+                                ...mechanics.map<DropdownMenuItem<String>>((mechanic) {
+                                  return DropdownMenuItem<String>(
+                                    value: mechanic.nama,
+                                    child: Text(mechanic.nama ?? ''),
+                                  );
+                                }).toList(),
+                              ],
                             );
                           }
                         },
@@ -547,6 +559,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             } else {
                               promekId[selectedItem] = 'Tidak ada data';
                             }
+                            if (promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                              final firstData = promekResponse.dataPromek!.first;
+                              if (firstData.keterangan != null) {
+                                keterangan[selectedItem] = firstData.keterangan??'';
+                              } else {
+                                keterangan[selectedItem] = 'Keterangan tidak tersedia';
+                              }
+                            } else {
+                              keterangan[selectedItem] = 'Tidak ada data';
+                            }
 
                             setState(() {
                               selectedItems.add(selectedItem);
@@ -585,7 +607,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     );
   }
   Widget buildTextFieldAndStartButton(String item) {
-    // Ensure controllers are initialized if not already done
     if (!startControllers.containsKey(item)) {
       startControllers[item] = TextEditingController();
     }
@@ -598,6 +619,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     promekId[item] ??= [].toString();
     String startPromekText = startPromekMap[item] ?? 'Tidak ada data';
     String stopPromekText = stopPromekMap[item] ?? 'Tidak ada data';
+    String keteranganText = keterangan[item] ?? 'Tidak ada data';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -634,7 +656,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 TextField(
                   controller: stopControllers[item],
                   decoration: const InputDecoration(
-                    labelText: 'Deskripsi',
+                    labelText: 'Keterangan',
                     labelStyle: TextStyle(fontWeight: FontWeight.bold),
                     border: OutlineInputBorder(),
                   ),
@@ -672,18 +694,16 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     }
                   } else {
                     // Error dialog if text field is empty when stopping
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text("Error"),
-                        content: Text("Please enter details before stopping."),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text("OK"),
-                          ),
-                        ],
-                      ),
+                    QuickAlert.show(
+                      barrierDismissible: false,
+                      context: Get.context!,
+                      type: QuickAlertType.warning,
+                      headerBackgroundColor: Colors.yellow,
+                      text:
+                      'Anda Harus isi Keterangan dahulu sebelum Stop',
+                      confirmBtnText: 'Oke',
+                      title: 'Penting !!',
+                      confirmBtnColor: Colors.green,
                     );
                   }
                 },
@@ -715,8 +735,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     children: [
                       const Text("Start History:", style: TextStyle(fontWeight: FontWeight.bold)),
                       Text('$startPromekText'),
-                      const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
-                      ...startHistoryLogs[item]!.map((log) => Text(log)).toList(),
+                      // const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
+                      // ...startHistoryLogs[item]!.map((log) => Text(log)).toList(),
                     ],
                   ),
                 ),
@@ -742,8 +762,9 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     children: [
                       const Text("Stop History:", style: TextStyle(fontWeight: FontWeight.bold)),
                       Text('$stopPromekText'),
-                      const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
-                      ...stopHistoryLogs[item]!.map((log) => Text(log)).toList(),
+                      const Text("Keterangan", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('$keteranganText'),
+                      // ...stopHistoryLogs[item]!.map((log) => Text(log)).toList(),
                     ],
                   ),
                 ),

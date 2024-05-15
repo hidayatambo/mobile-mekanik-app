@@ -3,13 +3,12 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mekanik/app/componen/color.dart';
-import 'package:mekanik/app/data/endpoint.dart';
 import 'package:mekanik/app/modules/history/views/history_view.dart';
 import 'package:mekanik/app/modules/profile/views/profile_view.dart';
 
 import '../../../data/data_endpoint/boking.dart';
 import '../../boking/views/boking_view.dart';
-import '../../chat/views/chat_view.dart';
+import '../../promek/views/chat_view.dart';
 import '../views/home_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -51,6 +50,14 @@ class _HomeViewState extends State<HomeView> {
               color: Colors.white,
             ),
             label: 'Home',
+            labelStyle: TextStyle(color: Colors.white),
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(
+              Icons.timer,
+              color: Colors.white,
+            ),
+            label: 'Promek',
             labelStyle: TextStyle(color: Colors.white),
           ),
           CurvedNavigationBarItem(
@@ -103,12 +110,12 @@ class _HomeViewState extends State<HomeView> {
             _page = index;
           });
         },
-        children: <Widget>[
-          const HomePage(),
-          // ChatView(),
-          const BokingView(),
-          const HistoryView(),
-          const ProfileView(),
+        children: const <Widget>[
+          HomePage(),
+          PKB(),
+          BokingView(),
+          HistoryView(),
+          ProfileView(),
         ],
       ),
       appBar: AppBar(

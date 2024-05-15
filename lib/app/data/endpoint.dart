@@ -204,8 +204,11 @@ class API {
 
   //Beda
   static Future<Approve> approveId({
-    required String email,
+    required String idkaryawan,
     required String kodeBooking,
+    required String kodepelanggan,
+    required String kodekendaraan,
+    required String kategorikendaraan,
     required String tglBooking,
     required String jamBooking,
     required String odometer,
@@ -223,8 +226,11 @@ class API {
     required int ppn,
   }) async {
     final data = {
-      "email": email,
+      "id_karyawan": idkaryawan,
       "kode_booking": kodeBooking,
+      "kode_pelanggan": kodepelanggan,
+      "kode_kendaraan": kodekendaraan,
+      "kategori_kendaraan": kategorikendaraan,
       "tgl_booking": tglBooking,
       "jam_booking": jamBooking,
       "odometer": odometer,

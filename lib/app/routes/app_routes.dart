@@ -7,7 +7,7 @@ abstract class Routes {
   static const SIGNIN = _Paths.SIGNIN;
   static const PROFILE = _Paths.PROFILE;
   static const BOKING = _Paths.BOKING;
-  static const CHAT = _Paths.CHAT;
+  static const PKB = _Paths.PKB;
   static const HISTORY = _Paths.HISTORY;
   static const GENERAL_CHECKUP = _Paths.GENERAL_CHECKUP;
   static const SPLASHCREEN = _Paths.SPLASHCREEN;
@@ -25,7 +25,7 @@ abstract class _Paths {
   static const SIGNIN = '/signin';
   static const PROFILE = '/profile';
   static const BOKING = '/boking';
-  static const CHAT = '/chat';
+  static const PKB = '/pkb';
   static const HISTORY = '/history';
   static const GENERAL_CHECKUP = '/general-checkup';
   static const SPLASHCREEN = '/splashcreen';

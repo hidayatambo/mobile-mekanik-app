@@ -20,7 +20,6 @@ class ApproveView extends GetView<ApproveController> {
   Widget build(BuildContext context) {
     final Map<String, dynamic>? arguments =
         Get.arguments as Map<String, dynamic>?;
-    final String email = arguments?['email'] ?? '';
     final String kodeBooking = arguments?['kode_booking'] ?? '';
     final String tglBooking = arguments?['tgl_booking'] ?? '';
     final String jamBooking = arguments?['jam_booking'] ?? '';
@@ -36,6 +35,9 @@ class ApproveView extends GetView<ApproveController> {
     final String paketSvc = arguments?['paket_svc'] ?? '';
     final String keluhan = arguments?['keluhan'] ?? '';
     final String perintahKerja = arguments?['perintah_kerja'] ?? '';
+    final String kategorikendaraan = arguments?['kategori_kendaraan'] ?? '';
+    final String kodepelanggan = arguments?['kode_pelanggan'] ?? '';
+    final String kodekendaraan = arguments?['kode_kendaraan'] ?? '';
 
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
@@ -63,9 +65,6 @@ class ApproveView extends GetView<ApproveController> {
                 ElevatedButton(
                   onPressed: () async {
                     if (kDebugMode) {
-                      print('Email: $email');
-                    }
-                    if (kDebugMode) {
                       print('kode_booking: $kodeBooking');
                     }
                     if (kDebugMode) {
@@ -81,60 +80,9 @@ class ApproveView extends GetView<ApproveController> {
                         barrierDismissible: true,
                         text: 'Periksa kembali data Pelanganss',
                         confirmBtnText: 'Konfirmasi',
-                        widget: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              'Keluhan',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                            TextFormField(
-                              controller: controller.keluhan,
-                              decoration: const InputDecoration(
-                                alignLabelWithHint: true,
-                                hintText: 'catatan',
-                                prefixIcon: Icon(
-                                  Icons.note_alt_rounded,
-                                ),
-                              ),
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.text,
-                              // onChanged: (value) => message = value,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Perintah Kerja',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                            TextFormField(
-                              controller: controller.perintah,
-                              decoration: const InputDecoration(
-                                alignLabelWithHint: true,
-                                hintText: 'catatan',
-                                prefixIcon: Icon(
-                                  Icons.note_alt_rounded,
-                                ),
-                              ),
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.text,
-                              // onChanged: (value) => message = value,
-                            ),
-                          ],
-                        ),
                         onConfirmBtnTap: () async {
                           Navigator.pop(Get.context!);
                           try {
-                            if (kDebugMode) {
-                              print('jam_booking: $email');
-                            }
                             if (kDebugMode) {
                               print('kode_booking: $kodeBooking');
                             }
@@ -160,9 +108,17 @@ class ApproveView extends GetView<ApproveController> {
                             if (kDebugMode) {
                               print('tgl_booking: $tglBooking');
                             }
+                            if (kodeBooking.isEmpty || kodepelanggan.isEmpty || kodekendaraan.isEmpty || tglBooking.isEmpty || jamBooking.isEmpty) {
+                              // Show an error message to the user or handle the error appropriately
+                              print("Please fill all required fields.");
+                              return;  // Stop the execution if validation fails
+                            }
                             await API.approveId(
-                              email: email,
+                              idkaryawan: '',
                               kodeBooking: kodeBooking,
+                              kodepelanggan: kodepelanggan,
+                              kodekendaraan: kodekendaraan,
+                              kategorikendaraan: kategorikendaraan,
                               tglBooking: controller.tanggal.text,
                               jamBooking: controller.jam.text,
                               odometer: controller.odometer.text,
@@ -171,13 +127,13 @@ class ApproveView extends GetView<ApproveController> {
                               kodeMembership: kodeMembership,
                               kodePaketmember: kodePaketmember,
                               tipeSvc: tipeSvc,
+                              tipePelanggan: tipePelanggan,
                               referensi: referensi,
                               referensiTmn: referensiTmn,
                               paketSvc: paketSvc,
                               keluhan: controller.keluhan.text,
                               perintahKerja: controller.perintah.text,
                               ppn: 10,
-                              tipePelanggan: tipePelanggan,
                             );
                           } catch (e) {
                             Navigator.pop(Get.context!);
@@ -208,9 +164,6 @@ class ApproveView extends GetView<ApproveController> {
                           Navigator.pop(Get.context!);
                           try {
                             if (kDebugMode) {
-                              print('Email: $email');
-                            }
-                            if (kDebugMode) {
                               print('kode_booking: $kodeBooking');
                             }
                             if (kDebugMode) {
@@ -227,23 +180,26 @@ class ApproveView extends GetView<ApproveController> {
                             );
                             // Panggil API untuk menyetujui booking
                             await API.approveId(
-                              email: selectedMechanic ?? '',
+                              idkaryawan: '',
                               kodeBooking: kodeBooking,
-                              tglBooking: tglBooking,
-                              jamBooking: jamBooking,
-                              odometer: odometer,
-                              pic: pic,
-                              hpPic: hpPic,
+                              kodepelanggan: kodepelanggan,
+                              kodekendaraan: kodekendaraan,
+                              kategorikendaraan: kategorikendaraan,
+                              tglBooking: controller.tanggal.text,
+                              jamBooking: controller.jam.text,
+                              odometer: controller.odometer.text,
+                              pic: controller.pic.text,
+                              hpPic: controller.hppic.text,
                               kodeMembership: kodeMembership,
                               kodePaketmember: kodePaketmember,
                               tipeSvc: tipeSvc,
+                              tipePelanggan: tipePelanggan,
                               referensi: referensi,
                               referensiTmn: referensiTmn,
                               paketSvc: paketSvc,
-                              keluhan: keluhan,
-                              perintahKerja: perintahKerja,
+                              keluhan: controller.keluhan.text,
+                              perintahKerja: controller.perintah.text,
                               ppn: 10,
-                              tipePelanggan: tipePelanggan,
                             );
                           } catch (e) {
                             Navigator.of(context)

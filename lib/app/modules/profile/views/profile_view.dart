@@ -172,29 +172,6 @@ class _ProfileViewState extends State<ProfileView> {
                     ],
                   ),
                 ),
-              ),InkWell(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  Get.to(MyHomePage());
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: const Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Ubah Password'),
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.grey,
-                      )
-                    ],
-                  ),
-                ),
               ),
               InkWell(
                 onTap: () {

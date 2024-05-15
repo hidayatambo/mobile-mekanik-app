@@ -320,8 +320,9 @@ class _BokingView2State extends State<BokingView2> {
                                         'nama_tipe': e.namaTipe ?? '',
                                         'alamat': e.alamat ?? '',
                                         'hp': e.hp ?? '',
-                                        'transmisi': e.transmisi ?? '',
-                                        'status': e.bookingStatus ?? '',
+                                        'hp_pic': e.hpPic ?? '',
+                                        'kode_pelanggan': e.kodePelanggan ?? '',
+                                        'kategori_kendaraan': e.kategoriKendaraan ?? '',
                                       },
                                     );
                                   } else if (e.bookingStatus!.toLowerCase() ==
@@ -350,7 +351,6 @@ class _BokingView2State extends State<BokingView2> {
                                         'transmisi': e.transmisi ?? '',
                                         'nama_tipe': e.namaTipe ?? '',
                                         'alamat': e.alamat ?? '',
-                                        'status': e.bookingStatus ?? '',
                                         'status': e.bookingStatus ?? '',
                                       },
                                     );

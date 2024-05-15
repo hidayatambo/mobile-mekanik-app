@@ -1,4 +1,4 @@
-package com.mekanik.mekanik
+package com.bengkelly.mekanik.co.id
 
 import io.flutter.embedding.android.FlutterActivity
 

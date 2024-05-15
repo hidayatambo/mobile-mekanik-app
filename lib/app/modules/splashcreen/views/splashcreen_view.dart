@@ -117,7 +117,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
         child: Column(
           children: [
             AnimatedContainer(
-              duration: Duration(milliseconds: _d ? 900 : 2500),
+              duration: Duration(milliseconds: _d ? 1000 : 2500),
               curve: _d ? Curves.fastLinearToSlowEaseIn : Curves.elasticOut,
               height: _d
                   ? 0
@@ -142,12 +142,12 @@ class _SplashcreenViewState extends State<SplashcreenView> {
               width: _d
                   ? w
                   : _c
-                      ? 200
+                      ? 800
                       : 20,
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
                 image: const DecorationImage(
-                  image: AssetImage("assets/logo.png"),
+                  image: AssetImage("assets/logo_vale.png"),
                   fit: BoxFit.contain,
                 ),
               ),

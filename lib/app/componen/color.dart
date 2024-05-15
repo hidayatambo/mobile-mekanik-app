@@ -27,7 +27,8 @@ class AppColors {
 }
 
 class MyColors{
-  static Color appPrimaryColor = HexColor("2B407D");
+  static Color appPrimaryColor = HexColor("007e7a");
+  static Color appPrimaryBengkelly = HexColor("007e7a");
   static Color greenSnackBar = HexColor("4AC000");
   static Color orangeSnackBar = HexColor("EF9300");
   static Color redSnackBar = HexColor("E01A1A");
@@ -48,6 +49,7 @@ class MyColors{
   static Color listChatColor = HexColor("2754C51A");
   static Color greyButton = HexColor("8391A1");
   static Color greyLanguage = HexColor('3C3C3C45');
+  static Color vale = HexColor('007e7a');
 }
 
 class HexColor extends Color {

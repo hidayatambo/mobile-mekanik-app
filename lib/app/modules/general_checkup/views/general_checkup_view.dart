@@ -168,7 +168,29 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       },
     );
   }
+  Future<void> loadPromekData(String item) async {
+    print('$kodeBooking, $selectedKodeJasa, $selectedIdMekanik');
 
+    final promekResponse = await API.PromekProsesID(
+      kodebooking: kodeBooking ?? '',
+      kodejasa: selectedKodeJasa ?? '',
+      idmekanik: selectedIdMekanik ?? '',
+    );
+
+    if (promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+      final firstData = promekResponse.dataPromek!.first;
+      startPromekMap[item] = firstData.startPromek ?? 'Waktu start tidak tersedia';
+      stopPromekMap[item] = firstData.stopPromek ?? 'Waktu stop tidak tersedia';
+      promekId[item] = firstData.promekId?.toString() ?? 'ID tidak tersedia';
+    } else {
+      startPromekMap[item] = 'Tidak ada data';
+      stopPromekMap[item] = 'Tidak ada data';
+      promekId[item] = 'Tidak ada data';
+    }
+  }
+  Future<void> reloadData() async {
+    setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -443,10 +465,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                               print("Services: ${services.map((s) => s.toJson()).toList()}");
                             }
 
-                            if (mechanics.isNotEmpty && selectedItem == '' && services.isNotEmpty) {
-                              selectedItem = mechanics.first.nama ?? '';
+                            // Set default values if mechanics and services are not empty and selectedItem is empty
+                            if (mechanics.isNotEmpty && selectedItem == null && services.isNotEmpty) {
+                              selectedItem = mechanics.first.nama!;
                               selectedIdMekanik = mechanics.first.idMekanik.toString();
-                              selectedKodeJasa = services.first.kodeJasa ?? '';
+                              selectedKodeJasa = services.first.kodeJasa;
                               print("First Mechanic ID: ${mechanics.first.idMekanik}, First Service Code: ${services.first.kodeJasa}");
                             }
 
@@ -461,7 +484,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                 var matchingService = services.isNotEmpty ? services.first : DataJasa();
 
                                 setState(() {
-                                  selectedItem = newValue ?? '';
+                                  selectedItem = newValue!;
                                   selectedIdMekanik = selectedMechanic.idMekanik.toString();
                                   selectedKodeJasa = matchingService.kodeJasa ?? '';
                                 });
@@ -476,6 +499,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           }
                         },
                       ),
+
                       Container(
                         width: double.infinity,
                         child:
@@ -523,6 +547,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                             } else {
                               promekId[selectedItem] = 'Tidak ada data';
                             }
+
                             setState(() {
                               selectedItems.add(selectedItem);
                               isStartedMap[selectedItem] = false;
@@ -573,6 +598,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     promekId[item] ??= [].toString();
     String startPromekText = startPromekMap[item] ?? 'Tidak ada data';
     String stopPromekText = stopPromekMap[item] ?? 'Tidak ada data';
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -604,14 +630,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 controller: TextEditingController(text: item),
               ),
               SizedBox(height: 10,),
-              if (!(isStartedMap[item] ?? true))
-                TextField(
-                  controller: startControllers[item],
-                  decoration: const InputDecoration(
-                    labelText: 'Deskripsi',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
               if (isStartedMap[item] ?? false)
                 TextField(
                   controller: stopControllers[item],
@@ -626,26 +644,26 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   TextEditingController? currentController = isStartedMap[item] ?? true ? stopControllers[item] : startControllers[item];
                   print('response : $startControllers');
                   print('response : $promekId');
-                  if (currentController!.text.isNotEmpty) {
+
+                  if (!(isStartedMap[item] ?? false) || currentController!.text.isNotEmpty) {
                     try {
+                      await API.promekID(
+                        role: isStartedMap[item] ?? false ? 'stop' : 'start',
+                        kodebooking: kodeBooking ?? '',
+                        kodejasa: selectedKodeJasa ?? '',
+                        idmekanik: selectedIdMekanik ?? '',
+                      );
                       await API.updateketeranganID(
                         promekid: promekId.toString(),
                         keteranganpromek: startControllers[item]?.text ?? '',
                       );
-
-                      // await API.promekID(
-                      //   role: isStartedMap[item] ?? true ? 'stop' : 'start',
-                      //   kodebooking: kodeBooking ?? '',
-                      //   kodejasa: selectedKodeJasa ?? '',
-                      //   idmekanik: selectedIdMekanik ?? '',
-                      // );
                       Navigator.pop(Get.context!);
                       setState(() {
-                        isStartedMap[item] = !(isStartedMap[item] ?? true);
+                        isStartedMap[item] = !(isStartedMap[item] ?? false);
                         if (isStartedMap[item] ?? true) {
-                          stopHistoryLogs[item]!.add(currentController.text);  // Log the stop action
+                          stopHistoryLogs[item]!.add(currentController!.text);  // Log the stop action
                         } else {
-                          startHistoryLogs[item]!.add(currentController.text);  // Log the start action
+                          startHistoryLogs[item]!.add(currentController!.text);  // Log the start action
                         }
                         currentController.clear();
                       });
@@ -653,12 +671,12 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       print("Failed to execute API call: $e");  // Handle any errors
                     }
                   } else {
-                    // Error dialog if text field is empty
+                    // Error dialog if text field is empty when stopping
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text("Error"),
-                        content: Text("Please enter details before " + (isStartedMap[item] ?? true ? "stopping." : "starting.") + "."),
+                        content: Text("Please enter details before stopping."),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
@@ -670,12 +688,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isStartedMap[item] ?? true ? Colors.red : Colors.green,
+                  backgroundColor: isStartedMap[item] ?? false ? Colors.red : Colors.green,
                 ),
-                child: Text(isStartedMap[item] ?? true ? 'Stop' : 'Start'),
+                child: Text(isStartedMap[item] ?? false ? 'Stop' : 'Start'),
               ),
-              // Display history for both start and stop
-              if (startHistoryLogs[item]!.isNotEmpty)
+              // if (startHistoryLogs[item]!.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(10),
@@ -692,8 +709,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       ),
                     ],
                   ),
-                  child:
-                  Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -701,10 +717,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       Text('$startPromekText'),
                       const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
                       ...startHistoryLogs[item]!.map((log) => Text(log)).toList(),
-
                     ],
-                  ),),
-              if (stopHistoryLogs[item]!.isNotEmpty)
+                  ),
+                ),
+              // if (stopHistoryLogs[item]!.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(10),
@@ -721,16 +737,13 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                       ),
                     ],
                   ),
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       const Text("Stop History:", style: TextStyle(fontWeight: FontWeight.bold)),
                       Text('$stopPromekText'),
                       const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
                       ...stopHistoryLogs[item]!.map((log) => Text(log)).toList(),
-
                     ],
                   ),
                 ),
@@ -740,6 +753,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       ],
     );
   }
+
 
 
 

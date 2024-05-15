@@ -695,7 +695,7 @@ class API {
       final token = Publics.controller.getToken.value ?? '';
       print('Token: $token');
 
-      var response = await Dio().get(
+      var response = await Dio().post(
         _postprosespromek,
         data: data,
         options: Options(

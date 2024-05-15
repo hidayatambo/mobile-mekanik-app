@@ -92,7 +92,10 @@ class BokingController extends GetxController {
       controller.refreshCompleted();
     }
   }
-
+  var selectedBooking = {}.obs;
+  void setSelectedBooking(Map<String, dynamic> booking) {
+    selectedBooking.value = booking;
+  }
 
   void incrementCounter() {
     count.value++;

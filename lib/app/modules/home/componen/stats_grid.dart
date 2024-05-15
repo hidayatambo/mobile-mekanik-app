@@ -44,7 +44,7 @@ class StatsGrid extends StatelessWidget {
                   onTapRoute: Routes.SELESAIDIKERJAKAN,
                   dataLabel: "Service Dikerjakan",
                 ),
-                _buildStatCard('Invoice', '391', Colors.purple),
+                _buildStatCard('Invoice', '-', Colors.purple),
               ],
             ),
           ),

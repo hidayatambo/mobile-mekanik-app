@@ -63,7 +63,7 @@ class BarChartSample2State extends State<BarChartSample2> {
                   width: 38,
                 ),
                 const Text(
-                  'Static Bengkelly',
+                  'Static',
                   style: TextStyle(color: Colors.black, fontSize: 22),
                 ),
                 const SizedBox(

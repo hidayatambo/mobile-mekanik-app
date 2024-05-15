@@ -14,7 +14,7 @@ class BokingList extends StatelessWidget {
   Widget build(BuildContext context) {
     Color statusColor = StatusColor.getColor(items.bookingStatus??'');
     return InkWell(
-      onTap: onTap, // Menggunakan onTap yang diterima dari luar
+      onTap: onTap,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),

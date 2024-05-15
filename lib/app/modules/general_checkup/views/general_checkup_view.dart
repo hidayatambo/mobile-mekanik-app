@@ -1,11 +1,9 @@
-import 'dart:developer';
-
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:mekanik/app/componen/color.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik.dart';
@@ -32,6 +30,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   DateTime? stopTime;
   Map<String, String> startPromekMap = {};
   Map<String, String> stopPromekMap = {};
+  Map<String, String> promekId = {};
   String? kodeBooking;
   String? nama;
   String? nama_jenissvc;
@@ -45,6 +44,11 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
   List<String> selectedItems = [];
   Map<String, bool> isStartedMap = {};
   Map<String, TextEditingController> additionalInputControllers = {};
+  Map<String, TextEditingController> additionalInputControllersstart = {};
+  Map<String, TextEditingController> startControllers = {};
+  Map<String, TextEditingController> stopControllers = {};
+  Map<String, List<String>> startHistoryLogs = {};
+  Map<String, List<String>> stopHistoryLogs = {};
 
   void updateSelectedIdMekanik(String item) {
     selectedIdMekanik = itemToIdMekanikMap[item] ?? '';
@@ -62,8 +66,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
 
       final mekanikResponse = await API.MekanikID();
 
-      final List<DataPromek> dataPromek = promekResponse?.dataPromek ?? [];
-      final List<DataMekanik> dataMekanik = mekanikResponse?.dataMekanik ?? [];
+      final List<DataPromek> dataPromek = promekResponse.dataPromek ?? [];
+      final List<DataMekanik> dataMekanik = mekanikResponse.dataMekanik ?? [];
 
       for (var mekanik in dataMekanik) {
         for (var promek in dataPromek) {
@@ -80,7 +84,9 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
         });
       }
     } catch (error) {
-      print("Error fetching data: $error");
+      if (kDebugMode) {
+        print("Error fetching data: $error");
+      }
     }
   }
 
@@ -98,8 +104,8 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       showModalBottomSheet<void>(
         context: context,
-        isScrollControlled: true, // Membuat bottom sheet fullscreen
-        useRootNavigator: true, // Menggunakan navigator root
+        isScrollControlled: true,
+        useRootNavigator: true,
         builder: (BuildContext context) {
           return Container(
             decoration: const BoxDecoration(
@@ -107,32 +113,31 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
             ),
             height: MediaQuery.of(context).size.height,
             width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                WillPopScope(
-                    onWillPop: () async {
-                      QuickAlert.show(
-                        barrierDismissible: false,
-                        context: Get.context!,
-                        type: QuickAlertType.confirm,
-                        headerBackgroundColor: Colors.yellow,
-                        text:
-                        'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
-                        confirmBtnText: 'Kembali',
-                        title: 'Penting !!',
-                        cancelBtnText: 'Keluar',
-                        onCancelBtnTap: () {
-                          Navigator.of(context)
-                              .popUntil((route) => route.isFirst);
-                        },
-                        confirmBtnColor: Colors.green,
-                      );
-                      return false;
-                    },
-                    child: _buildBottomSheet()),
-              ]),
-            ),
+            child:
+            Column(
+                children: <Widget>[
+                  WillPopScope(
+                      onWillPop: () async {
+                        QuickAlert.show(
+                          barrierDismissible: false,
+                          context: Get.context!,
+                          type: QuickAlertType.confirm,
+                          headerBackgroundColor: Colors.yellow,
+                          text:
+                          'Anda Harus Selesaikan dahulu General Check Up untuk keluar dari Edit General Check Up',
+                          confirmBtnText: 'Kembali',
+                          title: 'Penting !!',
+                          cancelBtnText: 'Keluar',
+                          onCancelBtnTap: () {
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          },
+                          confirmBtnColor: Colors.green,
+                        );
+                        return false;
+                      },
+                      child: _buildBottomSheet()),
+                ]),
           );
         },
       );
@@ -282,22 +287,35 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         context: context,
                         enableDrag: false,
                         backgroundColor: Colors.white,
-                        isScrollControlled:
-                        true,
+                        isScrollControlled: true,
                         useRootNavigator: true,
                         builder: (BuildContext context) {
-                          return Container(
+                          return SafeArea(child:
+                          Container(
                             decoration: const BoxDecoration(
                               color: Colors.white,
                             ),
-                            height: 700,
                             width: double.infinity,
                             child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                      children: <Widget>[_buildBottomSheet()]),
-                                )),
+                              padding: const EdgeInsets.all(0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      // Use MediaQuery to make height responsive
+                                      height: MediaQuery.of(context).size.height * 0.9, // 90% of screen height
+                                      width: double.infinity,
+                                      child: _buildBottomSheet(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
                           );
                         },
                       );
@@ -345,119 +363,196 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       builder: (context, setState) {
         return Container(
           color: Colors.white,
-          height: Get.height * 0.9,
+          height: MediaQuery.of(context).size.height,
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              RadioListTile<bool>(
-                title: const Text('General check / P2H'),
-                controlAffinity: ListTileControlAffinity.trailing,
-                value: true,
-                groupValue: showDetails ? true : null,
-                onChanged: (bool? value) {
-                  setState(() {
-                    showDetails = value ?? false;
-                  });
-                },
+              SizedBox(height: 50,),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.15),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold),),
+                    RadioListTile<bool>(
+                      title: const Text('General check / P2H'),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: true,
+                      groupValue: showDetails ? true : null,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          showDetails = value ?? false;
+                        });
+                      },
+                    ),
+                  ],),
               ),
               if (showDetails)
-                FutureBuilder<Mekanik>(
-                  future: API.MekanikID(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else {
-                      final mechanics = snapshot.data?.dataMekanik ?? [];
-                      final services = snapshot.data?.dataJasa ?? [];
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold),),
+                      FutureBuilder<Mekanik>(
+                        future: API.MekanikID(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else {
+                            final mechanics = snapshot.data?.dataMekanik ?? [];
+                            final services = snapshot.data?.dataJasa ?? [];
 
-                      print("Mechanics: ${mechanics.map((m) => m.toJson()).toList()}");
-                      print("Services: ${services.map((s) => s.toJson()).toList()}");
+                            if (kDebugMode) {
+                              print("Mechanics: ${mechanics.map((m) => m.toJson()).toList()}");
+                            }
+                            if (kDebugMode) {
+                              print("Services: ${services.map((s) => s.toJson()).toList()}");
+                            }
 
-                      if (mechanics.isNotEmpty && selectedItem == '' && services.isNotEmpty) {
-                        selectedItem = mechanics.first.nama ?? '';
-                        selectedIdMekanik = mechanics.first.idMekanik.toString();
-                        selectedKodeJasa = services.first.kodeJasa ?? '';
-                        print("First Mechanic ID: ${mechanics.first.idMekanik}, First Service Code: ${services.first.kodeJasa}");
-                      }
+                            if (mechanics.isNotEmpty && selectedItem == '' && services.isNotEmpty) {
+                              selectedItem = mechanics.first.nama ?? '';
+                              selectedIdMekanik = mechanics.first.idMekanik.toString();
+                              selectedKodeJasa = services.first.kodeJasa ?? '';
+                              print("First Mechanic ID: ${mechanics.first.idMekanik}, First Service Code: ${services.first.kodeJasa}");
+                            }
 
-                      return DropdownButton<String>(
-                        value: selectedItem,
-                        onChanged: (String? newValue) {
-                          final selectedMechanic = mechanics.firstWhere(
-                                (mechanic) => mechanic.nama == newValue,
-                            orElse: () => DataMekanik(),
-                          );
+                            return DropdownButton<String>(
+                              value: selectedItem,
+                              onChanged: (String? newValue) {
+                                final selectedMechanic = mechanics.firstWhere(
+                                      (mechanic) => mechanic.nama == newValue,
+                                  orElse: () => DataMekanik(),
+                                );
 
-                          var matchingService = services.isNotEmpty ? services.first : DataJasa();
+                                var matchingService = services.isNotEmpty ? services.first : DataJasa();
 
-                          setState(() {
-                            selectedItem = newValue ?? '';
-                            selectedIdMekanik = selectedMechanic.idMekanik.toString();
-                            selectedKodeJasa = matchingService.kodeJasa ?? '';
-                          });
+                                setState(() {
+                                  selectedItem = newValue ?? '';
+                                  selectedIdMekanik = selectedMechanic.idMekanik.toString();
+                                  selectedKodeJasa = matchingService.kodeJasa ?? '';
+                                });
+                              },
+                              items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
+                                return DropdownMenuItem<String>(
+                                  value: mechanic.nama,
+                                  child: Text(mechanic.nama ?? ''),
+                                );
+                              }).toList(),
+                            );
+                          }
                         },
-                        items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
-                          return DropdownMenuItem<String>(
-                            value: mechanic.nama,
-                            child: Text(mechanic.nama ?? ''),
-                          );
-                        }).toList(),
-                      );
-                    }
-                  },
-                ),
-              if (showDetails)
-                ElevatedButton(
-                  onPressed: () async {
-                    print('$kodeBooking, $selectedKodeJasa, $selectedIdMekanik');
-                    final promekResponse = await API.PromekProsesID(
-                      kodebooking: kodeBooking ?? '',
-                      kodejasa: selectedKodeJasa ?? '',
-                      idmekanik: selectedIdMekanik ?? '',
-                    );
-                    if (promekResponse != null && promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
-                      final firstData = promekResponse.dataPromek!.first;
-                      if (firstData.startPromek != null) {
-                        startPromekMap[selectedItem] = firstData.startPromek!;
-                      } else {
-                        startPromekMap[selectedItem] = 'Waktu start tidak tersedia';
-                      }
-                    } else {
-                      startPromekMap[selectedItem] = 'Tidak ada data';
-                    }
-                    if (promekResponse != null && promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
-                      final firstData = promekResponse.dataPromek!.first;
-                      if (firstData.stopPromek != null) {
-                        stopPromekMap[selectedItem] = firstData.stopPromek!;
-                      } else {
-                        stopPromekMap[selectedItem] = 'Waktu start tidak tersedia';
-                      }
-                    } else {
-                      stopPromekMap[selectedItem] = 'Tidak ada data';
-                    }
-                    setState(() {
-                      selectedItems.add(selectedItem);
-                      isStartedMap[selectedItem] = false; // Initialize start status as false
-                      additionalInputControllers[selectedItem] = TextEditingController(); // Initialize a new TextEditingController for additional inputs
-                    });
-                  },
-                  child: const Text('Tambah'),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child:
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: MyColors.appPrimaryColor,
+                              padding: EdgeInsets.symmetric(horizontal: 50,),
+                              textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                          onPressed: () async {
+                            print('$kodeBooking, $selectedKodeJasa, $selectedIdMekanik');
+                            final promekResponse = await API.PromekProsesID(
+                              kodebooking: kodeBooking ?? '',
+                              kodejasa: selectedKodeJasa ?? '',
+                              idmekanik: selectedIdMekanik ?? '',
+                            );
+                            if (promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                              final firstData = promekResponse.dataPromek!.first;
+                              if (firstData.startPromek != null) {
+                                startPromekMap[selectedItem] = firstData.startPromek!;
+                              } else {
+                                startPromekMap[selectedItem] = 'Waktu start tidak tersedia';
+                              }
+                            } else {
+                              startPromekMap[selectedItem] = 'Tidak ada data';
+                            }
+                            if (promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                              final firstData = promekResponse.dataPromek!.first;
+                              if (firstData.stopPromek != null) {
+                                stopPromekMap[selectedItem] = firstData.stopPromek!;
+                              } else {
+                                stopPromekMap[selectedItem] = 'Waktu start tidak tersedia';
+                              }
+                            } else {
+                              stopPromekMap[selectedItem] = 'Tidak ada data';
+                            }
+                            if (promekResponse.dataPromek != null && promekResponse.dataPromek!.isNotEmpty) {
+                              final firstData = promekResponse.dataPromek!.first;
+                              if (firstData.promekId != null) {
+                                promekId[selectedItem] = firstData.promekId.toString();
+                              } else {
+                                promekId[selectedItem] = 'Waktu start tidak tersedia';
+                              }
+                            } else {
+                              promekId[selectedItem] = 'Tidak ada data';
+                            }
+                            setState(() {
+                              selectedItems.add(selectedItem);
+                              isStartedMap[selectedItem] = false;
+                              additionalInputControllers[selectedItem] = TextEditingController();
+                            });
+                          },
+                          child: const Text('Tambah', style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               if (showDetails)
                 const SizedBox(height: 20),
               if (showDetails)
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: selectedItems.length,
-                    itemBuilder: (context, index) {
-                      return buildTextFieldAndStartButton(selectedItems[index]);
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      print("Expanded constraints: $constraints");  // Check the constraints
+                      return ListView.builder(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: selectedItems.length,
+                        itemBuilder: (context, index) {
+                          return buildTextFieldAndStartButton(selectedItems[index]);
+                        },
+                      );
                     },
                   ),
                 ),
+
             ],
           ),
         );
@@ -465,131 +560,189 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     );
   }
   Widget buildTextFieldAndStartButton(String item) {
+    // Ensure controllers are initialized if not already done
+    if (!startControllers.containsKey(item)) {
+      startControllers[item] = TextEditingController();
+    }
+    if (!stopControllers.containsKey(item)) {
+      stopControllers[item] = TextEditingController();
+    }
+    // Initialize history logs if they don't exist
+    startHistoryLogs[item] ??= [];
+    stopHistoryLogs[item] ??= [];
+    promekId[item] ??= [].toString();
     String startPromekText = startPromekMap[item] ?? 'Tidak ada data';
-    TextEditingController controllerstart = TextEditingController(text: '$startPromekText');
     String stopPromekText = stopPromekMap[item] ?? 'Tidak ada data';
-    TextEditingController controllerstop = TextEditingController(text: '$stopPromekText');
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
-                    spreadRadius: 5,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.15),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              TextField(
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'Mekanik yang Dipilih',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  border: OutlineInputBorder(),
+                ),
+                controller: TextEditingController(text: item),
+              ),
+              SizedBox(height: 10,),
+              if (!(isStartedMap[item] ?? true))
+                TextField(
+                  controller: startControllers[item],
+                  decoration: const InputDecoration(
+                    labelText: 'Deskripsi',
+                    border: OutlineInputBorder(),
                   ),
-                ],
-              ),
-              child:Column(children: [
-          TextField(
-            readOnly: true,
-            decoration: const InputDecoration(
-              labelText: 'Mekanik yang Dipilih',
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
-              border: const OutlineInputBorder(),
-            ),
-            controller: TextEditingController(text: item),
-          ),
-          TextField(
-            readOnly: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(17)
-              ),
-            ),
-            controller: controllerstart,
-          ),
-          TextField(
-            readOnly: true,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(17)
-              ),
-            ),
-            controller: controllerstop,
-          ),
+                ),
+              if (isStartedMap[item] ?? false)
+                TextField(
+                  controller: stopControllers[item],
+                  decoration: const InputDecoration(
+                    labelText: 'Deskripsi',
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ElevatedButton(
+                onPressed: () async {
+                  TextEditingController? currentController = isStartedMap[item] ?? true ? stopControllers[item] : startControllers[item];
+                  print('response : $startControllers');
+                  print('response : $promekId');
+                  if (currentController!.text.isNotEmpty) {
+                    try {
+                      await API.updateketeranganID(
+                        promekid: promekId.toString(),
+                        keteranganpromek: startControllers[item]?.text ?? '',
+                      );
 
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () async {
-              print('kodeBooking : $kodeBooking, selectedKodeJasa : $selectedKodeJasa, selectedIdMekanik : $selectedIdMekanik');
-              if (isStartedMap[item] ?? false) {
-                if (additionalInputControllers[item]?.text.isNotEmpty ?? false) {
-                  setState(() {
-                    isStartedMap[item] = false;
-                  });
-                  var response = await API.promekID(
-                    role: 'stop',
-                    kodebooking: kodeBooking ?? '',
-                    kodejasa: selectedKodeJasa ?? '',
-                    idmekanik: selectedIdMekanik ?? '',
-                  );
-                  var response3 = await API.updateketeranganID(
-                    promekid: '',
-                    keteranganpromek: additionalInputControllers[item]?.text ?? '',
-                  );
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text("Error"),
-                      content: const Text("Please enter additional details before stopping."),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text("OK"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              } else {
-                setState(() {
-                  isStartedMap[item] = true;
-                });
-                var response = await API.promekID(
-                  role: 'start',
-                  kodebooking: kodeBooking ?? '',
-                  kodejasa: selectedKodeJasa ?? '',
-                  idmekanik: selectedIdMekanik ?? '',
-                );
-              }
-            },
-            child: Text(isStartedMap[item] ?? false ? 'Stop' : 'Start'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isStartedMap[item] ?? false ? Colors.red : Colors.green,
-            ),
-          ),
-
-          if (isStartedMap[item] ?? false)
-            const SizedBox(height: 10),
-          if (isStartedMap[item] ?? false)
-            TextField(
-              controller: additionalInputControllers[item],
-              decoration: const InputDecoration(
-                labelText: 'Enter additional details',
-                border: OutlineInputBorder(),
+                      // await API.promekID(
+                      //   role: isStartedMap[item] ?? true ? 'stop' : 'start',
+                      //   kodebooking: kodeBooking ?? '',
+                      //   kodejasa: selectedKodeJasa ?? '',
+                      //   idmekanik: selectedIdMekanik ?? '',
+                      // );
+                      Navigator.pop(Get.context!);
+                      setState(() {
+                        isStartedMap[item] = !(isStartedMap[item] ?? true);
+                        if (isStartedMap[item] ?? true) {
+                          stopHistoryLogs[item]!.add(currentController.text);  // Log the stop action
+                        } else {
+                          startHistoryLogs[item]!.add(currentController.text);  // Log the start action
+                        }
+                        currentController.clear();
+                      });
+                    } catch (e) {
+                      print("Failed to execute API call: $e");  // Handle any errors
+                    }
+                  } else {
+                    // Error dialog if text field is empty
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Error"),
+                        content: Text("Please enter details before " + (isStartedMap[item] ?? true ? "stopping." : "starting.") + "."),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("OK"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isStartedMap[item] ?? true ? Colors.red : Colors.green,
+                ),
+                child: Text(isStartedMap[item] ?? true ? 'Stop' : 'Start'),
               ),
-            ),
-              ],),),
-        ],
-      ),
+              // Display history for both start and stop
+              if (startHistoryLogs[item]!.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Start History:", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('$startPromekText'),
+                      const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
+                      ...startHistoryLogs[item]!.map((log) => Text(log)).toList(),
+
+                    ],
+                  ),),
+              if (stopHistoryLogs[item]!.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.15),
+                        spreadRadius: 5,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child:
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      const Text("Stop History:", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('$stopPromekText'),
+                      const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
+                      ...stopHistoryLogs[item]!.map((log) => Text(log)).toList(),
+
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
+
+
+
 }
 
 class DropdownItem {

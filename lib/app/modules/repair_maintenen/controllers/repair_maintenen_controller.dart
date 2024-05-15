@@ -3,16 +3,7 @@ import 'package:get/get.dart';
 
 class RepairMaintenenController extends GetxController {
   //TODO: Implement ApproveController
-  late String id;
-  late String tglBooking;
-  late String jamBooking;
-  late String nama;
-  late String namaJenissvc;
-  late String noPolisi;
-  late String namaMerk;
-  late String namaTipe;
-  late String status;
-  final TextEditingController odometer = TextEditingController(text: '');
+  final TextEditingController odometer = TextEditingController();
   final TextEditingController catatan = TextEditingController();
   final TextEditingController mekanik = TextEditingController();
   final TextEditingController jam = TextEditingController();
@@ -23,71 +14,54 @@ class RepairMaintenenController extends GetxController {
   final TextEditingController mesin = TextEditingController();
   final TextEditingController pic = TextEditingController();
   final TextEditingController hppic = TextEditingController();
+  final TextEditingController nomesin = TextEditingController();
 
-  void setData({
-    required String id,
-    required String tglBooking,
-    required String jamBooking,
-    required String nama,
-    required String namaJenissvc,
-    required String noPolisi,
-    required String namaMerk,
-    required String namaTipe,
-    required String status,
-    required String catatan,
-  }) {
-    this.id = id;
-    this.tglBooking = tglBooking;
-    this.jamBooking = jamBooking;
-    this.nama = nama;
-    this.namaJenissvc = namaJenissvc;
-    this.noPolisi = noPolisi;
-    this.namaMerk = namaMerk;
-    this.namaTipe = namaTipe;
-    this.status = status;
-    this.status = catatan;
+  void printAllData() {
+    print('Keluhan: ${keluhan.text}');
+    print('Odometer: ${odometer.text}');
+    print('PIC: ${pic.text}');
+    print('HP PIC: ${hppic.text}');
+    print('Tanggal: ${tanggal.text}');
+    print('Jam: ${jam.text}');
+    print('Perintah Kerja: ${perintah.text}');
+    // Continue with other fields if necessary
   }
+  var keluhanText = ''.obs;
+
+  var selectedDate = DateTime.now().obs;
+  Rx<TimeOfDay> selectedTime = TimeOfDay.now().obs;
+
+  void updateDate(DateTime newDate) {
+    selectedDate.value = newDate;
+  }
+  void updateTime(TimeOfDay newTime) {
+    selectedTime.value = newTime;
+  }
+
   final count = 0.obs;
-  late TextEditingController idController;
-  late TextEditingController tglBookingController;
-  late TextEditingController jamBookingController;
-  late TextEditingController namaController;
-  late TextEditingController namaJenissvcController;
-  late TextEditingController noPolisiController;
-  late TextEditingController namaMerkController;
-  late TextEditingController namaTipeController;
-  late TextEditingController statusController;
-  late TextEditingController tanggalController;
-  late TextEditingController jamController;
+
 
   @override
   void onInit() {
     super.onInit();
-    idController = TextEditingController();
-    tglBookingController = TextEditingController();
-    jamBookingController = TextEditingController();
-    namaController = TextEditingController();
-    namaJenissvcController = TextEditingController();
-    noPolisiController = TextEditingController();
-    namaMerkController = TextEditingController();
-    namaTipeController = TextEditingController();
-    statusController = TextEditingController();
-    tanggalController = TextEditingController();
-    jamController = TextEditingController();
   }
 
   @override
   void onClose() {
-    idController.dispose();
-    tglBookingController.dispose();
-    jamBookingController.dispose();
-    namaController.dispose();
-    namaJenissvcController.dispose();
-    noPolisiController.dispose();
-    namaMerkController.dispose();
-    namaTipeController.dispose();
-    statusController.dispose();
     catatan.dispose();
+    keluhan.dispose();
+    odometer.dispose();
+    mekanik.dispose();
+    jam.dispose();
+    tanggal.dispose();
+    keluhan.dispose();
+    perintah.dispose();
+    rangka.dispose();
+    mesin.dispose();
+    pic.dispose();
+    hppic.dispose();
+    nomesin.dispose();
+
     super.onClose();
   }
 

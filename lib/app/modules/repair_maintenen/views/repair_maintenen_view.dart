@@ -25,6 +25,7 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
     final String odometer = arguments?['odometer'] ?? '';
     final String pic = arguments?['pic'] ?? '';
     final String hpPic = arguments?['hp_pic'] ?? '';
+    final String kategorikendaraan = arguments?['kategori_kendaraan'] ?? '';
     final String kodeMembership = arguments?['kode_membership'] ?? '';
     final String kodePaketmember = arguments?['kode_paketmember'] ?? '';
     final String tipeSvc = arguments?['nama_jenissvc'] ?? '';
@@ -100,24 +101,26 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
                           );
                           // Panggil API untuk menyetujui booking
                           await API.estimasiId(
+                            idkaryawan: '',
                             kodeBooking: kodeBooking,
-                            tglBooking: tglBooking,
-                            jamBooking: jamBooking,
-                            odometer: odometer,
-                            pic: pic,
-                            hpPic: hpPic,
+                            kodepelanggan: kodepelanggan,
+                            kodekendaraan: kodekendaraan,
+                            kategorikendaraan: kategorikendaraan,
+                            tglBooking: controller.tanggal.text,
+                            jamBooking: controller.jam.text,
+                            odometer: controller.odometer.text,
+                            pic: controller.pic.text,
+                            hpPic: controller.hppic.text,
                             kodeMembership: kodeMembership,
                             kodePaketmember: kodePaketmember,
                             tipeSvc: tipeSvc,
+                            tipePelanggan: tipePelanggan,
                             referensi: referensi,
                             referensiTmn: referensiTmn,
                             paketSvc: paketSvc,
-                            keluhan: keluhan,
-                            perintahKerja: perintahKerja,
+                            keluhan: controller.keluhan.text,
+                            perintahKerja: controller.perintah.text,
                             ppn: 10,
-                            tipePelanggan: tipePelanggan,
-                            kodePelanggan: kodepelanggan,
-                            kodeKendaraan: kodekendaraan,
                           );
                         } catch (e) {
                           Navigator.pop(Get.context!);

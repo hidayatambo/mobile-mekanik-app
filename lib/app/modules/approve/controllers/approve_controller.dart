@@ -15,6 +15,17 @@ class ApproveController extends GetxController {
   final TextEditingController pic = TextEditingController();
   final TextEditingController hppic = TextEditingController();
   final TextEditingController nomesin = TextEditingController();
+
+  void printAllData() {
+    print('Keluhan: ${keluhan.text}');
+    print('Odometer: ${odometer.text}');
+    print('PIC: ${pic.text}');
+    print('HP PIC: ${hppic.text}');
+    print('Tanggal: ${tanggal.text}');
+    print('Jam: ${jam.text}');
+    print('Perintah Kerja: ${perintah.text}');
+    // Continue with other fields if necessary
+  }
   var keluhanText = ''.obs;
 
   var selectedDate = DateTime.now().obs;
@@ -32,9 +43,6 @@ class ApproveController extends GetxController {
 
   @override
   void onInit() {
-    keluhan.addListener(() {
-      keluhanText.value = keluhan.text;
-    });
   super.onInit();
   }
 
@@ -42,6 +50,18 @@ class ApproveController extends GetxController {
   void onClose() {
   catatan.dispose();
   keluhan.dispose();
+  odometer.dispose();
+  mekanik.dispose();
+  jam.dispose();
+  tanggal.dispose();
+  keluhan.dispose();
+  perintah.dispose();
+  rangka.dispose();
+  mesin.dispose();
+  pic.dispose();
+  hppic.dispose();
+  nomesin.dispose();
+
   super.onClose();
   }
 

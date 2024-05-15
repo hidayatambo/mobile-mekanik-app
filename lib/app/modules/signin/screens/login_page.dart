@@ -197,16 +197,25 @@ class _LoginPageState extends State<LoginPage> {
                                             'Terjadi kesalahan saat login';
                                         Object errorDetail = aksesPX.data ?? '';
                                         Get.snackbar('Error',
-                                            '$errorMessage: $errorDetail');
+                                            '$errorMessage: $errorDetail',
+                                            backgroundColor: Colors.redAccent,
+                                            colorText: Colors.white
+                                        );
                                       }
                                     } catch (e) {
                                       print('Error during login: $e');
                                       Get.snackbar('Gagal Login',
-                                          'Terjadi kesalahan saat login');
+                                          'Terjadi kesalahan saat login',
+                                          backgroundColor: Colors.redAccent,
+                                          colorText: Colors.white
+                                      );
                                     }
                                   } else {
                                     Get.snackbar('Gagal Login',
-                                        'Username dan Password harus diisi');
+                                        'Username dan Password harus diisi',
+                                        backgroundColor: Colors.redAccent,
+                                      colorText: Colors.white
+                                    );
                                   }
 
                                   setState(() {

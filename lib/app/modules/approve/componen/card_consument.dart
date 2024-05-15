@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-
-import '../../../componen/color.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import '../controllers/approve_controller.dart';
@@ -96,6 +94,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
     final String alamat = args['alamat'] ?? '';
     final String tahun = args['tahun'] ?? '';
     final String warna = args['warna'] ?? '';
+    final String odometer = args['odometer'] ?? '';
     final String keluhan = args['keluhan'] ?? '';
     final String kodebooking = args['kode_booking'] ?? '';
     final String nomesin = args['no_mesin'] ?? '';
@@ -173,7 +172,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
                   child: TextField(
                     enabled: false,
                     decoration: InputDecoration(
-                      hintText: nama_jenissvc,
+                      label: Text(nama_jenissvc),
                       hintStyle: TextStyle(color: Colors.black),
                       border: InputBorder.none,
                     ),
@@ -474,7 +473,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           keyboardType: TextInputType.number,
                           controller: controller.mesin,
                           decoration: InputDecoration(
-                            hintText: nomesin,
+                            label: Text(nomesin),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
@@ -505,7 +504,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           keyboardType: TextInputType.number,
                           controller: controller.odometer,
                           decoration: InputDecoration(
-                            hintText: '',
+                            label: Text(odometer??''),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),

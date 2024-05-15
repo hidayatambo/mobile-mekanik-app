@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:mekanik/app/componen/color.dart';
 import 'package:mekanik/app/data/data_endpoint/update_keterangan.dart';
 import 'package:mekanik/app/data/publik.dart';
 import '../routes/app_pages.dart';
@@ -82,10 +84,13 @@ class API {
           final obj = Token.fromJson(responseData);
           if (obj.token != null) {
             LocalStorages.setToken(obj.token!);
-            Get.snackbar('Selamat Datang', 'Menkanik Bengkelly');
+            Get.snackbar('Selamat Datang', 'Menkanik Bengkelly',
+                backgroundColor: MyColors.appPrimaryColor,
+                colorText: Colors.white
+            );
             Get.offAllNamed(Routes.HOME);
           } else {
-            Get.snackbar('Error', 'Kode Perusahaan tidak ditemukan',
+            Get.snackbar('Error', 'tidak ditemukan',
                 backgroundColor: const Color(0xffe5f3e7));
           }
           print('Login successful. Response data: ${obj.toJson()}');
@@ -357,9 +362,11 @@ class API {
 
 //Beda
   static Future<Estimasi> estimasiId({
+    required String idkaryawan,
     required String kodeBooking,
-    required String kodePelanggan,
-    required String kodeKendaraan,
+    required String kodepelanggan,
+    required String kodekendaraan,
+    required String kategorikendaraan,
     required String tglBooking,
     required String jamBooking,
     required String odometer,
@@ -377,9 +384,11 @@ class API {
     required int ppn,
   }) async {
     final data = {
+      "id_karyawan": idkaryawan,
       "kode_booking": kodeBooking,
-      "kode_pelanggan": kodePelanggan,
-      "kode_kendaraan": kodeKendaraan,
+      "kode_pelanggan": kodepelanggan,
+      "kode_kendaraan": kodekendaraan,
+      "kategori_kendaraan": kategorikendaraan,
       "tgl_booking": tglBooking,
       "jam_booking": jamBooking,
       "odometer": odometer,

@@ -460,7 +460,6 @@ class _BokingView2State extends State<BokingView2> {
                                         'no_polisi': e.noPolisi ?? '',
                                         'tahun': e.tahun ?? '',
                                         'warna': e.warna ?? '',
-                                        'warna': e.keluhan ?? '',
                                         'kode_kendaraan': e.kodeKendaraan ?? '',
                                         'kode_pelanggan': e.kodePelanggan ?? '',
                                         'ho': e.nama ?? '',

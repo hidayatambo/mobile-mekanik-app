@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/endpoint.dart';
 import '../componen/card_consument.dart';
 import '../controllers/approve_controller.dart';
@@ -23,9 +19,6 @@ class ApproveView extends GetView<ApproveController> {
     final String kodeBooking = arguments?['kode_booking'] ?? '';
     final String tglBooking = arguments?['tgl_booking'] ?? '';
     final String jamBooking = arguments?['jam_booking'] ?? '';
-    final String odometer = arguments?['odometer'] ?? '';
-    final String pic = arguments?['pic'] ?? '';
-    final String hpPic = arguments?['hp_pic'] ?? '';
     final String kodeMembership = arguments?['kode_membership'] ?? '';
     final String kodePaketmember = arguments?['kode_paketmember'] ?? '';
     final String tipeSvc = arguments?['nama_jenissvc'] ?? '';
@@ -33,8 +26,6 @@ class ApproveView extends GetView<ApproveController> {
     final String referensi = arguments?['referensi'] ?? '';
     final String referensiTmn = arguments?['referensi_teman'] ?? '';
     final String paketSvc = arguments?['paket_svc'] ?? '';
-    final String keluhan = arguments?['keluhan'] ?? '';
-    final String perintahKerja = arguments?['perintah_kerja'] ?? '';
     final String kategorikendaraan = arguments?['kategori_kendaraan'] ?? '';
     final String kodepelanggan = arguments?['kode_pelanggan'] ?? '';
     final String kodekendaraan = arguments?['kode_kendaraan'] ?? '';
@@ -113,6 +104,7 @@ class ApproveView extends GetView<ApproveController> {
                               print("Please fill all required fields.");
                               return;  // Stop the execution if validation fails
                             }
+                            controller.printAllData();
                             await API.approveId(
                               idkaryawan: '',
                               kodeBooking: kodeBooking,

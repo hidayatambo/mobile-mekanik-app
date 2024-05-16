@@ -37,8 +37,8 @@ class DataBooking {
   String? bookingStatus;
   String? jamBooking;
   String? tglBooking;
-  Null? pic;
-  Null? hpPic;
+  String? pic;
+  String? hpPic;
   String? status;
   String? namaService;
   String? namaCabang;
@@ -50,8 +50,8 @@ class DataBooking {
   String? warna;
   String? keluhan;
   String? transmisi;
-  Null? noRangka;
-  Null? noMesin;
+  String? noRangka;
+  String? noMesin;
   String? namaTipe;
   String? namaMerk;
   String? nama;

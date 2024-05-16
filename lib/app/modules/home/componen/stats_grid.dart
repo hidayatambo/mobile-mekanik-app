@@ -69,15 +69,15 @@ class StatsGrid extends StatelessWidget {
             return Text('Error: ${snapshot.error}');
           } else {
             var data = snapshot.data;
-            var count = '-';
+            var count = '0';
             var label = dataLabel;
 
             if (data is MasukBooking) {
-              count = data.countBookingMasuk?.toString() ?? '-';
+              count = data.countBookingMasuk?.toString() ?? '0';
             } else if (data is ServiceSelesai) {
-              count = data.countBookingMasuk?.toString() ?? '-';
+              count = data.countBookingMasuk?.toString() ?? '0';
             } else if (data is ServiceDikerjakan) {
-              count = data.countDikerjakan?.toString() ?? '-';
+              count = data.countDikerjakan?.toString() ?? '0';
             }
 
             return InkWell(

@@ -51,20 +51,20 @@ class DataDikerjakan {
   String? jamBooking;
   String? tglBooking;
   String? status;
-  Null? odometer;
-  Null? pic;
-  Null? hpPic;
+  String? odometer;
+  String? pic;
+  String? hpPic;
   String? referensi;
   String? referensiTeman;
-  Null? keluhan;
-  Null? perintahKerja;
+  String? keluhan;
+  String? perintahKerja;
   String? createdBy;
   int? deleted;
   String? createdAt;
   String? updatedAt;
-  Null? berita;
-  Null? kode;
-  Null? typeOrder;
+  String? berita;
+  String? kode;
+  String? typeOrder;
 
   DataDikerjakan(
       {this.id,

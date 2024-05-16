@@ -445,6 +445,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
+                          enabled: false,
                           keyboardType: TextInputType.number,
                           controller: controller.rangka,
                           decoration: InputDecoration(
@@ -471,6 +472,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
+                          enabled: false,
                           keyboardType: TextInputType.number,
                           controller: controller.mesin,
                           decoration: InputDecoration(

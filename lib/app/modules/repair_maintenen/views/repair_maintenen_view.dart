@@ -60,15 +60,6 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  if (kDebugMode) {
-                    print('kode_booking: $kodeBooking');
-                  }
-                  if (kDebugMode) {
-                    print('kode_pelanggan: $kodekendaraan');
-                  }
-                  if (kDebugMode) {
-                    print('kode_kendaraan: $tipeSvc');
-                  }
                   if (tipeSvc == 'Repair & Maintenance') {
                     QuickAlert.show(
                       context: context,
@@ -82,15 +73,6 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
                       onConfirmBtnTap: () async {
                         Navigator.pop(Get.context!);
                         try {
-                          if (kDebugMode) {
-                            print('kode_booking: $kodeBooking');
-                          }
-                          if (kDebugMode) {
-                            print('kode_pelanggan: $kodepelanggan');
-                          }
-                          if (kDebugMode) {
-                            print('kode_kendaraan: $kodekendaraan');
-                          }
                           // Tampilkan indikator loading
                           QuickAlert.show(
                             barrierDismissible: false,

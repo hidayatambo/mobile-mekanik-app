@@ -6,16 +6,16 @@ import 'package:mekanik/app/componen/color.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/endpoint.dart';
+import '../../repair_maintenen/componen/card_consument.dart';
 import '../componen/card_consument.dart';
 import '../controllers/approve_controller.dart';
 
 class ApproveView extends GetView<ApproveController> {
   ApproveView({super.key});
-  String? selectedMechanic = '';
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic>? arguments =
-        Get.arguments as Map<String, dynamic>?;
+    Get.arguments as Map<String, dynamic>?;
     final String kodeBooking = arguments?['kode_booking'] ?? '';
     final String tglBooking = arguments?['tgl_booking'] ?? '';
     final String jamBooking = arguments?['jam_booking'] ?? '';
@@ -41,7 +41,7 @@ class ApproveView extends GetView<ApproveController> {
             Text(
               'Penting !!',
               style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             Text(
               'Periksa lagi data Pelanggan sebelum Approve',
@@ -55,161 +55,151 @@ class ApproveView extends GetView<ApproveController> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () async {
-                    if (kDebugMode) {
-                      print('kode_booking: $kodeBooking');
-                    }
-                    if (kDebugMode) {
-                      print('tgl_booking: $tglBooking');
-                    }
-                    if (kDebugMode) {
-                      print('nama_jenissvc: $tipeSvc');
-                    }
-                    if (tipeSvc == 'Repair & Maintenance') {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        barrierDismissible: true,
-                        text: 'Periksa kembali data Pelanganss',
-                        confirmBtnText: 'Konfirmasi',
-                        onConfirmBtnTap: () async {
-                          Navigator.pop(Get.context!);
-                          try {
-                            if (kDebugMode) {
-                              print('kode_booking: $kodeBooking');
-                            }
-                            if (kDebugMode) {
-                              print('tgl_booking: $tglBooking');
-                            }
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.warning,
+                      barrierDismissible: true,
+                      text: 'Periksa kembali data Pelanganss',
+                      confirmBtnText: 'Konfirmasi',
+                      onConfirmBtnTap: () async {
+                        if (tipeSvc == 'Repair & Maintenance') {
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.warning,
+                            headerBackgroundColor: Colors.yellow,
+                            text: 'Pastikan kembali data Booking sudah sesuai, untuk lanjut ke Estimasi',
+                            confirmBtnText: 'Konfirmasi',
+                            cancelBtnText: 'Kembali',
+                            confirmBtnColor: Colors.blue,
+                            onConfirmBtnTap: () async {
+                              Navigator.pop(Get.context!);
+                              // Tampilkan indikator loading
+                              QuickAlert.show(
+                                barrierDismissible: false,
+                                context: Get.context!,
+                                type: QuickAlertType.loading,
+                                headerBackgroundColor: Colors.yellow,
+                                text: 'Buat Estimasi......',
+                              );
+                              try {
+                                await API.approveId(
+                                  idkaryawan: '',
+                                  kodeBooking: kodeBooking,
+                                  kodepelanggan: kodepelanggan,
+                                  kodekendaraan: kodekendaraan,
+                                  kategorikendaraan: kategorikendaraan,
+                                  tglBooking: controller.tanggal.text,
+                                  jamBooking: controller.jam.text,
+                                  odometer: controller.odometer.text,
+                                  pic: controller.pic.text,
+                                  hpPic: controller.hppic.text,
+                                  kodeMembership: kodeMembership,
+                                  kodePaketmember: kodePaketmember,
+                                  tipeSvc: tipeSvc,
+                                  tipePelanggan: tipePelanggan,
+                                  referensi: referensi,
+                                  referensiTmn: referensiTmn,
+                                  paketSvc: paketSvc,
+                                  keluhan: controller.keluhan.text,
+                                  perintahKerja: controller.perintah.text,
+                                  ppn: 10,
+                                );
+                                // Handle successful API call
+                                Navigator.pop(Get.context!);  // Hide loading indicator
+                                QuickAlert.show(
+                                  context: Get.context!,
+                                  type: QuickAlertType.success,
+                                  headerBackgroundColor: Colors.yellow,
+                                  text: 'Estimasi telah dibuat',
+                                  confirmBtnText: 'Kembali',
+                                  confirmBtnColor: Colors.green,
+                                  onConfirmBtnTap: () => Navigator.pop(Get.context!),
+                                );
+                                Navigator.pop(Get.context!);
+                              } catch (e) {
+                                QuickAlert.show(
+                                  context: Get.context!,
+                                  type: QuickAlertType.error,
+                                  headerBackgroundColor: Colors.red,
+                                  text: 'Gagal membuat estimasi: $e',
+                                  confirmBtnText: 'Ok',
+                                  confirmBtnColor: Colors.red,
+                                );
+                              }
+                            },
+                          );
+                        } else if (tipeSvc == 'General Check UP/P2H') {
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.warning,
+                            headerBackgroundColor: Colors.yellow,
+                            text: 'Pastikan kembali data Booking sudah sesuai, untuk lanjut ke General Checkup',
+                            confirmBtnText: 'Konfirmasi',
+                            cancelBtnText: 'Kembali',
+                            confirmBtnColor: Colors.blue,
+                            onConfirmBtnTap: () async {
+                              Navigator.pop(Get.context!);
+                              // Tampilkan indikator loading
+                              QuickAlert.show(
+                                barrierDismissible: false,
+                                context: Get.context!,
+                                type: QuickAlertType.loading,
+                                headerBackgroundColor: Colors.yellow,
+                                text: 'Mempersiapkan General Checkup......',
+                              );
+                              try {
+                                await API.approveId(
+                                  idkaryawan: '',
+                                  kodeBooking: kodeBooking,
+                                  kodepelanggan: kodepelanggan,
+                                  kodekendaraan: kodekendaraan,
+                                  kategorikendaraan: kategorikendaraan,
+                                  tglBooking: controller.tanggal.text,
+                                  jamBooking: controller.jam.text,
+                                  odometer: controller.odometer.text,
+                                  pic: controller.pic.text,
+                                  hpPic: controller.hppic.text,
+                                  kodeMembership: kodeMembership,
+                                  kodePaketmember: kodePaketmember,
+                                  tipeSvc: tipeSvc,
+                                  tipePelanggan: tipePelanggan,
+                                  referensi: referensi,
+                                  referensiTmn: referensiTmn,
+                                  paketSvc: paketSvc,
+                                  keluhan: controller.keluhan.text,
+                                  perintahKerja: controller.perintah.text,
+                                  ppn: 10,
+                                );
+                                // Handle successful API call
+                                Navigator.pop(Get.context!);  // Hide loading indicator
+                                QuickAlert.show(
+                                  context: Get.context!,
+                                  type: QuickAlertType.success,
+                                  headerBackgroundColor: Colors.yellow,
+                                  text: 'Persiapan General Checkup selesai',
+                                  confirmBtnText: 'Kembali',
+                                  confirmBtnColor: Colors.green,
+                                  onConfirmBtnTap: () => Navigator.pop(Get.context!),
+                                );
+                              } catch (e) {
+                                Navigator.pop(Get.context!);  // Hide loading indicator
+                                QuickAlert.show(
+                                  context: Get.context!,
+                                  type: QuickAlertType.error,
+                                  headerBackgroundColor: Colors.red,
+                                  text: 'Gagal mempersiapkan General Checkup: $e',
+                                  confirmBtnText: 'Ok',
+                                  confirmBtnColor: Colors.red,
+                                );
+                              }
+                            },
+                          );
+                        } else {
+                          // Handle other service types or show a default message if needed
+                        }
 
-                            // Tampilkan indikator loading
-                            QuickAlert.show(
-                              barrierDismissible: false,
-                              context: Get.context!,
-                              type: QuickAlertType.loading,
-                              headerBackgroundColor: Colors.yellow,
-                              text: 'Approving...',
-                            );
-                            // Panggil API untuk menyetujui booking
-                            if (kDebugMode) {
-                              print('jam_booking: $jamBooking');
-                            }
-                            if (kDebugMode) {
-                              print('kode_booking: $kodeBooking');
-                            }
-                            if (kDebugMode) {
-                              print('tgl_booking: $tglBooking');
-                            }
-                            if (kodeBooking.isEmpty || kodepelanggan.isEmpty || kodekendaraan.isEmpty || tglBooking.isEmpty || jamBooking.isEmpty) {
-                              // Show an error message to the user or handle the error appropriately
-                              print("Please fill all required fields.");
-                              return;  // Stop the execution if validation fails
-                            }
-                            controller.printAllData();
-                            await API.approveId(
-                              idkaryawan: '',
-                              kodeBooking: kodeBooking,
-                              kodepelanggan: kodepelanggan,
-                              kodekendaraan: kodekendaraan,
-                              kategorikendaraan: kategorikendaraan,
-                              tglBooking: controller.tanggal.text,
-                              jamBooking: controller.jam.text,
-                              odometer: controller.odometer.text,
-                              pic: controller.pic.text,
-                              hpPic: controller.hppic.text,
-                              kodeMembership: kodeMembership,
-                              kodePaketmember: kodePaketmember,
-                              tipeSvc: tipeSvc,
-                              tipePelanggan: tipePelanggan,
-                              referensi: referensi,
-                              referensiTmn: referensiTmn,
-                              paketSvc: paketSvc,
-                              keluhan: controller.keluhan.text,
-                              perintahKerja: controller.perintah.text,
-                              ppn: 10,
-                            );
-                          } catch (e) {
-                            Navigator.pop(Get.context!);
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                            QuickAlert.show(
-                              barrierDismissible: false,
-                              context: Get.context!,
-                              type: QuickAlertType.success,
-                              headerBackgroundColor: Colors.yellow,
-                              text: 'Booking has been approved',
-                              confirmBtnText: 'Kembali',
-                              cancelBtnText: 'Kembali',
-                              confirmBtnColor: Colors.green,
-                            );
-                          }
-                        },
-                      );
-                    } else if (tipeSvc == 'General Check UP/P2H') {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        barrierDismissible: true,
-                        confirmBtnText: 'Konfirmasi',
-                        text:
-                            'Pilih terlebih dahulu Mekanik yang ingin melakukan General Checkup',
-                        onConfirmBtnTap: () async {
-                          Navigator.pop(Get.context!);
-                          try {
-                            if (kDebugMode) {
-                              print('kode_booking: $kodeBooking');
-                            }
-                            if (kDebugMode) {
-                              print('tgl_booking: $tglBooking');
-                            }
-
-                            // Tampilkan indikator loading
-                            QuickAlert.show(
-                              barrierDismissible: false,
-                              context: Get.context!,
-                              type: QuickAlertType.loading,
-                              headerBackgroundColor: Colors.yellow,
-                              text: 'Approving...',
-                            );
-                            // Panggil API untuk menyetujui booking
-                            await API.approveId(
-                              idkaryawan: '',
-                              kodeBooking: kodeBooking,
-                              kodepelanggan: kodepelanggan,
-                              kodekendaraan: kodekendaraan,
-                              kategorikendaraan: kategorikendaraan,
-                              tglBooking: controller.tanggal.text,
-                              jamBooking: controller.jam.text,
-                              odometer: controller.odometer.text,
-                              pic: controller.pic.text,
-                              hpPic: controller.hppic.text,
-                              kodeMembership: kodeMembership,
-                              kodePaketmember: kodePaketmember,
-                              tipeSvc: tipeSvc,
-                              tipePelanggan: tipePelanggan,
-                              referensi: referensi,
-                              referensiTmn: referensiTmn,
-                              paketSvc: paketSvc,
-                              keluhan: controller.keluhan.text,
-                              perintahKerja: controller.perintah.text,
-                              ppn: 10,
-                            );
-                          } catch (e) {
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                            QuickAlert.show(
-                              barrierDismissible: false,
-                              context: Get.context!,
-                              type: QuickAlertType.success,
-                              headerBackgroundColor: Colors.yellow,
-                              text: 'Booking has been approved',
-                              confirmBtnText: 'Kembali',
-                              cancelBtnText: 'Kembali',
-                              confirmBtnColor: Colors.green,
-                            );
-                          }
-                        },
-                      );
-                    } else {}
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

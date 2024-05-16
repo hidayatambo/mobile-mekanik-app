@@ -64,21 +64,21 @@ class _CardConsuments2State extends State<CardConsuments2> {
   }
 
 
-    Future<void> _selectTime(BuildContext context) async {
-      final TimeOfDay? picked = await showTimePicker(
-        context: context,
-        initialTime: _selectedTime ?? TimeOfDay.now(),
-      );
-      if (picked != null && picked != _selectedTime) {
-        setState(() {
-          _selectedTime = picked;
-          // Format the time as HH:mm:00
-          String formattedTime = "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}:00";
-          controller.jam.text = formattedTime; // Assign formatted time to the controller
-          print('Time picked: $formattedTime'); // Debugging output to verify the picked time
-        });
-      }
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+        // Format the time as HH:mm:00
+        String formattedTime = "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}:00";
+        controller.jam.text = formattedTime; // Assign formatted time to the controller
+        print('Time picked: $formattedTime'); // Debugging output to verify the picked time
+      });
     }
+  }
 
 
   @override
@@ -208,8 +208,8 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           child:  Center(
                             child:
                             Text( _selectedDate == null
-                                  ? '$tgl_booking'
-                                  : DateFormat('yyyy-MM-dd').format(_selectedDate!),style: TextStyle(fontWeight: FontWeight.bold),
+                                ? '$tgl_booking'
+                                : DateFormat('yyyy-MM-dd').format(_selectedDate!),style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -444,6 +444,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
+                          enabled: false,
                           keyboardType: TextInputType.number,
                           controller: controller.rangka,
                           decoration: InputDecoration(
@@ -470,6 +471,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
+                          enabled: false,
                           keyboardType: TextInputType.number,
                           controller: controller.mesin,
                           decoration: InputDecoration(
@@ -716,39 +718,39 @@ class _CardConsuments2State extends State<CardConsuments2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-            Text('Keluhan'),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.only(left: 25, right: 20),
-              child: TextField(
-                controller: controller.keluhan,
-                decoration: InputDecoration(
-                  hintText: '',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.black),
+              Text('Keluhan'),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.only(left: 25, right: 20),
+                child: TextField(
+                  controller: controller.keluhan,
+                  decoration: InputDecoration(
+                    hintText: '',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
                 ),
               ),
-            ),
-            Text('Printah Kerja'),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.only(left: 25, right: 20),
-              child: TextField(
-                controller: controller.perintah,
-                decoration: InputDecoration(
-                  hintText: '',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.black),
+              Text('Printah Kerja'),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.only(left: 25, right: 20),
+                child: TextField(
+                  controller: controller.perintah,
+                  decoration: InputDecoration(
+                    hintText: '',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
                 ),
               ),
-            ),
-          ],)
+            ],)
       ),
     ]);
   }

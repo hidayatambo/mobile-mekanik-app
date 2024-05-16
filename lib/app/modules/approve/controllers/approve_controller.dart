@@ -43,26 +43,23 @@ class ApproveController extends GetxController {
 
   @override
   void onInit() {
-  super.onInit();
+    super.onInit();
   }
 
   @override
   void onClose() {
-  catatan.dispose();
-  keluhan.dispose();
-  odometer.dispose();
-  mekanik.dispose();
-  jam.dispose();
-  tanggal.dispose();
-  keluhan.dispose();
-  perintah.dispose();
-  rangka.dispose();
-  mesin.dispose();
-  pic.dispose();
-  hppic.dispose();
-  nomesin.dispose();
+    catatan.dispose();
+    keluhan.dispose();
+    mekanik.dispose();
+    jam.dispose();
+    tanggal.dispose();
+    rangka.dispose();
+    mesin.dispose();
+    pic.dispose();
+    hppic.dispose();
+    nomesin.dispose();
 
-  super.onClose();
+    super.onClose();
   }
 
   void increment() => count.value++;

@@ -50,12 +50,9 @@ class RepairMaintenenController extends GetxController {
   void onClose() {
     catatan.dispose();
     keluhan.dispose();
-    odometer.dispose();
     mekanik.dispose();
     jam.dispose();
     tanggal.dispose();
-    keluhan.dispose();
-    perintah.dispose();
     rangka.dispose();
     mesin.dispose();
     pic.dispose();

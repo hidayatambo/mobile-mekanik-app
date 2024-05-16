@@ -62,142 +62,53 @@ class ApproveView extends GetView<ApproveController> {
                       text: 'Periksa kembali data Pelanganss',
                       confirmBtnText: 'Konfirmasi',
                       onConfirmBtnTap: () async {
-                        if (tipeSvc == 'Repair & Maintenance') {
+                        try {
+                          // Tampilkan indikator loading
                           QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            type: QuickAlertType.loading,
                             headerBackgroundColor: Colors.yellow,
-                            text: 'Pastikan kembali data Booking sudah sesuai, untuk lanjut ke Estimasi',
-                            confirmBtnText: 'Konfirmasi',
-                            cancelBtnText: 'Kembali',
-                            confirmBtnColor: Colors.blue,
-                            onConfirmBtnTap: () async {
-                              Navigator.pop(Get.context!);
-                              // Tampilkan indikator loading
-                              QuickAlert.show(
-                                barrierDismissible: false,
-                                context: Get.context!,
-                                type: QuickAlertType.loading,
-                                headerBackgroundColor: Colors.yellow,
-                                text: 'Buat Estimasi......',
-                              );
-                              try {
-                                await API.approveId(
-                                  idkaryawan: '',
-                                  kodeBooking: kodeBooking,
-                                  kodepelanggan: kodepelanggan,
-                                  kodekendaraan: kodekendaraan,
-                                  kategorikendaraan: kategorikendaraan,
-                                  tglBooking: controller.tanggal.text,
-                                  jamBooking: controller.jam.text,
-                                  odometer: controller.odometer.text,
-                                  pic: controller.pic.text,
-                                  hpPic: controller.hppic.text,
-                                  kodeMembership: kodeMembership,
-                                  kodePaketmember: kodePaketmember,
-                                  tipeSvc: tipeSvc,
-                                  tipePelanggan: tipePelanggan,
-                                  referensi: referensi,
-                                  referensiTmn: referensiTmn,
-                                  paketSvc: paketSvc,
-                                  keluhan: controller.keluhan.text,
-                                  perintahKerja: controller.perintah.text,
-                                  ppn: 10,
-                                );
-                                // Handle successful API call
-                                Navigator.pop(Get.context!);  // Hide loading indicator
-                                QuickAlert.show(
-                                  context: Get.context!,
-                                  type: QuickAlertType.success,
-                                  headerBackgroundColor: Colors.yellow,
-                                  text: 'Estimasi telah dibuat',
-                                  confirmBtnText: 'Kembali',
-                                  confirmBtnColor: Colors.green,
-                                  onConfirmBtnTap: () => Navigator.pop(Get.context!),
-                                );
-                                Navigator.pop(Get.context!);
-                              } catch (e) {
-                                QuickAlert.show(
-                                  context: Get.context!,
-                                  type: QuickAlertType.error,
-                                  headerBackgroundColor: Colors.red,
-                                  text: 'Gagal membuat estimasi: $e',
-                                  confirmBtnText: 'Ok',
-                                  confirmBtnColor: Colors.red,
-                                );
-                              }
-                            },
+                            text: 'Buat Estimasi......',
                           );
-                        } else if (tipeSvc == 'General Check UP/P2H') {
+                          // Panggil API untuk menyetujui booking
+                          await API.estimasiId(
+                            idkaryawan: '',
+                            kodeBooking: kodeBooking,
+                            kodepelanggan: kodepelanggan,
+                            kodekendaraan: kodekendaraan,
+                            kategorikendaraan: kategorikendaraan,
+                            tglBooking: controller.tanggal.text,
+                            jamBooking: controller.jam.text,
+                            odometer: controller.odometer.text,
+                            pic: controller.pic.text,
+                            hpPic: controller.hppic.text,
+                            kodeMembership: kodeMembership,
+                            kodePaketmember: kodePaketmember,
+                            tipeSvc: tipeSvc,
+                            tipePelanggan: tipePelanggan,
+                            referensi: referensi,
+                            referensiTmn: referensiTmn,
+                            paketSvc: paketSvc,
+                            keluhan: controller.keluhan.text,
+                            perintahKerja: controller.perintah.text,
+                            ppn: 10,
+                          );
+                        } catch (e) {
+                          Navigator.pop(Get.context!);
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                           QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
+                            barrierDismissible: false,
+                            context: Get.context!,
+                            type: QuickAlertType.success,
                             headerBackgroundColor: Colors.yellow,
-                            text: 'Pastikan kembali data Booking sudah sesuai, untuk lanjut ke General Checkup',
-                            confirmBtnText: 'Konfirmasi',
+                            text: 'Estimasi Telah diBuat',
+                            confirmBtnText: 'Kembali',
                             cancelBtnText: 'Kembali',
-                            confirmBtnColor: Colors.blue,
-                            onConfirmBtnTap: () async {
-                              Navigator.pop(Get.context!);
-                              // Tampilkan indikator loading
-                              QuickAlert.show(
-                                barrierDismissible: false,
-                                context: Get.context!,
-                                type: QuickAlertType.loading,
-                                headerBackgroundColor: Colors.yellow,
-                                text: 'Mempersiapkan General Checkup......',
-                              );
-                              try {
-                                await API.approveId(
-                                  idkaryawan: '',
-                                  kodeBooking: kodeBooking,
-                                  kodepelanggan: kodepelanggan,
-                                  kodekendaraan: kodekendaraan,
-                                  kategorikendaraan: kategorikendaraan,
-                                  tglBooking: controller.tanggal.text,
-                                  jamBooking: controller.jam.text,
-                                  odometer: controller.odometer.text,
-                                  pic: controller.pic.text,
-                                  hpPic: controller.hppic.text,
-                                  kodeMembership: kodeMembership,
-                                  kodePaketmember: kodePaketmember,
-                                  tipeSvc: tipeSvc,
-                                  tipePelanggan: tipePelanggan,
-                                  referensi: referensi,
-                                  referensiTmn: referensiTmn,
-                                  paketSvc: paketSvc,
-                                  keluhan: controller.keluhan.text,
-                                  perintahKerja: controller.perintah.text,
-                                  ppn: 10,
-                                );
-                                // Handle successful API call
-                                Navigator.pop(Get.context!);  // Hide loading indicator
-                                QuickAlert.show(
-                                  context: Get.context!,
-                                  type: QuickAlertType.success,
-                                  headerBackgroundColor: Colors.yellow,
-                                  text: 'Persiapan General Checkup selesai',
-                                  confirmBtnText: 'Kembali',
-                                  confirmBtnColor: Colors.green,
-                                  onConfirmBtnTap: () => Navigator.pop(Get.context!),
-                                );
-                              } catch (e) {
-                                Navigator.pop(Get.context!);  // Hide loading indicator
-                                QuickAlert.show(
-                                  context: Get.context!,
-                                  type: QuickAlertType.error,
-                                  headerBackgroundColor: Colors.red,
-                                  text: 'Gagal mempersiapkan General Checkup: $e',
-                                  confirmBtnText: 'Ok',
-                                  confirmBtnColor: Colors.red,
-                                );
-                              }
-                            },
+                            confirmBtnColor: Colors.green,
                           );
-                        } else {
-                          // Handle other service types or show a default message if needed
                         }
-
                       },
                     );
                   },

@@ -52,14 +52,14 @@ class _HomeViewState extends State<HomeView> {
             label: 'Home',
             labelStyle: TextStyle(color: Colors.white),
           ),
-          CurvedNavigationBarItem(
-            child: Icon(
-              Icons.timer,
-              color: Colors.white,
-            ),
-            label: 'Promek',
-            labelStyle: TextStyle(color: Colors.white),
-          ),
+          // CurvedNavigationBarItem(
+          //   child: Icon(
+          //     Icons.timer,
+          //     color: Colors.white,
+          //   ),
+          //   label: 'Promek',
+          //   labelStyle: TextStyle(color: Colors.white),
+          // ),
           CurvedNavigationBarItem(
             child: Icon(
               Icons.calendar_month_rounded,
@@ -110,9 +110,9 @@ class _HomeViewState extends State<HomeView> {
             _page = index;
           });
         },
-        children: const <Widget>[
+        children: <Widget>[
           HomePage(),
-          PKB(),
+          // PKB(),
           BokingView(),
           HistoryView(),
           ProfileView(),

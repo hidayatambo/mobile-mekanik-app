@@ -1,9 +1,11 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/data/data_endpoint/profile.dart';
 import 'package:mekanik/app/data/endpoint.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../componen/ButtonSubmitWidget.dart';
 import '../../../componen/color.dart';
@@ -24,6 +26,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final controller = Get.put(ProfileController());
   Color theme1 = Colors.white;
   Color theme2 = const Color(0xff2E324F);
   Color black = Colors.black;
@@ -34,10 +37,31 @@ class _ProfileViewState extends State<ProfileView> {
         RefreshController(); // we have to use initState because this part of the app have to restart
     super.initState();
   }
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  Future<void> _requestNotificationPermission() async {
+    PermissionStatus status = await Permission.notification.status;
+    if (!status.isGranted) {
+      await Permission.notification.request();
+    }
+  }
+
+  Future<void> _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+
+
+    const InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
+    controller.checkForUpdate();
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -140,7 +164,7 @@ class _ProfileViewState extends State<ProfileView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Pengaturan'),
+                      Text('Notifikasi'),
                       Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: Colors.grey,
@@ -274,6 +298,8 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 ),
               ),
+              SizedBox(height: 40,),
+              Text('Aplikasi Versi ${controller.packageName}', style: TextStyle(color: MyColors.appPrimaryColor),),
             ],
           ),
         ),

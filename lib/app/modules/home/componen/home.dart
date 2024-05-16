@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/modules/home/componen/stats_grid.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../componen/color.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
+import '../controllers/home_controller.dart';
 import 'bar_chart.dart';
 
 class StatsScreen extends StatefulWidget {
@@ -16,6 +19,7 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
+  final controller = Get.put(HomeController());
   late RefreshController _refreshController; // the refresh controller
   final _scaffoldKey =
       GlobalKey<ScaffoldState>(); // this is our key to the scaffold widget
@@ -28,6 +32,7 @@ class _StatsScreenState extends State<StatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    controller.checkForUpdate();
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,

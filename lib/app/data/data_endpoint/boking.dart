@@ -55,6 +55,7 @@ class DataBooking {
   String? namaTipe;
   String? namaMerk;
   String? nama;
+  String? perintahkerja;
   String? alamat;
   String? hp;
 
@@ -81,6 +82,7 @@ class DataBooking {
         this.noRangka,
         this.noMesin,
         this.namaTipe,
+        this.perintahkerja,
         this.namaMerk,
         this.nama,
         this.alamat,
@@ -105,6 +107,7 @@ class DataBooking {
     noPolisi = json['no_polisi'];
     tahun = json['tahun'];
     warna = json['warna'];
+    perintahkerja = json['perintah_kerja'];
     transmisi = json['transmisi'];
     noRangka = json['no_rangka'];
     noMesin = json['no_mesin'];
@@ -126,6 +129,8 @@ class DataBooking {
     data['pic'] = this.pic;
     data['hp_pic'] = this.hpPic;
     data['status'] = this.status;
+    data['perintah_kerja'] = this.perintahkerja;
+    data['keluhan'] = this.keluhan;
     data['nama_service'] = this.namaService;
     data['nama_cabang'] = this.namaCabang;
     data['kategori_kendaraan'] = this.kategoriKendaraan;

@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
@@ -17,35 +15,19 @@ class CardConsuments2 extends StatefulWidget {
 }
 
 class _CardConsuments2State extends State<CardConsuments2> {
-  String? id_karyawan;
-  String? kode_booking;
-  String? kode_pelanggan;
-  String? kode_kendaraan;
-  String? kategori_kendaraan;
-  String? tgl_booking;
-  String? jam_booking;
-  String? odometer;
-  String? pic;
-  String? hp_pic;
-  String? kode_membership;
-  String? kode_paketmember;
-  String? tipe_svc;
-  String? tipe_pelanggan;
-  String? referensi;
-  String? referensi_teman;
-  String? paket_svc;
-  String? keluhan;
-  String? perintah_kerja;
-  String? ppn;
+  final ApproveController controller = Get.find<ApproveController>();
+
+  TimeOfDay? _selectedTime;
+  DateTime? _selectedDate;
 
   @override
   void initState() {
     super.initState();
 
+    // Set the initial values from arguments
+    final Map args = Get.arguments;
+    controller.setInitialValues(args);
   }
-  final controller = Get.find<ApproveController>();
-  TimeOfDay? _selectedTime;
-  DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -57,12 +39,10 @@ class _CardConsuments2State extends State<CardConsuments2> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        // Use DateFormat to format the DateTime object
         controller.tanggal.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }
-
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -72,36 +52,16 @@ class _CardConsuments2State extends State<CardConsuments2> {
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
-        // Format the time as HH:mm:00
         String formattedTime = "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}:00";
-        controller.jam.text = formattedTime; // Assign formatted time to the controller
-        print('Time picked: $formattedTime'); // Debugging output to verify the picked time
+        controller.jam.text = formattedTime;
       });
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final Map args = Get.arguments;
-    String? tgl_booking = args['tgl_booking'];
-    final String? jam_booking = args['jam_booking'];
-    final String nama = args['nama'] ?? '';
-    final String nama_jenissvc = args['nama_jenissvc'] ?? '';
-    final String no_polisi = args['no_polisi'] ?? '';
-    final String nama_merk = args['nama_merk'] ?? '';
-    final String nama_tipe = args['nama_tipe'] ?? '';
-    final String alamat = args['alamat'] ?? '';
-    final String tahun = args['tahun'] ?? '';
-    final String warna = args['warna'] ?? '';
-    final String odometer = args['odometer'] ?? '';
-    final String keluhan = args['keluhan'] ?? '';
-    final String kodebooking = args['kode_booking'] ?? '';
-    final String nomesin = args['no_mesin'] ?? '';
-    final String norangka = args['no_rangka'] ?? '';
-    final String transmisi = args['transmisi'] ?? '';
-    final String hp = args['hp'] ?? '';
-    final String hppic = args['hp_pic'] ?? '';
+
     return Column(children: [
       Container(
         padding: const EdgeInsets.all(10),
@@ -118,7 +78,7 @@ class _CardConsuments2State extends State<CardConsuments2> {
             ),
           ],
         ),
-        child:  Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -149,15 +109,15 @@ class _CardConsuments2State extends State<CardConsuments2> {
                 }
               },
             ),
-            Row(children: [
-              Text('Kode Booking : ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,)),
-              Text(kodebooking,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,)),
-            ],),
-            SizedBox(height: 10,),
+            // Kode Booking
+            Row(
+              children: [
+                Text('Kode Booking : ', style: TextStyle(fontWeight: FontWeight.normal)),
+                Text(args['kode_booking'] ?? '', style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 10),
+            // Jenis Service
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -172,101 +132,82 @@ class _CardConsuments2State extends State<CardConsuments2> {
                   child: TextField(
                     enabled: false,
                     decoration: InputDecoration(
-                      label: Text(nama_jenissvc),
+                      label: Text(args['nama_jenissvc'] ?? '', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                       hintStyle: TextStyle(color: Colors.black),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
-
-              ],),
-            SizedBox(height: 10,),
+              ],
+            ),
+            SizedBox(height: 10),
+            // Tanggal dan Jam Booking
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Tanggal Booking(edit)'),
-                      InkWell(
+                      Text('Tanggal Booking (edit)'),
+                      TextField(
+                        controller: controller.tanggal,
+                        readOnly: true,
                         onTap: () {
                           _selectDate(context);
                         },
-                        child:
-                        Container(
-                          width: double.infinity,
-                          height: 47,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.only(left: 25, right: 20),
-                          child:  Center(
-                            child:
-                            Text( _selectedDate == null
-                                ? '$tgl_booking'
-                                : DateFormat('yyyy-MM-dd').format(_selectedDate!),style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
+                          contentPadding: const EdgeInsets.only(left: 25, right: 20),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Jam Booking(edit)'),
-                      InkWell(
+                      Text('Jam Booking (edit)'),
+                      TextField(
+                        controller: controller.jam, // Gunakan controller dari GetX
+                        readOnly: true,
                         onTap: () {
                           _selectTime(context);
                         },
-                        child:
-                        Container(
-                          width: double.infinity,
-                          height: 47,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          padding: const EdgeInsets.only(left: 25, right: 20),
-                          child:  Center(
-                            child:
-                            Text(
-                              _selectedTime == null
-                                  ? '$jam_booking'
-                                  : DateFormat('HH:mm:ss').format(
-                                  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, _selectedTime!.hour, _selectedTime!.minute)
-                              ),
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
+                          contentPadding: const EdgeInsets.only(left: 25, right: 20),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            const Divider(
-              color: Colors.grey,
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const Text('Detail Kendaraan',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,)),
-            SizedBox(height: 10,),
+            // Detail Kendaraan
+            const Divider(color: Colors.grey),
+            const Text('Detail Kendaraan', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            // No Polisi dan Merk
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -280,18 +221,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(no_polisi ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['no_polisi'] ?? '-', style: TextStyle(color: Colors.black)),
                             hintStyle: TextStyle(color: Colors.black),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -305,23 +246,25 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(nama_merk ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['nama_merk'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            // Tipe dan Tahun
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -335,18 +278,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(nama_tipe ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['nama_tipe'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -360,23 +303,25 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(tahun ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['tahun'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // Warna dan Transmisi
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -390,19 +335,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(warna ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['warna'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
-
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -416,23 +360,25 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(transmisi ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['transmisi'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // No Rangka dan No Mesin
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -448,18 +394,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           keyboardType: TextInputType.number,
                           controller: controller.rangka,
                           decoration: InputDecoration(
-                            hintText: norangka?? "-",
+                            hintText: args['no_rangka'] ?? "-",
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -475,23 +421,25 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           keyboardType: TextInputType.number,
                           controller: controller.mesin,
                           decoration: InputDecoration(
-                            label: Text(nomesin),
+                            label: Text(args['no_mesin'] ?? "-"),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // Odometer
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -506,53 +454,37 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           keyboardType: TextInputType.number,
                           controller: controller.odometer,
                           decoration: InputDecoration(
-                            label: Text(odometer??''),
+                            label: Text(args['odometer'] ?? ''),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Keluhan'),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.only(left: 25, right: 20),
-                        child: TextField(
-                          enabled: false,
-
-                          decoration: InputDecoration(
-                            label: Text(keluhan ??'-', style: TextStyle(color: Colors.black),),
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-
-                    ],),),
-              ],),
-            const Divider(
-              color: Colors.grey,
+                      Text(''),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const Text('Detail Pelangan',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,)),
-            SizedBox(height: 10,),
+            // Detail Pelanggan
+            const Divider(color: Colors.grey),
+            const Text('Detail Pelangan', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -566,19 +498,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(nama ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['nama'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
-
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -592,23 +523,25 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            label: Text(alamat ??'-', style: TextStyle(color: Colors.black),),
+                            label: Text(args['alamat'] ?? '-', style: TextStyle(color: Colors.black)),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // HP dan PIC
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -622,18 +555,18 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         child: TextField(
                           enabled: false,
                           decoration: InputDecoration(
-                            hintText: hp?? "-",
+                            hintText: args['hp'] ?? "-",
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -645,25 +578,27 @@ class _CardConsuments2State extends State<CardConsuments2> {
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
-                          controller: controller.nomesin,
+                          controller: controller.pic,
                           decoration: InputDecoration(
-                            hintText: nomesin,
+                            hintText: args['pic'] ?? '-',
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-              ],),
-            SizedBox(height: 10,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            // HP PIC
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
-                  child:
-                  Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -674,84 +609,71 @@ class _CardConsuments2State extends State<CardConsuments2> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         padding: const EdgeInsets.only(left: 25, right: 20),
-                        child:  TextField(
+                        child: TextField(
                           keyboardType: TextInputType.number,
                           controller: controller.hppic,
                           decoration: InputDecoration(
                             hintText: '',
-                            label: Text(hppic),
+                            label: Text(args['hp_pic'] ?? ''),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
-
-                    ],),),
-                SizedBox(width: 10,),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
                 Flexible(
-                  child:
-                  Column(
-                    children: [
-                    ],),),
-              ],),
-
+                  child: Column(
+                    children: [],
+                  ),
+                ),
+              ],
+            ),
+            // Keluhan dan Perintah Kerja
+            const Divider(color: Colors.grey),
+            const Text('Keluhan', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.only(left: 25, right: 20),
+              child: TextField(
+                enabled: false,
+                controller: controller.keluhan,
+                decoration: InputDecoration(
+                  label: Text(args['keluhan'] ?? '-', style: TextStyle(color: Colors.black)),
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+            const Text('Printah Kerja', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.only(left: 25, right: 20),
+              child: TextField(
+                enabled: false,
+                controller: controller.perintah,
+                decoration: InputDecoration(
+                  label: Text(args['perintah_kerja'] ?? '-', style: TextStyle(color: Colors.black)),
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      SizedBox(height: 20,),
-      Container(
-          padding: const EdgeInsets.all(10),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.15),
-                spreadRadius: 5,
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Keluhan'),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.only(left: 25, right: 20),
-                child: TextField(
-                  controller: controller.keluhan,
-                  decoration: InputDecoration(
-                    hintText: '',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-              Text('Printah Kerja'),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.only(left: 25, right: 20),
-                child: TextField(
-                  controller: controller.perintah,
-                  decoration: InputDecoration(
-                    hintText: '',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ],)
-      ),
+      SizedBox(height: 20),
+      // Kontainer tambahan atau elemen lain jika ada
     ]);
   }
 }

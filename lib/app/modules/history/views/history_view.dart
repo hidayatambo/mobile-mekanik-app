@@ -16,6 +16,7 @@ import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
 import '../componen/card_history.dart';
+import '../controllers/history_controller.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -48,6 +49,7 @@ class HistoryView2 extends StatefulWidget {
 
 class _HistoryView2State extends State<HistoryView2>
     with SingleTickerProviderStateMixin {
+  final controller = Get.put(HistoryController());
   late TabController _tabController;
   String selectedStatus = 'Semua';
   String selectedService = 'Repair & Maintenance';
@@ -91,6 +93,7 @@ class _HistoryView2State extends State<HistoryView2>
 
   @override
   Widget build(BuildContext context) {
+    controller.checkForUpdate();
     return DefaultTabController(
       length: 2,
       child: Scaffold(

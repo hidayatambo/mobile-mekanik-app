@@ -144,13 +144,13 @@ class RepairMaintenenView extends GetView<RepairMaintenenController> {
       ),
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        title: const Text('Repair Maintenence'),
+        title: const Text('Repair Maintenance'),
         centerTitle: true,
-        systemOverlayStyle: const SystemUiOverlayStyle(
+        systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,
-          systemNavigationBarColor: Colors.white,
+          systemNavigationBarColor: MyColors.appPrimaryColor,
         ),
         leading: IconButton(
           icon: Icon(Icons.close, color: Colors.black),

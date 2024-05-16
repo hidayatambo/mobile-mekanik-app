@@ -16,6 +16,18 @@ class RepairMaintenenController extends GetxController {
   final TextEditingController hppic = TextEditingController();
   final TextEditingController nomesin = TextEditingController();
 
+  void setInitialValues(Map args) {
+    tanggal.text = args['tgl_booking'] ?? '';
+    jam.text = args['jam_booking'] ?? '';
+    rangka.text = args['no_rangka'] ?? '';
+    mesin.text = args['no_mesin'] ?? '';
+    odometer.text = args['odometer'] ?? '';
+    pic.text = args['pic'] ?? '';
+    hppic.text = args['hp_pic'] ?? '';
+    keluhan.text = args['keluhan'] ?? '';
+    perintah.text = args['perintah_kerja'] ?? '';
+  }
+
   void printAllData() {
     print('Keluhan: ${keluhan.text}');
     print('Odometer: ${odometer.text}');

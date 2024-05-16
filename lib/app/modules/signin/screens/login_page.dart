@@ -68,13 +68,13 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/bg_welcome.png"),
+              image: AssetImage("assets/bg.png"),
               fit: BoxFit.cover,
             ),
           ),
           child: SingleChildScrollView(
             child: Container(
-              height: 700,
+              height: 740,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
@@ -103,13 +103,13 @@ class _LoginPageState extends State<LoginPage> {
                             delay: 1.3,
                             child: Text(
                               "Selamat Datang",
-                              style: Common().titelTheme,
+                              style: Common().mediumTheme,
                             ),
                           ),
                           FadeInAnimation(
                             delay: 1.6,
                             child: Text(
-                              "Bengkelly!!",
+                              "VALE Indonesia",
                               style: Common().titelTheme,
                             ),
                           ),

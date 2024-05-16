@@ -18,6 +18,7 @@ import '../../../data/endpoint.dart';
 import '../../../routes/app_pages.dart';
 import '../../../tester/tester_kategori.dart';
 import '../componen/card_booking.dart';
+import '../controllers/boking_controller.dart';
 
 class BokingView extends StatefulWidget {
   const BokingView({super.key});
@@ -51,7 +52,7 @@ class BokingView2 extends StatefulWidget {
 
 class _BokingView2State extends State<BokingView2> {
   late List<RefreshController> _refreshControllers;
-
+  final controller = Get.put(BokingController());
   @override
   void initState() {
     _refreshControllers = List.generate(13, (index) => RefreshController());
@@ -313,6 +314,7 @@ class _BokingView2State extends State<BokingView2> {
                                         'no_polisi': e.noPolisi ?? '',
                                         'nama_merk': e.namaMerk ?? '',
                                         'keluhan': e.keluhan ?? '',
+                                        'perintah_kerja': e.perintahkerja ?? '',
                                         'kode_booking': e.kodeBooking ?? '',
                                         'tahun': e.tahun ?? '',
                                         'warna': e.warna ?? '',
@@ -345,6 +347,7 @@ class _BokingView2State extends State<BokingView2> {
                                         'kode_booking': e.kodeBooking ?? '',
                                         'tahun': e.tahun ?? '',
                                         'warna': e.warna ?? '',
+                                        'perintah_kerja': e.perintahkerja ?? '',
                                         'ho': e.hp ?? '',
                                         'kode_booking': e.kodeBooking ?? '',
                                         'nama_merk': e.namaMerk ?? '',
@@ -401,7 +404,8 @@ class _BokingView2State extends State<BokingView2> {
                                         'nama_jenissvc': e.namaService ?? '',
                                         'no_polisi': e.noPolisi ?? '',
                                         'tahun': e.tahun ?? '',
-                                        'tahun': e.keluhan ?? '',
+                                        'keluhan': e.keluhan ?? '',
+                                        'perintah_kerja': e.perintahkerja ?? '',
                                         'kategori_kendaraan':
                                             e.kategoriKendaraan ?? '',
                                         'kategori_kendaraan_id':
@@ -413,7 +417,6 @@ class _BokingView2State extends State<BokingView2> {
                                         'transmisi': e.transmisi ?? '',
                                         'nama_tipe': e.namaTipe ?? '',
                                         'alamat': e.alamat ?? '',
-                                        'status': e.bookingStatus ?? '',
                                         'status': e.bookingStatus ?? '',
                                       },
                                     );
@@ -460,6 +463,8 @@ class _BokingView2State extends State<BokingView2> {
                                         'no_polisi': e.noPolisi ?? '',
                                         'tahun': e.tahun ?? '',
                                         'warna': e.warna ?? '',
+                                        'keluhan': e.keluhan ?? '',
+                                        'perintah_kerja': e.perintahkerja ?? '',
                                         'kode_kendaraan': e.kodeKendaraan ?? '',
                                         'kode_pelanggan': e.kodePelanggan ?? '',
                                         'ho': e.nama ?? '',

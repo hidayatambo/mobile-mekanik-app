@@ -64,6 +64,7 @@ class ApproveView extends GetView<ApproveController> {
                       onConfirmBtnTap: () async {
                         try {
                           // Tampilkan indikator loading
+                          Navigator.pop(Get.context!);
                           QuickAlert.show(
                             barrierDismissible: false,
                             context: Get.context!,
@@ -71,8 +72,8 @@ class ApproveView extends GetView<ApproveController> {
                             headerBackgroundColor: Colors.yellow,
                             text: 'Buat Estimasi......',
                           );
-                          // Panggil API untuk menyetujui booking
-                          await API.estimasiId(
+                          Navigator.pop(Get.context!);
+                          await API.approveId(
                             idkaryawan: '',
                             kodeBooking: kodeBooking,
                             kodepelanggan: kodepelanggan,
@@ -94,8 +95,8 @@ class ApproveView extends GetView<ApproveController> {
                             perintahKerja: controller.perintah.text,
                             ppn: 10,
                           );
-                        } catch (e) {
                           Navigator.pop(Get.context!);
+                        } catch (e) {
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                           QuickAlert.show(

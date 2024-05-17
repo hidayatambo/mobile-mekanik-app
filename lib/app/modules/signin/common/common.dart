@@ -11,11 +11,11 @@ class Common {
       fontFamily: "Urbanist",
       fontWeight: FontWeight.bold,
       color: MyColors.appPrimaryColor);
-  TextStyle mediumTheme = const TextStyle(
+  TextStyle mediumTheme = TextStyle(
       fontSize: 15,
       fontFamily: "Urbanist-Bold",
       fontWeight: FontWeight.bold,
-      color: Color.fromARGB(255, 72, 151, 151));
+      color: MyColors.appPrimaryColor);
   TextStyle mediumThemeblack = const TextStyle(
       fontSize: 16,
       fontFamily: "Urbanist-Bold",

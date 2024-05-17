@@ -16,7 +16,6 @@ class Cardmaintenent extends StatefulWidget {
 
 class _CardmaintenentState extends State<Cardmaintenent> {
   final RepairMaintenenController controller = Get.find<RepairMaintenenController>();
-
   TimeOfDay? _selectedTime;
   DateTime? _selectedDate;
 
@@ -61,7 +60,6 @@ class _CardmaintenentState extends State<Cardmaintenent> {
   @override
   Widget build(BuildContext context) {
     final Map args = Get.arguments;
-
     return Column(children: [
       Container(
         padding: const EdgeInsets.all(10),
@@ -411,6 +409,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                     children: [
                       Text('No Mesin'),
                       Container(
+                        height: 45,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(10),
@@ -446,16 +445,17 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                       Text('Odometer'),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
                           keyboardType: TextInputType.number,
                           controller: controller.odometer,
                           decoration: InputDecoration(
                             label: Text(args['odometer'] ?? ''),
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
@@ -572,16 +572,18 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                     children: [
                       Text('PIC'),
                       Container(
+                        height: 45,
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
                           controller: controller.pic,
                           decoration: InputDecoration(
                             hintText: args['pic'] ?? '-',
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
@@ -604,18 +606,20 @@ class _CardmaintenentState extends State<Cardmaintenent> {
                     children: [
                       Text('HP PIC'),
                       Container(
+                        height: 45,
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: const EdgeInsets.only(left: 25, right: 20),
                         child: TextField(
                           keyboardType: TextInputType.number,
                           controller: controller.hppic,
                           decoration: InputDecoration(
                             hintText: '',
                             label: Text(args['hp_pic'] ?? ''),
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             hintStyle: TextStyle(color: Colors.black),
                           ),
                         ),
@@ -635,6 +639,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
             const Divider(color: Colors.grey),
             const Text('Keluhan', style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
+
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -642,7 +647,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
               ),
               padding: const EdgeInsets.only(left: 25, right: 20),
               child: TextField(
-                controller: controller.keluhan,
+                enabled: false,
                 decoration: InputDecoration(
                   label: Text(args['keluhan'] ?? '-', style: TextStyle(color: Colors.black)),
                   border: InputBorder.none,
@@ -659,6 +664,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
               ),
               padding: const EdgeInsets.only(left: 25, right: 20),
               child: TextField(
+                enabled: false,
                 controller: controller.perintah,
                 decoration: InputDecoration(
                   label: Text(args['perintah_kerja'] ?? '-', style: TextStyle(color: Colors.black)),
@@ -671,6 +677,7 @@ class _CardmaintenentState extends State<Cardmaintenent> {
         ),
       ),
       SizedBox(height: 20),
+      // Kontainer tambahan atau elemen lain jika ada
     ]);
   }
 }

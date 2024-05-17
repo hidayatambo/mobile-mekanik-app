@@ -191,7 +191,7 @@ class StatusColor {
       case 'diproses':
         return Colors.orange;
       case 'estimasi':
-        return Colors.blue;
+        return Colors.lime;
       case 'estimasi':
         return Colors.orange;
         case 'selesai dikerjakan':

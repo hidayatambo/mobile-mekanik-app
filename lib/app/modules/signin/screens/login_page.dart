@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/bg.png"),
+              image: AssetImage("assets/bg_welcome.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                           FadeInAnimation(
                             delay: 1.6,
                             child: Text(
-                              "VALE Indonesia",
+                              "Mekanik Bengkelly",
                               style: Common().titelTheme,
                             ),
                           ),

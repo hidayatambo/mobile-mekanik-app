@@ -147,7 +147,7 @@ class _SplashcreenViewState extends State<SplashcreenView> {
               decoration: BoxDecoration(
                 color: _b ? Colors.white : Colors.white,
                 image: const DecorationImage(
-                  image: AssetImage("assets/logo_vale.png"),
+                  image: AssetImage("assets/logo.png"),
                   fit: BoxFit.contain,
                 ),
               ),

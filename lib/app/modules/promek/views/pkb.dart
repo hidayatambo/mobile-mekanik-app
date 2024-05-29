@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:mekanik/app/componen/color.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
+import '../../../componen/loading_shammer_booking.dart';
 import '../../../data/data_endpoint/pkb.dart';
 import '../../../data/data_endpoint/profile.dart';
 import '../../../data/endpoint.dart';
+import '../../../data/localstorage.dart';
 import '../../../routes/app_pages.dart';
 import '../componen/card_pkb.dart';
 
@@ -17,6 +21,13 @@ class PKBlist extends StatefulWidget {
 }
 
 class _PKBlistState extends State<PKBlist> {
+  late RefreshController _refreshController;
+  @override
+  void initState() {
+    _refreshController =
+        RefreshController();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +76,14 @@ class _PKBlistState extends State<PKBlist> {
           SizedBox(width: 20),
         ],
       ),
-      body: SingleChildScrollView(
+      body:  SmartRefresher(
+    controller: _refreshController,
+    enablePullDown: true,
+    header: const WaterDropHeader(),
+    onLoading: _onLoading,
+    onRefresh: _onRefresh,
+    child:
+      SingleChildScrollView(
         child: Column(
           children: [
             FutureBuilder(
@@ -111,7 +129,7 @@ class _PKBlistState extends State<PKBlist> {
                   return SizedBox(
                     height: Get.height - 250,
                     child: SingleChildScrollView(
-                      child: Column(children: []),
+                      child: Loadingshammer(),
                     ),
                   );
                 }
@@ -120,6 +138,26 @@ class _PKBlistState extends State<PKBlist> {
           ],
         ),
       ),
+      ),
     );
+  }
+  _onLoading() {
+    _refreshController
+        .loadComplete();
+  }
+
+  _onRefresh() {
+    HapticFeedback.lightImpact();
+    setState(() {
+
+      const PKBlist();
+      _refreshController
+          .refreshCompleted();
+    });
+  }
+
+  void logout() {
+    LocalStorages.deleteToken();
+    Get.offAllNamed(Routes.SIGNIN);
   }
 }

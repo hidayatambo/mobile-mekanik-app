@@ -508,7 +508,7 @@ class _BokingView2State extends State<BokingView2> {
   void _onRefresh(String? status) {
     HapticFeedback.lightImpact();
     API.bokingid();
-    widget.clearCachedBoking();
+    widget.clearCachedBoking(); 
     _refreshControllers[_getStatusIndex(status)].refreshCompleted();
   }
 

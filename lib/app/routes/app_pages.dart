@@ -17,7 +17,8 @@ import '../modules/home/componen/buttomnavigationbar.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/promek/bindings/promek_binding.dart';
-import '../modules/promek/views/chat_view.dart';
+import '../modules/promek/detail/detailpkb.dart';
+import '../modules/promek/views/pkb.dart';
 import '../modules/repair_maintenen/bindings/repair_maintenen_binding.dart';
 import '../modules/repair_maintenen/views/repair_maintenen_view.dart';
 import '../modules/selesaidikerjakan/bindings/selesaidikerjakan_binding.dart';
@@ -60,7 +61,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PKB,
-      page: () => PKB(),
+      page: () => PKBlist(),
       binding: PromekBinding(),
     ),
     GetPage(
@@ -114,6 +115,12 @@ class AppPages {
       transition: Transition.rightToLeftWithFade,
       name: _Paths.DETAIL_HISTORY,
       page: () => const DetailHistoryView(),
+      binding: DetailHistoryBinding(),
+    ),
+    GetPage(
+      transition: Transition.rightToLeftWithFade,
+      name: _Paths.DETAILPKB,
+      page: () => const DetailPKB(),
       binding: DetailHistoryBinding(),
     ),
   ];

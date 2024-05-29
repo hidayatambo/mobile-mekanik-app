@@ -19,6 +19,7 @@ import 'data_endpoint/history.dart';
 import 'data_endpoint/kategory.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
+import 'data_endpoint/pkb.dart';
 import 'data_endpoint/profile.dart';
 import 'data_endpoint/promax.dart';
 import 'data_endpoint/proses_promax.dart';
@@ -54,6 +55,7 @@ class API {
   static const _getServiceSelesai = '$_baseUrl/mekanik/get-service-selesai';
   static const _getDikerjakan = '$_baseUrl/mekanik/get-dikerjakan';
   static const _getDetailhistory = '$_baseUrl/mekanik/get-detail-history';
+  static const _getpkb = '$_baseUrl/mekanik/get-pkb';
   static final _controller = Publics.controller;
 
 
@@ -85,7 +87,7 @@ class API {
           if (obj.token != null) {
             LocalStorages.setToken(obj.token!);
             Get.snackbar('Selamat Datang', 'Menkanik Bengkelly',
-                backgroundColor: MyColors.appPrimaryColor,
+                backgroundColor: Colors.green,
                 colorText: Colors.white
             );
             Get.offAllNamed(Routes.HOME);
@@ -175,7 +177,6 @@ class API {
       throw e;
     }
   }
-
   //Beda
   static Future<general_checkup> GeneralID() async {
     final token = Publics.controller.getToken.value ?? '';
@@ -872,7 +873,40 @@ class API {
       throw e;
     }
   }
+//Beda
+  static Future<PKB> PKBID() async {
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
 
+      var response = await Dio().get(
+        _getpkb,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Response: ${response.data}');
+
+      final obj = PKB.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
   static Future<void> showBookingNotifications() async {
     try {
       final token = Publics.controller.getToken.value ?? '';

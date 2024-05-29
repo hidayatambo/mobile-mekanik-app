@@ -8,7 +8,7 @@ import 'package:mekanik/app/modules/profile/views/profile_view.dart';
 
 import '../../../data/data_endpoint/boking.dart';
 import '../../boking/views/boking_view.dart';
-import '../../promek/views/chat_view.dart';
+import '../../promek/views/pkb.dart';
 import '../views/home_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -52,14 +52,14 @@ class _HomeViewState extends State<HomeView> {
             label: 'Home',
             labelStyle: TextStyle(color: Colors.white),
           ),
-          // CurvedNavigationBarItem(
-          //   child: Icon(
-          //     Icons.timer,
-          //     color: Colors.white,
-          //   ),
-          //   label: 'Promek',
-          //   labelStyle: TextStyle(color: Colors.white),
-          // ),
+          CurvedNavigationBarItem(
+            child: Icon(
+              Icons.timer,
+              color: Colors.white,
+            ),
+            label: 'PKB',
+            labelStyle: TextStyle(color: Colors.white),
+          ),
           CurvedNavigationBarItem(
             child: Icon(
               Icons.calendar_month_rounded,
@@ -112,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
         },
         children: <Widget>[
           HomePage(),
-          // PKB(),
+          PKBlist(),
           BokingView(),
           HistoryView(),
           ProfileView(),

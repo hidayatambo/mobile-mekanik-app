@@ -17,7 +17,7 @@ class HistoryList extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return InkWell(
-          onTap: onTap, // Menggunakan onTap yang diterima dari luar
+          onTap: onTap,
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(10),

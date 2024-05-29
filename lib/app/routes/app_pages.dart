@@ -18,6 +18,7 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/promek/bindings/promek_binding.dart';
 import '../modules/promek/detail/detailpkb.dart';
+import '../modules/promek/start_stop/start_stop_view.dart';
 import '../modules/promek/views/pkb.dart';
 import '../modules/repair_maintenen/bindings/repair_maintenen_binding.dart';
 import '../modules/repair_maintenen/views/repair_maintenen_view.dart';
@@ -118,9 +119,15 @@ class AppPages {
       binding: DetailHistoryBinding(),
     ),
     GetPage(
-      transition: Transition.rightToLeftWithFade,
+      transition: Transition.downToUp,
       name: _Paths.DETAILPKB,
       page: () => const DetailPKB(),
+      binding: DetailHistoryBinding(),
+    ),
+    GetPage(
+      transition: Transition.downToUp,
+        name: _Paths.STARTSTOPPKB,
+      page: () => const StartStopView(),
       binding: DetailHistoryBinding(),
     ),
   ];

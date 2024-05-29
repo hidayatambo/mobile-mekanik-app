@@ -18,6 +18,7 @@ abstract class Routes {
   static const SELESAIDIKERJAKAN = _Paths.SELESAIDIKERJAKAN;
   static const DETAIL_HISTORY = _Paths.DETAIL_HISTORY;
   static const DETAILPKB = _Paths.DETAILPKB;
+  static const STARTSTOPPKB = _Paths.STARTSTOPPKB;
 }
 
 abstract class _Paths {
@@ -37,4 +38,5 @@ abstract class _Paths {
   static const SELESAIDIKERJAKAN = '/selesaidikerjakan';
   static const DETAIL_HISTORY = '/detail-history';
   static const DETAILPKB = '/detailpkb';
+  static const STARTSTOPPKB = '/startstoppkb';
 }

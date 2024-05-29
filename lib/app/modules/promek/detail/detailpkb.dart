@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mekanik/app/routes/app_pages.dart';
 
 import '../../../componen/color.dart';
 import 'card_detailpkb.dart';
@@ -28,68 +29,7 @@ class _DetailPKBState extends State<DetailPKB> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // if (tipeSvc == 'Repair & Maintenance') {
-                  //   QuickAlert.show(
-                  //     context: context,
-                  //     type: QuickAlertType.warning,
-                  //     headerBackgroundColor: Colors.yellow,
-                  //     text:
-                  //     'Pastikan Kembali data Booking sudah sesuai, untuk Lanjut ke Estimasi ',
-                  //     confirmBtnText: 'Konfirmasi',
-                  //     cancelBtnText: 'Kembali',
-                  //     confirmBtnColor: Colors.blue,
-                  //     onConfirmBtnTap: () async {
-                  //       Navigator.pop(Get.context!);
-                  //       try {
-                  //         // Tampilkan indikator loading
-                  //         QuickAlert.show(
-                  //           barrierDismissible: false,
-                  //           context: Get.context!,
-                  //           type: QuickAlertType.loading,
-                  //           headerBackgroundColor: Colors.yellow,
-                  //           text: 'Buat Estimasi......',
-                  //         );
-                  //         // Panggil API untuk menyetujui booking
-                  //         await API.estimasiId(
-                  //           idkaryawan: '',
-                  //           kodeBooking: kodeBooking,
-                  //           kodepelanggan: kodepelanggan,
-                  //           kodekendaraan: kodekendaraan,
-                  //           kategorikendaraan: kategorikendaraan,
-                  //           tglBooking: controller.tanggal.text,
-                  //           jamBooking: controller.jam.text,
-                  //           odometer: controller.odometer.text,
-                  //           pic: controller.pic.text,
-                  //           hpPic: controller.hppic.text,
-                  //           kodeMembership: kodeMembership,
-                  //           kodePaketmember: kodePaketmember,
-                  //           tipeSvc: tipeSvc,
-                  //           tipePelanggan: tipePelanggan,
-                  //           referensi: referensi,
-                  //           referensiTmn: referensiTmn,
-                  //           paketSvc: paketSvc,
-                  //           keluhan: controller.keluhan.text,
-                  //           perintahKerja: controller.perintah.text,
-                  //           ppn: 10,
-                  //         );
-                  //       } catch (e) {
-                  //         Navigator.pop(Get.context!);
-                  //         Navigator.of(context)
-                  //             .popUntil((route) => route.isFirst);
-                  //         QuickAlert.show(
-                  //           barrierDismissible: false,
-                  //           context: Get.context!,
-                  //           type: QuickAlertType.success,
-                  //           headerBackgroundColor: Colors.yellow,
-                  //           text: 'Estimasi Telah diBuat',
-                  //           confirmBtnText: 'Kembali',
-                  //           cancelBtnText: 'Kembali',
-                  //           confirmBtnColor: Colors.green,
-                  //         );
-                  //       }
-                  //     },
-                  //   );
-                  // } else {}
+                  Get.toNamed(Routes.STARTSTOPPKB);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,

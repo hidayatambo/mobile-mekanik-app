@@ -1,5 +1,5 @@
 class Promek {
-  bool? status;
+  int? status; // Changed from bool? to int?
   String? message;
 
   Promek({this.status, this.message});

@@ -1,11 +1,11 @@
 class PromePKB {
-  bool? status;
+  int? status; // Changed from bool? to int?
   String? message;
 
   PromePKB({this.status, this.message});
 
   PromePKB.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
+    status = json['status'] as int?;
     message = json['message'];
   }
 

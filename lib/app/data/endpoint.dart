@@ -60,6 +60,7 @@ class API {
   static const _getpkb = '$_baseUrl/mekanik/get-pkb';
   static const _getmekanikpkb = '$_baseUrl/mekanik/pkb/get-jasa-mekanik';
   static const _getInsetpromekpkb = '$_baseUrl/mekanik/pkb/insert-promek';
+  static const _getPKBUpdateKeteranganStop = '$_baseUrl/mekanik/pkb/update-keterangan-promek';
   static final _controller = Publics.controller;
 
 
@@ -837,6 +838,48 @@ class API {
 
       var response = await Dio().post(
         _postprosespromek,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      print('Response: ${response.data}');
+
+      final obj = UpdateKeterangan.fromJson(response.data);
+
+      if (obj.message == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.message.toString(),
+          obj.message.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
+  // Beda
+  static Future<UpdateKeterangan> updateketeranganPKBID({
+    required String promekid,
+    required String keteranganpromek,
+  }) async {
+    final data = {
+      "promek_id": promekid,
+      "keterangan_promek": keteranganpromek,
+    };
+
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+
+      var response = await Dio().post(
+        _getPKBUpdateKeteranganStop,
         data: data,
         options: Options(
           headers: {

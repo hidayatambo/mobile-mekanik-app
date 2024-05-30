@@ -104,7 +104,7 @@ class _PKBlistState extends State<PKBlist> {
                             items: e,
                             onTap: () {
                               Get.toNamed(
-                                Routes.DETAILPKB,
+                                Routes.STARTSTOPPKB,
                                 arguments: {
                                   'kode_pkb': e.kodePkb ?? '',
                                   'no_polisi': e.noPolisi ?? '',

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import '../../../data/data_endpoint/mekanik.dart';
 import '../../../data/data_endpoint/mekanik_pkb.dart';
 import '../../../data/endpoint.dart';
 import '../controllers/promek_controller.dart';
@@ -174,8 +173,6 @@ class _StartStopViewState extends State<StartStopView> {
                 );
                 return;
               }
-
-              // Debug log untuk memeriksa nilai di TextField
               print('TextField value: ${additionalInputControllers[item]?.text}');
               if (isStartedMap[item] == true && (additionalInputControllers[item]?.text?.isEmpty ?? true)) {
                 QuickAlert.show(
@@ -210,9 +207,8 @@ class _StartStopViewState extends State<StartStopView> {
                     isStartedMap[item] = !isStarted;
                   });
 
-                  // If stopping, update the additional information
                   if (!isStarted) {
-                    var updateResponse = await API.updateketeranganID(
+                    await API.updateketeranganID(
                       promekid: 'promekId.toString()',
                       keteranganpromek: additionalInputControllers[item]?.text ?? '',
                     );

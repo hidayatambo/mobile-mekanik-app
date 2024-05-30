@@ -19,9 +19,11 @@ import 'data_endpoint/history.dart';
 import 'data_endpoint/kategory.dart';
 import 'data_endpoint/login.dart';
 import 'data_endpoint/mekanik.dart';
+import 'data_endpoint/mekanik_pkb.dart';
 import 'data_endpoint/pkb.dart';
 import 'data_endpoint/profile.dart';
 import 'data_endpoint/promax.dart';
+import 'data_endpoint/promekpkb.dart';
 import 'data_endpoint/proses_promax.dart';
 import 'data_endpoint/servicedikerjakan.dart';
 import 'data_endpoint/serviceselesai.dart';
@@ -56,6 +58,8 @@ class API {
   static const _getDikerjakan = '$_baseUrl/mekanik/get-dikerjakan';
   static const _getDetailhistory = '$_baseUrl/mekanik/get-detail-history';
   static const _getpkb = '$_baseUrl/mekanik/get-pkb';
+  static const _getmekanikpkb = '$_baseUrl/mekanik/pkb/get-jasa-mekanik';
+  static const _getInsetpromekpkb = '$_baseUrl/mekanik/pkb/insert-promek';
   static final _controller = Publics.controller;
 
 
@@ -574,6 +578,7 @@ class API {
       throw e;
     }
   }
+  //Beda
   static Future<GCMekanik> GCMekanikID({
     required String kategoriKendaraanId,
   }) async {
@@ -605,6 +610,125 @@ class API {
 
       return obj;
     } catch (e) {
+      throw e;
+    }
+  }
+  //Beda
+  static Future<MekanikPKB> MeknaikPKBID({
+    required String kodesvc,
+  }) async {
+    final token = Publics.controller.getToken.value;
+    var data = {
+      "kode_svc": kodesvc,
+    };
+    try {
+      var response = await Dio().get(
+        _getmekanikpkb,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = MekanikPKB.fromJson(response.data);
+
+      if (obj.dataJasaMekanik == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+  //Beda
+  static Future<MekanikPKB> InsertPromexID({
+    required String kodesvc,
+  }) async {
+    final token = Publics.controller.getToken.value;
+    var data = {
+      "kode_svc": kodesvc,
+    };
+    try {
+      var response = await Dio().get(
+        _getmekanikpkb,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = MekanikPKB.fromJson(response.data);
+
+      if (obj.dataJasaMekanik == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      throw e;
+    }
+  }
+//Beda
+// Beda
+  static Future<PromePKB> InsertPromexoPKBID({
+    required String kodesvc,
+    required String kodejasa,
+    required String idmekanik,
+    required String role,
+  }) async {
+    final token = Publics.controller.getToken.value;
+    var data = {
+      "kode_svc": kodesvc,
+      "kode_jasa": kodejasa,
+      "id_mekanik": idmekanik,
+      "role": role,
+    };
+
+    print("Request Data: $data");
+
+    try {
+      var response = await Dio().post(
+        _getInsetpromekpkb,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Data: ${response.data}");
+
+      if (response.statusCode == 404) {
+        throw Exception("Tidak ada data general checkup.");
+      }
+
+      final obj = PromePKB.fromJson(response.data);
+
+      if (obj.status == null) {
+        throw Exception("Data general checkup kosong.");
+      }
+
+      return obj;
+    } catch (e) {
+      print("Error: $e");
       throw e;
     }
   }

@@ -24,10 +24,10 @@ class _PKBlistState extends State<PKBlist> {
   late RefreshController _refreshController;
   @override
   void initState() {
-    _refreshController =
-        RefreshController();
+    _refreshController = RefreshController();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,83 +76,80 @@ class _PKBlistState extends State<PKBlist> {
           SizedBox(width: 20),
         ],
       ),
-      body:  SmartRefresher(
-    controller: _refreshController,
-    enablePullDown: true,
-    header: const WaterDropHeader(),
-    onLoading: _onLoading,
-    onRefresh: _onRefresh,
-    child:
-      SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder(
-              future: API.PKBID(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.connectionState != ConnectionState.waiting && snapshot.data != null) {
-                  PKB getDataAcc = snapshot.data ?? PKB();
-                  return Column(
-                    children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 475),
-                      childAnimationBuilder: (widget) => SlideAnimation(
-                        child: FadeInAnimation(
-                          child: widget,
+      body: SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+        onLoading: _onLoading,
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              FutureBuilder(
+                future: API.PKBID(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.connectionState != ConnectionState.waiting && snapshot.data != null) {
+                    PKB getDataAcc = snapshot.data ?? PKB();
+                    return Column(
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 475),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
                         ),
+                        children: getDataAcc.dataPKB != null
+                            ? getDataAcc.dataPKB!.map((e) {
+                          return pkblist(
+                            items: e,
+                            onTap: () {
+                              Get.toNamed(
+                                Routes.DETAILPKB,
+                                arguments: {
+                                  'kode_pkb': e.kodePkb ?? '',
+                                  'no_polisi': e.noPolisi ?? '',
+                                  'tahun': e.tahun ?? '',
+                                  'warna': e.warna ?? '',
+                                  'nama': e.nama ?? '',
+                                  'alamat': e.alamat ?? '',
+                                  'hp': e.hp ?? '',
+                                  'transmisi': e.transmisi ?? '',
+                                  'tipe_svc': e.tipeSvc ?? '',
+                                  'kode_svc': e.kodeSvc ?? '',
+                                },
+                              );
+                            },
+                          );
+                        }).toList()
+                            : [Container()],
                       ),
-                      children: getDataAcc.dataPKB != null
-                          ? getDataAcc.dataPKB!.map((e) {
-                        return pkblist(
-                          items: e,
-                          onTap: () {
-                            Get.toNamed(
-                              Routes.DETAILPKB,
-                              arguments: {
-                                'kode_pkb': e.kodePkb ?? '',
-                                'no_polisi': e.noPolisi ?? '',
-                                'tahun': e.tahun ?? '',
-                                'warna': e.warna ?? '',
-                                'nama': e.nama ?? '',
-                                'alamat': e.alamat ?? '',
-                                'alamat': e.alamat ?? '',
-                                'hp': e.hp ?? '',
-                                'transmisi': e.transmisi ?? '',
-                                'tipe_svc': e.tipeSvc ?? '',
-                              },
-                            );
-                          },
-                        );
-                      }).toList()
-                          : [Container()],
-                    ),
-                  );
-                } else {
-                  return SizedBox(
-                    height: Get.height - 250,
-                    child: SingleChildScrollView(
-                      child: Loadingshammer(),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
+                    );
+                  } else {
+                    return SizedBox(
+                      height: Get.height - 250,
+                      child: SingleChildScrollView(
+                        child: Loadingshammer(),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
+
   _onLoading() {
-    _refreshController
-        .loadComplete();
+    _refreshController.loadComplete();
   }
 
   _onRefresh() {
     HapticFeedback.lightImpact();
     setState(() {
-
       const PKBlist();
-      _refreshController
-          .refreshCompleted();
+      _refreshController.refreshCompleted();
     });
   }
 

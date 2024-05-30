@@ -673,7 +673,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                         role: isStartedMap[item] ?? false ? 'stop' : 'start',
                         kodebooking: kodeBooking ?? '',
                         kodejasa: selectedKodeJasa ?? '',
-                        idmekanik: selectedIdMekanik ?? '',
+                        idmekanik: selectedIdMekanik.toString(),
                       );
                       await API.updateketeranganID(
                         promekid: promekId.toString(),
@@ -712,7 +712,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                 ),
                 child: Text(isStartedMap[item] ?? false ? 'Stop' : 'Start'),
               ),
-              // if (startHistoryLogs[item]!.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.all(10),

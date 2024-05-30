@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:mekanik/app/routes/app_pages.dart';
-
 import '../../../componen/color.dart';
 import 'card_detailpkb.dart';
 import '../controllers/promek_controller.dart';
@@ -16,8 +14,18 @@ class DetailPKB extends StatefulWidget {
 }
 
 class _DetailPKBState extends State<DetailPKB> {
+  final PromekController controller = Get.put(PromekController());
+
+  @override
+  void initState() {
+    super.initState();
+    final Map args = Get.arguments;
+    controller.setInitialValues(args);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Map args = Get.arguments;
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
@@ -29,7 +37,10 @@ class _DetailPKBState extends State<DetailPKB> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.toNamed(Routes.STARTSTOPPKB);
+                  Get.toNamed(Routes.STARTSTOPPKB, arguments: {
+                    'kode_svc': args['kode_svc'] ?? '',
+                    'kode_booking': args['kode_booking'] ?? '', // Assuming selectedItemJasa contains the selected kode_jasa
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -54,8 +65,7 @@ class _DetailPKBState extends State<DetailPKB> {
         surfaceTintColor: Colors.transparent,
         title: Text(
           'Detail PKB',
-          style: TextStyle(
-              color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
+          style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle(

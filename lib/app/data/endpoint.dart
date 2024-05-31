@@ -25,6 +25,7 @@ import 'data_endpoint/profile.dart';
 import 'data_endpoint/promax.dart';
 import 'data_endpoint/promekpkb.dart';
 import 'data_endpoint/proses_promax.dart';
+import 'data_endpoint/prosesspromaxpkb.dart';
 import 'data_endpoint/servicedikerjakan.dart';
 import 'data_endpoint/serviceselesai.dart';
 import 'data_endpoint/submit_finish.dart';
@@ -61,6 +62,7 @@ class API {
   static const _getmekanikpkb = '$_baseUrl/mekanik/pkb/get-jasa-mekanik';
   static const _getInsetpromekpkb = '$_baseUrl/mekanik/pkb/insert-promek';
   static const _getPKBUpdateKeteranganStop = '$_baseUrl/mekanik/pkb/update-keterangan-promek';
+  static const _getpRrosesPKB = '$_baseUrl/mekanik/pkb/get-proses-promek';
   static final _controller = Publics.controller;
 
 
@@ -822,6 +824,50 @@ class API {
       throw e;
     }
   }
+  //Beda
+  static Future<ProsesPromex> PromekProsesPKBID({
+    required String kodesvc,
+    required String kodejasa,
+    required String idmekanik,
+  }) async {
+    final data = {
+      "kode_svc": kodesvc,
+      "kode_jasa": kodejasa,
+      "id_mekanik": idmekanik,
+    };
+
+    try {
+      final token = Publics.controller.getToken.value ?? '';
+      print('Token: $token');
+
+      var response = await Dio().get(
+        _getpRrosesPKB,
+        data: data,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      print('Response: ${response.data}');
+
+      final obj = ProsesPromex.fromJson(response.data);
+
+      if (obj.status == 'Invalid token: Expired') {
+        Get.offAllNamed(Routes.SIGNIN);
+        Get.snackbar(
+          obj.status.toString(),
+          obj.status.toString(),
+        );
+      }
+      return obj;
+    } catch (e) {
+      print('Error: $e');
+      throw e;
+    }
+  }
+  //Beda
   //Beda
   static Future<UpdateKeterangan> updateketeranganID({
     required String promekid,

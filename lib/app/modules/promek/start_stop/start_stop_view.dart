@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '../../../data/data_endpoint/mekanik_pkb.dart';
+import '../../../data/data_endpoint/prosesspromaxpkb.dart';
 import '../../../data/endpoint.dart';
 import '../controllers/promek_controller.dart';
 
@@ -15,19 +16,38 @@ class StartStopView extends StatefulWidget {
 
 class _StartStopViewState extends State<StartStopView> {
   String? selectedItemJasa;
+  String? selectedItemKodeJasa;
   Mekanikpkb? selectedMechanic;
   bool showDetails = false;
   TextEditingController textFieldController = TextEditingController();
-  Map<String, String> selectedItems = {}; // Update selectedItems menjadi Map<String, String>
+  Map<String, String> selectedItems = {};
   Map<String, bool> isStartedMap = {};
   Map<String, TextEditingController> additionalInputControllers = {};
   final PromekController controller = Get.put(PromekController());
+  Map<String, List<Proses>> historyData = {};
 
   @override
   void initState() {
     super.initState();
     final Map args = Get.arguments;
     controller.setInitialValues(args);
+  }
+
+  Future<void> fetchPromekData(String kodesvc, String kodejasa, String idmekanik) async {
+    try {
+      var response = await API.PromekProsesPKBID(
+        kodesvc: kodesvc,
+        kodejasa: kodejasa,
+        idmekanik: idmekanik,
+      );
+      if (response.status == 200) {
+        setState(() {
+          historyData[idmekanik] = response.dataProsesMekanik?.proses ?? [];
+        });
+      }
+    } catch (e) {
+      print('Error fetching promek data: $e');
+    }
   }
 
   @override
@@ -78,18 +98,19 @@ class _StartStopViewState extends State<StartStopView> {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(), // Ensures no scroll within a scroll
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: jasaList.length,
                           itemBuilder: (context, index) {
                             final jasa = jasaList[index];
                             return RadioListTile<String>(
                               title: Text(jasa.namaJasa ?? ''),
                               controlAffinity: ListTileControlAffinity.trailing,
-                              value: jasa.namaJasa!,
-                              groupValue: selectedItemJasa,
+                              value: jasa.kodeJasa!, // Assuming kodeJasa is the correct field
+                              groupValue: selectedItemKodeJasa,
                               onChanged: (String? value) {
                                 setState(() {
-                                  selectedItemJasa = value;
+                                  selectedItemJasa = jasa.namaJasa;
+                                  selectedItemKodeJasa = value;
                                   showDetails = true;
                                 });
                               },
@@ -100,7 +121,7 @@ class _StartStopViewState extends State<StartStopView> {
                           Column(
                             children: [
                               DropdownButton<String>(
-                                value: selectedMechanic?.id.toString(), // Using id instead of nama
+                                value: selectedMechanic?.id.toString(),
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedMechanic = mechanics.firstWhere((mechanic) => mechanic.id.toString() == newValue);
@@ -109,23 +130,24 @@ class _StartStopViewState extends State<StartStopView> {
                                 },
                                 items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
                                   return DropdownMenuItem<String>(
-                                    value: mechanic.id.toString(), // Using id instead of nama
+                                    value: mechanic.id.toString(),
                                     child: Text(mechanic.nama ?? ''),
                                   );
                                 }).toList(),
                               ),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  String kodejasa = selectedItemKodeJasa ?? '';
+                                  String kodesvc = args['kode_svc'] ?? '';
+                                  await fetchPromekData(kodesvc, kodejasa, selectedMechanic!.id.toString());
                                   setState(() {
                                     if (selectedMechanic != null) {
-                                      final mechanicId = selectedMechanic!.id.toString(); // Ambil ID mekanik
+                                      final mechanicId = selectedMechanic!.id.toString();
                                       final mechanicName = selectedMechanic!.nama!;
-                                      selectedItems[mechanicId] = mechanicName; // Simpan ID mekanik dan nama mekanik
+                                      selectedItems[mechanicId] = mechanicName;
                                       isStartedMap[mechanicName] = false;
                                       additionalInputControllers[mechanicName] = TextEditingController();
-                                      // Remove the selected mechanic from the dropdown
                                       mechanics.removeWhere((mechanic) => mechanic.id.toString() == mechanicId);
-                                      // Reset the selected mechanic
                                       selectedMechanic = null;
                                     }
                                   });
@@ -133,8 +155,7 @@ class _StartStopViewState extends State<StartStopView> {
                                 child: Text('Tambah'),
                               ),
                               SizedBox(height: 20),
-                              if (showDetails) SizedBox(height: 20),
-                              ...selectedItems.keys.map((item) => buildTextFieldAndStartButton(item)).toList(), // Gunakan keys dari selectedItems
+                              ...selectedItems.keys.map((item) => buildTextFieldAndStartButton(item)).toList(),
                             ],
                           ),
                       ],
@@ -157,11 +178,37 @@ class _StartStopViewState extends State<StartStopView> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(selectedItems[item] ?? ''), // Gunakan nilai dari selectedItems
+          Text(selectedItems[item] ?? ''),
           SizedBox(height: 10),
+          if (isStartedMap[item] == true)
+            TextField(
+              controller: additionalInputControllers[item],
+              decoration: InputDecoration(
+                labelText: 'Masukkan keterangan tambahan',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                // Tidak perlu menggunakan setState disini
+                additionalInputControllers[item]?.text = value;
+              },
+            ),
+          SizedBox(height: 10),
+          Text('History'),
+          if (historyData.containsKey(item))
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: historyData[item]!.map((proses) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Start Promek: ${proses.startPromek ?? 'N/A'}'),
+                    Text('Stop Promek: ${proses.stopPromek ?? 'N/A'}'),
+                  ],
+                );
+              }).toList(),
+            ),
           ElevatedButton(
             onPressed: () async {
-              // Check if there's a mechanic selected for the current item
               if (!selectedItems.containsKey(item)) {
                 QuickAlert.show(
                   context: Get.context!,
@@ -173,28 +220,26 @@ class _StartStopViewState extends State<StartStopView> {
                 );
                 return;
               }
-              print('TextField value: ${additionalInputControllers[item]?.text}');
-              if (isStartedMap[item] == true && (additionalInputControllers[item]?.text?.isEmpty ?? true)) {
+
+              bool isStarted = isStartedMap[item] ?? false;
+              if (isStarted && additionalInputControllers[item]?.text.isEmpty == true) {
                 QuickAlert.show(
                   context: Get.context!,
                   type: QuickAlertType.warning,
                   title: 'Penting !!',
-                  text: 'Harap isi keterangan tambahan terlebih dahulu',
+                  text: 'Isi keterangan terlebih dahulu sebelum menghentikan',
                   confirmBtnText: 'Oke',
                   confirmBtnColor: Colors.green,
                 );
                 return;
               }
 
-              // Rest of your onPressed logic remains the same
-              bool isStarted = isStartedMap[item] ?? false;
               String role = isStarted ? 'stop' : 'start';
-              String kodejasa = selectedItemJasa ?? '';
-              String idmekanik = item; // Use the item directly as ID mekanik
+              String kodejasa = selectedItemKodeJasa ?? '';
+              String idmekanik = item;
               String kodesvc = args['kode_svc'] ?? '';
 
               try {
-                // Send the request to start or stop the mechanic
                 var response = await API.InsertPromexoPKBID(
                   role: role,
                   kodejasa: kodejasa,
@@ -202,17 +247,15 @@ class _StartStopViewState extends State<StartStopView> {
                   kodesvc: kodesvc,
                 );
                 if (response.status == 200) {
-                  // Toggle the mechanic's status
                   setState(() {
                     isStartedMap[item] = !isStarted;
                   });
 
-                  if (!isStarted) {
+                  if (isStarted) {
                     await API.updateketeranganID(
                       promekid: 'promekId.toString()',
                       keteranganpromek: additionalInputControllers[item]?.text ?? '',
                     );
-                    // Handle the response from the update API call as needed
                   }
                 } else {
                   QuickAlert.show(
@@ -240,15 +283,6 @@ class _StartStopViewState extends State<StartStopView> {
               backgroundColor: isStartedMap[item] == true ? Colors.red : Colors.green,
             ),
           ),
-          if (isStartedMap[item] == true) SizedBox(height: 10),
-          if (isStartedMap[item] == true)
-            TextField(
-              controller: additionalInputControllers[item],
-              decoration: InputDecoration(
-                labelText: 'Masukkan keterangan tambahan',
-                border: OutlineInputBorder(),
-              ),
-            ),
         ],
       ),
     );

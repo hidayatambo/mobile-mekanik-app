@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -54,8 +55,15 @@ class _StartStopViewState extends State<StartStopView> {
   Widget build(BuildContext context) {
     final Map args = Get.arguments;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.white,
+        ),
+        title: const Text(
           'Mekanik',
           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
         ),
@@ -67,23 +75,13 @@ class _StartStopViewState extends State<StartStopView> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
-                    spreadRadius: 5,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
               child: FutureBuilder<MekanikPKB>(
                 future: API.MeknaikPKBID(kodesvc: args['kode_svc'] ?? ''),
                 builder: (context, snapshot) {
@@ -95,46 +93,101 @@ class _StartStopViewState extends State<StartStopView> {
                     final jasaList = snapshot.data?.dataJasaMekanik?.jasa ?? [];
                     final mechanics = snapshot.data?.dataJasaMekanik?.mekanik ?? [];
                     return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text('Pilih Jasa',style: TextStyle(fontWeight: FontWeight.bold),),
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: jasaList.length,
                           itemBuilder: (context, index) {
                             final jasa = jasaList[index];
-                            return RadioListTile<String>(
-                              title: Text(jasa.namaJasa ?? ''),
-                              controlAffinity: ListTileControlAffinity.trailing,
-                              value: jasa.kodeJasa!, // Assuming kodeJasa is the correct field
-                              groupValue: selectedItemKodeJasa,
-                              onChanged: (String? value) {
+                            return InkWell(
+                              onTap: () {
                                 setState(() {
                                   selectedItemJasa = jasa.namaJasa;
-                                  selectedItemKodeJasa = value;
+                                  selectedItemKodeJasa = jasa.kodeJasa;
                                   showDetails = true;
                                 });
                               },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.15),
+                                      spreadRadius: 5,
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                  color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.white,
+                                  border: Border.all(
+                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.transparent,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  jasa.namaJasa ?? '',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ),
                             );
                           },
                         ),
+
                         if (showDetails)
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              DropdownButton<String>(
-                                value: selectedMechanic?.id.toString(),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedMechanic = mechanics.firstWhere((mechanic) => mechanic.id.toString() == newValue);
-                                    textFieldController.text = newValue ?? '';
-                                  });
-                                },
-                                items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
-                                  return DropdownMenuItem<String>(
-                                    value: mechanic.id.toString(),
-                                    child: Text(mechanic.nama ?? ''),
-                                  );
-                                }).toList(),
+                              const SizedBox(height: 10,),
+                              const Text('Pilih Mekanik',style: TextStyle(fontWeight: FontWeight.bold),),
+                              const SizedBox(height: 10,),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.15),
+                                      spreadRadius: 5,
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: DropdownButtonHideUnderline(
+                                  child: ButtonTheme(
+                                    alignedDropdown: true,  // Memastikan dropdown di-align ke kiri
+                                    child: DropdownButton<String>(
+                                      value: selectedMechanic?.id.toString(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedMechanic = mechanics.firstWhere((mechanic) => mechanic.id.toString() == newValue);
+                                          textFieldController.text = newValue ?? '';
+                                        });
+                                      },
+                                      items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
+                                        return DropdownMenuItem<String>(
+                                          value: mechanic.id.toString(),
+                                          child: Text(mechanic.nama ?? ''),
+                                        );
+                                      }).toList(),
+                                      isExpanded: true,
+                                      hint: selectedMechanic == null ? const Text("Mekanik belum dipilih", style: TextStyle(color: Colors.grey)) : null,
+                                    ),
+                                  ),
+                                ),
+
                               ),
+                              const SizedBox(height: 10,),
                               ElevatedButton(
                                 onPressed: () async {
                                   String kodejasa = selectedItemKodeJasa ?? '';
@@ -152,9 +205,12 @@ class _StartStopViewState extends State<StartStopView> {
                                     }
                                   });
                                 },
-                                child: Text('Tambah'),
+                                child: const Text('Tambah', style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.blue,
+                                ),
                               ),
-                              SizedBox(height: 20),
                               ...selectedItems.keys.map((item) => buildTextFieldAndStartButton(item)).toList(),
                             ],
                           ),
@@ -172,28 +228,55 @@ class _StartStopViewState extends State<StartStopView> {
 
   Widget buildTextFieldAndStartButton(String item) {
     final Map args = Get.arguments;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-      child: Column(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10,),
+          const Text('Mekanik yang di tambahkan',style: TextStyle(fontWeight: FontWeight.bold),),
+          const SizedBox(height: 10,),
+      Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 5,
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child:
+      Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(selectedItems[item] ?? ''),
-          SizedBox(height: 10),
+          Text(selectedItems[item] ?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+          const SizedBox(height: 10),
           if (isStartedMap[item] == true)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child:
             TextField(
               controller: additionalInputControllers[item],
-              decoration: InputDecoration(
-                labelText: 'Masukkan keterangan tambahan',
-                border: OutlineInputBorder(),
+              decoration: const InputDecoration(
+                labelText: 'Isi keterangan tambahan',
+                border: InputBorder.none,
               ),
               onChanged: (value) {
-                // Tidak perlu menggunakan setState disini
                 additionalInputControllers[item]?.text = value;
               },
             ),
-          SizedBox(height: 10),
-          Text('History'),
+            ),
+          const SizedBox(height: 10),
+          const Text('History :', style: TextStyle(fontWeight: FontWeight.bold),),
           if (historyData.containsKey(item))
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +290,7 @@ class _StartStopViewState extends State<StartStopView> {
                 );
               }).toList(),
             ),
+          const SizedBox(height: 10,),
           ElevatedButton(
             onPressed: () async {
               if (!selectedItems.containsKey(item)) {
@@ -280,11 +364,13 @@ class _StartStopViewState extends State<StartStopView> {
             },
             child: Text(isStartedMap[item] == true ? 'Stop' : 'Start'),
             style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
               backgroundColor: isStartedMap[item] == true ? Colors.red : Colors.green,
             ),
           ),
         ],
       ),
+      ),]
     );
   }
 }

@@ -20,8 +20,9 @@ class PKBlist extends StatefulWidget {
   State<PKBlist> createState() => _PKBlistState();
 }
 
-class _PKBlistState extends State<PKBlist> {
+class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PKBlist> {
   late RefreshController _refreshController;
+
   @override
   void initState() {
     _refreshController = RefreshController();
@@ -29,7 +30,11 @@ class _PKBlistState extends State<PKBlist> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Column(

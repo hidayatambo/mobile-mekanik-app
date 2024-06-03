@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -26,10 +28,11 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
   Map<String, TextEditingController> additionalInputControllers = {};
   final PromekController controller = Get.put(PromekController());
   Map<String, List<Proses>> historyData = {};
-
+  Timer? _timer;
   @override
   void initState() {
     super.initState();
+    _timer?.cancel();
     final Map args = Get.arguments;
     controller.setInitialValues(args);
   }
@@ -235,148 +238,149 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
   Widget buildTextFieldAndStartButton(String item) {
     final Map args = Get.arguments;
     return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10,),
-          const Text('Mekanik yang di tambahkan',style: TextStyle(fontWeight: FontWeight.bold),),
-          const SizedBox(height: 10,),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.15),
-                  spreadRadius: 5,
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10,),
+        const Text('Mekanik yang di tambahkan',style: TextStyle(fontWeight: FontWeight.bold),),
+        const SizedBox(height: 10,),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.15),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(selectedItems[item] ?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
+              const SizedBox(height: 10),
+              if (isStartedMap[item] == true)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+                  child: TextField(
+                    controller: additionalInputControllers[item],
+                    decoration: const InputDecoration(
+                      labelText: 'Isi keterangan tambahan',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) {
+                      additionalInputControllers[item]?.text = value;
+                    },
+                  ),
                 ),
-              ],
-            ),
-            child:
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(selectedItems[item] ?? '', style: const TextStyle(fontWeight: FontWeight.bold),),
-                const SizedBox(height: 10),
-                if (isStartedMap[item] == true)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    child:
-                    TextField(
-                      controller: additionalInputControllers[item],
-                      decoration: const InputDecoration(
-                        labelText: 'Isi keterangan tambahan',
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        additionalInputControllers[item]?.text = value;
-                      },
-                    ),
-                  ),
-                const SizedBox(height: 10),
-                const Text('History :', style: TextStyle(fontWeight: FontWeight.bold),),
-                if (historyData.containsKey(item))
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: historyData[item]!.map((proses) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Start Promek: ${proses.startPromek ?? 'N/A'}'),
-                          Text('Stop Promek: ${proses.stopPromek ?? 'N/A'}'),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                const SizedBox(height: 10,),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (!selectedItems.containsKey(item)) {
-                      QuickAlert.show(
-                        context: Get.context!,
-                        type: QuickAlertType.warning,
-                        title: 'Penting !!',
-                        text: 'Pilih mekanik terlebih dahulu',
-                        confirmBtnText: 'Oke',
-                        confirmBtnColor: Colors.green,
-                      );
-                      return;
-                    }
+              const SizedBox(height: 10),
+              const Text('History :', style: TextStyle(fontWeight: FontWeight.bold),),
+              if (historyData.containsKey(item))
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: historyData[item]!.map((proses) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Start Promek: ${proses.startPromek ?? 'N/A'}'),
+                        Text('Stop Promek: ${proses.stopPromek ?? 'N/A'}'),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              const SizedBox(height: 10,),
+              ElevatedButton(
+                onPressed: () async {
+                  if (!selectedItems.containsKey(item)) {
+                    QuickAlert.show(
+                      context: Get.context!,
+                      type: QuickAlertType.warning,
+                      title: 'Penting !!',
+                      text: 'Pilih mekanik terlebih dahulu',
+                      confirmBtnText: 'Oke',
+                      confirmBtnColor: Colors.green,
+                    );
+                    return;
+                  }
 
-                    bool isStarted = isStartedMap[item] ?? false;
-                    if (isStarted && additionalInputControllers[item]?.text.isEmpty == true) {
-                      QuickAlert.show(
-                        context: Get.context!,
-                        type: QuickAlertType.warning,
-                        title: 'Penting !!',
-                        text: 'Isi keterangan terlebih dahulu sebelum menghentikan',
-                        confirmBtnText: 'Oke',
-                        confirmBtnColor: Colors.green,
-                      );
-                      return;
-                    }
+                  bool isStarted = isStartedMap[item] ?? false;
+                  if (isStarted && additionalInputControllers[item]?.text.isEmpty == true) {
+                    QuickAlert.show(
+                      context: Get.context!,
+                      type: QuickAlertType.warning,
+                      title: 'Penting !!',
+                      text: 'Isi keterangan terlebih dahulu sebelum menghentikan',
+                      confirmBtnText: 'Oke',
+                      confirmBtnColor: Colors.green,
+                    );
+                    return;
+                  }
 
-                    String role = isStarted ? 'stop' : 'start';
-                    String kodejasa = selectedItemKodeJasa ?? '';
-                    String idmekanik = item;
-                    String kodesvc = args['kode_svc'] ?? '';
+                  String role = isStarted ? 'stop' : 'start';
+                  String kodejasa = selectedItemKodeJasa ?? '';
+                  String idmekanik = item;
+                  String kodesvc = args['kode_svc'] ?? '';
 
-                    try {
-                      var response = await API.InsertPromexoPKBID(
-                        role: role,
-                        kodejasa: kodejasa,
-                        idmekanik: idmekanik,
-                        kodesvc: kodesvc,
-                      );
-                      if (response.status == 200) {
-                        setState(() {
-                          isStartedMap[item] = !isStarted;
-                        });
-
-                        if (isStarted) {
-                          await API.updateketeranganID(
-                            promekid: 'promekId.toString()',
-                            keteranganpromek: additionalInputControllers[item]?.text ?? '',
-                          );
-                        }
-                      } else {
-                        QuickAlert.show(
-                          context: Get.context!,
-                          type: QuickAlertType.error,
-                          title: 'Error !!',
-                          text: 'Gagal memperbarui status. Silakan coba lagi.',
-                          confirmBtnText: 'Oke',
-                          confirmBtnColor: Colors.red,
+                  try {
+                    var response = await API.InsertPromexoPKBID(
+                      role: role,
+                      kodejasa: kodejasa,
+                      idmekanik: idmekanik,
+                      kodesvc: kodesvc,
+                    );
+                    if (response.status == 200) {
+                      setState(() {
+                        isStartedMap[item] = !isStarted;
+                      });
+                      await fetchPromekData(kodesvc, kodejasa, idmekanik);
+                      if (isStarted) {
+                        await API.updateketeranganID(
+                          promekid: 'promekId.toString()',
+                          keteranganpromek: additionalInputControllers[item]?.text ?? '',
                         );
+                      } else {
+                        await fetchPromekData(kodesvc, kodejasa, idmekanik);
                       }
-                    } catch (e) {
+                    } else {
                       QuickAlert.show(
                         context: Get.context!,
                         type: QuickAlertType.error,
                         title: 'Error !!',
-                        text: 'Terjadi kesalahan: $e',
+                        text: 'Gagal memperbarui status. Silakan coba lagi.',
                         confirmBtnText: 'Oke',
                         confirmBtnColor: Colors.red,
                       );
                     }
-                  },
-                  child: Text(isStartedMap[item] == true ? 'Stop' : 'Start'),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: isStartedMap[item] == true ? Colors.red : Colors.green,
-                  ),
+                  } catch (e) {
+                    QuickAlert.show(
+                      context: Get.context!,
+                      type: QuickAlertType.error,
+                      title: 'Warning',
+                      text: 'Mekanik yang anda tambah kan sudah selesai mengerjakan jasa yang anda select',
+                      confirmBtnText: 'Oke',
+                      confirmBtnColor: Colors.red,
+                    );
+                  }
+                },
+                child: Text(isStartedMap[item] == true ? 'Stop' : 'Start'),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: isStartedMap[item] == true ? Colors.red : Colors.green,
                 ),
-              ],
-            ),
-          ),]
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

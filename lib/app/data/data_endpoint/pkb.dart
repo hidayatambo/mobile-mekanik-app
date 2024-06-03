@@ -56,6 +56,7 @@ class DataPKB {
   String? pergantianPart;
   String? saran;
   String? ppn;
+  String? namamerk;
   String? penanggungJawab;
   String? tglEstimasi;
   String? tglPkb;
@@ -87,8 +88,9 @@ class DataPKB {
   String? kategoriKendaraan;
   String? jenisKontrak;
   String? jenisUnit;
+  String? idPicPerusahaan;
   String? picIdPelanggan;
-  String? idCustomer;
+  int? idCustomer;
   String? nama;
   String? alamat;
   String? telp;
@@ -103,6 +105,7 @@ class DataPKB {
   String? npwpTagihan;
   String? picTagihan;
   String? password;
+  String? namatipe;
   String? rememberToken;
   String? emailVerifiedAt;
   String? otp;
@@ -171,6 +174,7 @@ class DataPKB {
         this.kategoriKendaraan,
         this.jenisKontrak,
         this.jenisUnit,
+        this.idPicPerusahaan,
         this.picIdPelanggan,
         this.idCustomer,
         this.nama,
@@ -187,9 +191,11 @@ class DataPKB {
         this.npwpTagihan,
         this.picTagihan,
         this.password,
+        this.namatipe,
         this.rememberToken,
         this.emailVerifiedAt,
         this.otp,
+        this.namamerk,
         this.otpExpiry,
         this.gambar,
         this.namaCabang,
@@ -255,6 +261,7 @@ class DataPKB {
     kategoriKendaraan = json['kategori_kendaraan'];
     jenisKontrak = json['jenis_kontrak'];
     jenisUnit = json['jenis_unit'];
+    idPicPerusahaan = json['id_pic_perusahaan'];
     picIdPelanggan = json['pic_id_pelanggan'];
     idCustomer = json['id_customer'];
     nama = json['nama'];
@@ -263,6 +270,8 @@ class DataPKB {
     hp = json['hp'];
     email = json['email'];
     kontak = json['kontak'];
+    namamerk = json['nama_merk'];
+    namatipe = json['nama_tipe'];
     due = json['due'];
     jenisKontrakX = json['jenis_kontrak_x'];
     namaTagihan = json['nama_tagihan'];
@@ -309,6 +318,8 @@ class DataPKB {
     data['perintah_kerja'] = this.perintahKerja;
     data['pergantian_part'] = this.pergantianPart;
     data['saran'] = this.saran;
+    data['nama_merk'] = this.namamerk;
+    data['nama_tipe'] = this.namatipe;
     data['ppn'] = this.ppn;
     data['penanggung_jawab'] = this.penanggungJawab;
     data['tgl_estimasi'] = this.tglEstimasi;
@@ -341,6 +352,7 @@ class DataPKB {
     data['kategori_kendaraan'] = this.kategoriKendaraan;
     data['jenis_kontrak'] = this.jenisKontrak;
     data['jenis_unit'] = this.jenisUnit;
+    data['id_pic_perusahaan'] = this.idPicPerusahaan;
     data['pic_id_pelanggan'] = this.picIdPelanggan;
     data['id_customer'] = this.idCustomer;
     data['nama'] = this.nama;

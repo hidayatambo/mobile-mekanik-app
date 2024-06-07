@@ -399,8 +399,8 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                                                 QuickAlert.show(
                                                   context: context, // Ubah Get.context! menjadi context
                                                   type: QuickAlertType.error,
-                                                  title: 'Error',
-                                                  text: 'Terjadi kesalahan: ${e.toString()}',
+                                                  title: 'Mekanik telah selesai',
+                                                  text: 'Gagal Start',
                                                   confirmBtnText: 'Oke',
                                                   confirmBtnColor: Colors.red,
                                                 );

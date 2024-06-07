@@ -26,7 +26,7 @@ class StatsGrid extends StatelessWidget {
                   onTapRoute: Routes.BOOKINGMASUK,
                   dataLabel: "Booking Masuk",
                 ),
-                _buildFutureStatCard<ServiceSelesai>(
+                _buildFutureStatCard<ServiceSelesaiHome>(
                   future: API.ServiceSelesaiID(),
                   color: Colors.blue,
                   onTapRoute: null??'',
@@ -74,7 +74,7 @@ class StatsGrid extends StatelessWidget {
 
             if (data is MasukBooking) {
               count = data.countBookingMasuk?.toString() ?? '0';
-            } else if (data is ServiceSelesai) {
+            } else if (data is ServiceSelesaiHome) {
               count = data.countBookingMasuk?.toString() ?? '0';
             } else if (data is ServiceDikerjakan) {
               count = data.countDikerjakan?.toString() ?? '0';

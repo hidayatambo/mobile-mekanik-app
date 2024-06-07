@@ -986,7 +986,7 @@ class API {
     }
   }
   //Beda
-  static Future<ServiceSelesai> ServiceSelesaiID() async {
+  static Future<ServiceSelesaiHome> ServiceSelesaiID() async {
     try {
       final token = Publics.controller.getToken.value ?? '';
       print('Token: $token');
@@ -1003,7 +1003,7 @@ class API {
 
       print('Response: ${response.data}');
 
-      final obj = ServiceSelesai.fromJson(response.data);
+      final obj = ServiceSelesaiHome.fromJson(response.data);
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);

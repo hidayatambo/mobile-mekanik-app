@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:label="Mekanik Bengkelly"
+        android:label="Demo Mekanik Bengkelly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

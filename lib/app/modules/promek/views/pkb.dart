@@ -103,7 +103,7 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                             child: widget,
                           ),
                         ),
-                        children: getDataAcc.dataPKB != null
+                        children: getDataAcc.dataPKB != null && getDataAcc.dataPKB!.isNotEmpty
                             ? getDataAcc.dataPKB!.map((e) {
                           return pkblist(
                             items: e,
@@ -126,7 +126,30 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                             },
                           );
                         }).toList()
-                            : [Container()],
+                            : [Container(
+                        height: 500,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/icons/booking.png',
+                              width: 100.0,
+                              height: 100.0,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Belum ada data PKB Service',
+                              style: TextStyle(
+                                  color: MyColors.appPrimaryColor,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),],
                       ),
                     );
                   } else {

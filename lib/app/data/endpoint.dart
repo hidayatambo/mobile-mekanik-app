@@ -37,7 +37,7 @@ import 'package:http/http.dart' as http;
 class API {
   static const _url = 'https://mobile.techthinkhub.id';
   static const _urlbe = 'https://be.techthinkhub.id';
-  static const _baseUrl = '$_urlbe/api';
+  static const _baseUrl = '$_url/api';
   static const _getProfile = '$_baseUrl/mekanik/profile-karyawan';
   static const _getLogin = '$_baseUrl/mekanik/login';
   static const _getTooking = '$_baseUrl/mekanik/booking';

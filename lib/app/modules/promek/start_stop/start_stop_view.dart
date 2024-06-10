@@ -320,8 +320,7 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                         Proses specificItem = prosesList[0];  // Use the first item for displaying the mechanic name and history header
                         bool isStopped = specificItem.stopPromek == null || specificItem.stopPromek == 'N/A';
 
-                        return Column(
-                          children: [
+                        return
                             Container(
                               padding: const EdgeInsets.all(10),
                               margin: EdgeInsets.only(right: 20, left: 20, bottom: 20),
@@ -443,8 +442,7 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+
                         );
                       } else {
                         return Center(
@@ -667,7 +665,7 @@ class HistoryPKBStartStopDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        margin: EdgeInsets.only(left: 10, right: 10),
     decoration: BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(10),
@@ -676,9 +674,18 @@ class HistoryPKBStartStopDetails extends StatelessWidget {
       Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Start Promek: ${items.startPromek ?? 'N/A'}', style: TextStyle(color: Colors.green),),
-        Text('Stop Promek: ${items.stopPromek ?? 'N/A'}', style: TextStyle(color: Colors.red),),
-        Text('Keterangan: ${items.keterangan ?? 'N/A'}', style: TextStyle(color: Colors.black),),
+        Row(children: [
+          Text('Start ',style: TextStyle(color: Colors.green),),
+          Text('Promek: ',),
+          Text('${items.startPromek ?? 'N/A'}',),
+        ],),
+        Row(children: [
+          Text('Stop ',style: TextStyle(color: Colors.red),),
+          Text('Promek: ',),
+          Text('${items.stopPromek ?? 'N/A'}',),
+        ],),
+        Text('Keterangan: ${items.keterangan ?? 'kosong'}', style: TextStyle(color: Colors.black),),
+        Divider()
       ],
       ),
     );

@@ -39,6 +39,7 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
   @override
   void initState() {
     super.initState();
+    additionalInputControllers.values.forEach((controller) => controller.dispose());
     _timer?.cancel();
     args = Get.arguments;
     controller.setInitialValues(args);
@@ -296,6 +297,9 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
             if (showDetails)
               Column(
                 children: idmekanikList.map((id) {
+                  if (!additionalInputControllers.containsKey(id)) {
+                    additionalInputControllers[id] = TextEditingController();
+                  }
                   return FutureBuilder(
                     future: API.PromekProsesPKBID(
                       kodesvc: args['kode_svc'] ?? '',
@@ -307,121 +311,140 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                         return SizedBox();
                       } else if (snapshot.hasData && snapshot.data != null) {
                         ProsesPromex getDataAcc = snapshot.data ?? ProsesPromex();
+                        List<Proses> prosesList = getDataAcc.dataProsesMekanik?.proses ?? [];
+
+                        if (prosesList.isEmpty) {
+                          return SizedBox(height: 10);
+                        }
+
+                        Proses specificItem = prosesList[0];  // Use the first item for displaying the mechanic name and history header
+                        bool isStopped = specificItem.stopPromek == null || specificItem.stopPromek == 'N/A';
+
                         return Column(
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 475),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              child: FadeInAnimation(
-                                child: widget,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              margin: EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.15),
+                                    spreadRadius: 5,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
-                            ),
-                            children: getDataAcc.dataProsesMekanik != null && getDataAcc.dataProsesMekanik!.proses!.isNotEmpty
-                                ? getDataAcc.dataProsesMekanik!.proses!.map((e) {
-                              bool isStopped = e.stopPromek == null || e.stopPromek == 'N/A';
-                              return Column(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  HistoryPKBStartStart(items: specificItem),
+                                  ...prosesList.map((e) {
+                                    return HistoryPKBStartStopDetails(items: e);
+                                  }).toList(),
                                   Container(
-                                    padding: const EdgeInsets.all(10),
-                                    margin: EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.15),
-                                          spreadRadius: 5,
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ],
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        HistoryPKBStartStart(items: e),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 10,),
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius: BorderRadius.all(Radius.circular(10))
-                                          ),
-                                          child: !isStopped ? SizedBox() : TextField(
-                                            controller: additionalInputControllers[id],
-                                            decoration: const InputDecoration(
-                                              labelText: 'Isi keterangan tambahan',
-                                              border: InputBorder.none,
-                                            ),
-                                            onChanged: (value) {
-                                              additionalInputControllers[id]?.text = value;
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(height: 10,),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              String role = isStopped ? 'stop' : 'start';
-                                              String kodejasa = selectedItemKodeJasa ?? '';
-                                              String idmekanik = id;
-                                              String kodesvc = args['kode_svc'] ?? '';
+                                    child: !isStopped
+                                        ? SizedBox()
+                                        : TextField(
+                                      controller: additionalInputControllers[id],
+                                      decoration: const InputDecoration(
+                                        labelText: 'Isi keterangan tambahan',
+                                        border: InputBorder.none,
+                                      ),
+                                      onChanged: (value) {},
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        String role = isStopped ? 'stop' : 'start';
+                                        String kodejasa = selectedItemKodeJasa ?? '';
+                                        String idmekanik = id;
+                                        String kodesvc = args['kode_svc'] ?? '';
+                                        String keterangan = additionalInputControllers[id]?.text ?? '';
 
-                                              try {
-                                                var response = await API.InsertPromexoPKBID(
-                                                  role: role,
-                                                  kodejasa: kodejasa,
-                                                  idmekanik: idmekanik,
-                                                  kodesvc: kodesvc,
-                                                );
-                                                if (response.status == 200) {
-                                                  setState(() {
-                                                    isStopped = !isStopped;
-                                                    isStartedMap[id] = !isStopped;
-                                                  });
-                                                  await fetchPromekData(kodesvc, kodejasa, idmekanik);
-                                                  if (isStopped) {
-                                                    await API.updateketeranganID(
-                                                      promekid: 'promekId.toString()', // Pastikan Anda mengisi promekId dengan nilai yang benar
-                                                      keteranganpromek: additionalInputControllers[id]?.text ?? '',
-                                                    );
-                                                  }
-                                                } else {
-                                                  QuickAlert.show(
-                                                    context: context, // Ubah Get.context! menjadi context
-                                                    type: QuickAlertType.error,
-                                                    title: 'Error !!',
-                                                    text: 'Gagal memperbarui status. Silakan coba lagi.',
-                                                    confirmBtnText: 'Oke',
-                                                    confirmBtnColor: Colors.red,
-                                                  );
-                                                }
-                                              } catch (e) {
-                                                QuickAlert.show(
-                                                  context: context, // Ubah Get.context! menjadi context
-                                                  type: QuickAlertType.error,
-                                                  title: 'Mekanik telah selesai',
-                                                  text: 'Gagal Start',
-                                                  confirmBtnText: 'Oke',
-                                                  confirmBtnColor: Colors.red,
-                                                );
+                                        print("Sending data to API:");
+                                        print("kodesvc: $kodesvc, kodejasa: $kodejasa, idmekanik: $id, keterangan: $keterangan");
+
+                                        if (isStopped && keterangan.isEmpty) {
+                                          QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.warning,
+                                            title: 'Warning !!',
+                                            text: 'Keterangan tambahan tidak boleh kosong.',
+                                            confirmBtnText: 'Oke',
+                                            confirmBtnColor: Colors.orange,
+                                          );
+                                          return;
+                                        }
+
+                                        try {
+                                          if (isStopped) {
+                                            var updateResponse = await API.updateketeranganPKBID(
+                                              kodesvc: kodesvc,
+                                              kodejasa: kodejasa,
+                                              idmekanik: id,
+                                              keteranganpromek: keterangan,
+                                            );
+                                            if (updateResponse.status != 200) {}
+                                          }
+                                          var response = await API.InsertPromexoPKBID(
+                                            role: role,
+                                            kodejasa: kodejasa,
+                                            idmekanik: idmekanik,
+                                            kodesvc: kodesvc,
+                                          );
+                                          if (response.status == 200) {
+                                            setState(() {
+                                              isStopped = !isStopped;
+                                              isStartedMap[id] = !isStopped;
+                                              if (!isStopped) {
+                                                additionalInputControllers[id]?.clear();
                                               }
-                                            },
-                                            child: Text(isStopped ? 'Stop' : 'Start'),
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.white,
-                                              backgroundColor: isStopped ? Colors.red : Colors.green,
-                                            ),
-                                          ),
-                                        ),
-
-                                      ],
+                                            });
+                                            await fetchPromekData(kodesvc, kodejasa, idmekanik);
+                                          } else {
+                                            QuickAlert.show(
+                                              context: context,
+                                              type: QuickAlertType.error,
+                                              title: 'Error !!',
+                                              text: 'Gagal memperbarui status. Silakan coba lagi.',
+                                              confirmBtnText: 'Oke',
+                                              confirmBtnColor: Colors.red,
+                                            );
+                                          }
+                                        } catch (e) {
+                                          print("Error: $e");
+                                          QuickAlert.show(
+                                            context: context,
+                                            type: QuickAlertType.error,
+                                            title: 'Error !!',
+                                            text: 'Terjadi kesalahan. Silakan coba lagi.',
+                                            confirmBtnText: 'Oke',
+                                            confirmBtnColor: Colors.red,
+                                          );
+                                        }
+                                      },
+                                      child: Text(isStopped ? 'Stop' : 'Start'),
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: isStopped ? Colors.red : Colors.green,
+                                      ),
                                     ),
                                   ),
                                 ],
-                              );
-                            }).toList()
-                                : [SizedBox(height: 10)],
-                          ),
+                              ),
+                            ),
+                          ],
                         );
                       } else {
                         return Center(
@@ -525,8 +548,8 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                           );
                           return;
                         }
-                        bool isStarted = isStartedMap[id] ?? false;
-                        if (isStarted && additionalInputControllers[id]?.text.isEmpty == true) {
+                        bool isStop = isStartedMap[id] ?? false;
+                        if (isStop && additionalInputControllers[id]?.text.isEmpty == true) {
                           QuickAlert.show(
                             context: Get.context!,
                             type: QuickAlertType.warning,
@@ -538,7 +561,7 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                           return;
                         }
 
-                        String role = isStarted ? 'stop' : 'start';
+                        String role = isStop ? 'stop' : 'start';
                         String kodejasa = selectedItemKodeJasa ?? '';
                         String idmekanik = id;
                         String kodesvc = args['kode_svc'] ?? '';
@@ -552,13 +575,15 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                           );
                           if (response.status == 200) {
                             setState(() {
-                              isStartedMap[id] = !isStarted;
+                              isStartedMap[id] = !isStop;
                               isLayoutVisible = false;
                             });
                             await fetchPromekData(kodesvc, kodejasa, idmekanik);
-                            if (isStarted) {
-                              await API.updateketeranganID(
-                                promekid: 'promekId.toString()',
+                            if (isStop) {
+                              await API.updateketeranganPKBID(
+                                kodesvc: args['kode_svc'] ?? '',
+                                kodejasa:  selectedItemKodeJasa ?? '',
+                                idmekanik: id,
                                 keteranganpromek: additionalInputControllers[id]?.text ?? '',
                               );
                             } else {
@@ -615,7 +640,7 @@ class HistoryPKBStartStart extends StatelessWidget {
     return InkWell(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only( left: 10, right: 10, bottom: 10),
+        margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -626,10 +651,35 @@ class HistoryPKBStartStart extends StatelessWidget {
             Text('${items.nama ?? 'N/A'}', style: TextStyle(fontWeight: FontWeight.bold),),
             const SizedBox(height: 10),
             const Text('History :', style: TextStyle(fontWeight: FontWeight.bold),),
-            Text('Start Promek: ${items.startPromek ?? 'N/A'}'),
-            Text('Stop Promek: ${items.stopPromek ?? 'N/A'}'),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HistoryPKBStartStopDetails extends StatelessWidget {
+  final Proses items;
+
+  const HistoryPKBStartStopDetails({Key? key, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+    decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(10),
+    ),
+    child:
+      Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Start Promek: ${items.startPromek ?? 'N/A'}', style: TextStyle(color: Colors.green),),
+        Text('Stop Promek: ${items.stopPromek ?? 'N/A'}', style: TextStyle(color: Colors.red),),
+        Text('Keterangan: ${items.keterangan ?? 'N/A'}', style: TextStyle(color: Colors.black),),
+      ],
       ),
     );
   }

@@ -31,11 +31,12 @@ import 'data_endpoint/serviceselesai.dart';
 import 'data_endpoint/submit_finish.dart';
 import 'data_endpoint/submit_gc.dart';
 import 'data_endpoint/unapprove.dart';
+import 'data_endpoint/update_keterangan_pkb.dart';
 import 'localstorage.dart';
 import 'package:http/http.dart' as http;
 
 class API {
-  static const _url = 'https://mobile.techthinkhub.id';
+  static const _url = 'https://api-vale.techthinkhub.com';
   static const _urlbe = 'https://be.techthinkhub.id';
   static const _baseUrl = '$_url/api';
   static const _getProfile = '$_baseUrl/mekanik/profile-karyawan';
@@ -911,12 +912,16 @@ class API {
   }
   //Beda
   // Beda
-  static Future<UpdateKeterangan> updateketeranganPKBID({
-    required String promekid,
+  static Future<UpdateKeteranganPKB> updateketeranganPKBID({
+    required String kodesvc,
+    required String kodejasa,
+    required String idmekanik,
     required String keteranganpromek,
   }) async {
     final data = {
-      "promek_id": promekid,
+      "kode_svc": kodesvc,
+      "kode_jasa": kodejasa,
+      "id_mekanik": idmekanik,
       "keterangan_promek": keteranganpromek,
     };
 
@@ -936,7 +941,7 @@ class API {
       );
       print('Response: ${response.data}');
 
-      final obj = UpdateKeterangan.fromJson(response.data);
+      final obj = UpdateKeteranganPKB.fromJson(response.data);
 
       if (obj.message == 'Invalid token: Expired') {
         Get.offAllNamed(Routes.SIGNIN);

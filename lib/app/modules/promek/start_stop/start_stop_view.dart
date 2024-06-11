@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../componen/color.dart';
-import '../../../componen/loading_shammer_booking.dart';
 import '../../../data/data_endpoint/mekanik_pkb.dart';
 import '../../../data/data_endpoint/prosesspromaxpkb.dart';
 import '../../../data/endpoint.dart';
@@ -35,10 +34,12 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
   late Map args;
   List<String> idmekanikList = [];
   bool isLayoutVisible = true;
+  late RefreshController _refreshController;
 
   @override
   void initState() {
     super.initState();
+    _refreshController = RefreshController();
     additionalInputControllers.values.forEach((controller) => controller.dispose());
     _timer?.cancel();
     args = Get.arguments;
@@ -97,6 +98,7 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
@@ -113,214 +115,221 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.all(10),
-              child: FutureBuilder<MekanikPKB>(
-                future: API.MeknaikPKBID(kodesvc: args['kode_svc'] ?? ''),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    final jasaList = snapshot.data?.dataJasaMekanik?.jasa ?? [];
-                    final mechanics = snapshot.data?.dataJasaMekanik?.mekanik ?? [];
-                    if (jasaList.isEmpty) {
-                      return Container(
-                        height: 500,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/booking.png',
-                              width: 100.0,
-                              height: 100.0,
-                              fit: BoxFit.cover,
+      body:  SmartRefresher(
+        controller: _refreshController,
+        enablePullDown: true,
+        header: const WaterDropHeader(),
+        onLoading: _onLoading,
+        onRefresh: _onRefresh,
+        child:
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                child: FutureBuilder<MekanikPKB>(
+                  future: API.MeknaikPKBID(kodesvc: args['kode_svc'] ?? ''),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      final jasaList = snapshot.data?.dataJasaMekanik?.jasa ?? [];
+                      final mechanics = snapshot.data?.dataJasaMekanik?.mekanik ?? [];
+                      if (jasaList.isEmpty) {
+                        return Container(
+                          height: 500,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/icons/booking.png',
+                                width: 100.0,
+                                height: 100.0,
+                                fit: BoxFit.cover,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Belum ada Jasa',
+                                style: TextStyle(
+                                    color: MyColors.appPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: jasaList.length,
+                            itemBuilder: (context, index) {
+                              final jasa = jasaList[index];
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedItemJasa = jasa.namaJasa;
+                                    selectedItemKodeJasa = jasa.kodeJasa;
+                                    showDetails = true;
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                  margin: const EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.15),
+                                        spreadRadius: 5,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.white,
+                                    border: Border.all(
+                                      color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.transparent,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    jasa.namaJasa ?? '',
+                                    style: TextStyle(
+                                      color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          if (showDetails) ...[
+                            const SizedBox(height: 10),
+                            const Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.15),
+                                    spreadRadius: 5,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: DropdownButtonHideUnderline(
+                                child: ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: DropdownButton<String>(
+                                    value: selectedMechanic?.id.toString(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedMechanic = mechanics.firstWhere((mechanic) => mechanic.id.toString() == newValue);
+                                        textFieldController.text = newValue ?? '';
+                                      });
+                                    },
+                                    items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
+                                      return DropdownMenuItem<String>(
+                                        value: mechanic.id.toString(),
+                                        child: Text(mechanic.nama ?? ''),
+                                      );
+                                    }).toList(),
+                                    isExpanded: true,
+                                    hint: selectedMechanic == null
+                                        ? const Text("Mekanik belum dipilih", style: TextStyle(color: Colors.grey))
+                                        : null,
+                                  ),
+                                ),
+                              ),
                             ),
-                            const SizedBox(
-                              height: 10,
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () async {
+                                if (selectedMechanic != null) {
+                                  String kodejasa = selectedItemKodeJasa ?? '';
+                                  String kodesvc = args['kode_svc'] ?? '';
+                                  String idmekanik = selectedMechanic!.id.toString();
+                                  await _saveSelectedMechanic(idmekanik);
+                                  await fetchPromekData(kodesvc, kodejasa, idmekanik);
+                                  setState(() {
+                                    final mechanicId = selectedMechanic!.id.toString();
+                                    final mechanicName = selectedMechanic!.nama!;
+                                    selectedItems[mechanicId] = mechanicName;
+                                    isStartedMap[mechanicName] = false;
+                                    additionalInputControllers[mechanicName] = TextEditingController();
+                                    mechanics.removeWhere((mechanic) => mechanic.id.toString() == mechanicId);
+                                    selectedMechanic = null;
+                                  });
+                                } else {
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.warning,
+                                    title: 'Pilih Mekanik',
+                                    text: 'Silakan pilih mekanik terlebih dahulu.',
+                                    confirmBtnText: 'Oke',
+                                    confirmBtnColor: Colors.green,
+                                  );
+                                }
+                              },
+                              child: const Text('Tambah', style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.blue,
+                              ),
                             ),
-                            Text(
-                              'Belum ada Jasa',
-                              style: TextStyle(
-                                  color: MyColors.appPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
+                            SizedBox(height: 10,),
+                            if (showDetails)
+                              const Text('Mekanik yang dipilih', style: TextStyle(fontWeight: FontWeight.bold)),
+                            ...selectedItems.keys.map((item) => buildMechanicCard(item)).toList(),
+                          ]
+                        ],
                       );
                     }
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Pilih Jasa', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: jasaList.length,
-                          itemBuilder: (context, index) {
-                            final jasa = jasaList[index];
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectedItemJasa = jasa.namaJasa;
-                                  selectedItemKodeJasa = jasa.kodeJasa;
-                                  showDetails = true;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.15),
-                                      spreadRadius: 5,
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                  color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.white,
-                                  border: Border.all(
-                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.transparent,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  jasa.namaJasa ?? '',
-                                  style: TextStyle(
-                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.white : Colors.black,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        if (showDetails) ...[
-                          const SizedBox(height: 10),
-                          const Text('Pilih Mekanik', style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.15),
-                                  spreadRadius: 5,
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: DropdownButtonHideUnderline(
-                              child: ButtonTheme(
-                                alignedDropdown: true,
-                                child: DropdownButton<String>(
-                                  value: selectedMechanic?.id.toString(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedMechanic = mechanics.firstWhere((mechanic) => mechanic.id.toString() == newValue);
-                                      textFieldController.text = newValue ?? '';
-                                    });
-                                  },
-                                  items: mechanics.map<DropdownMenuItem<String>>((mechanic) {
-                                    return DropdownMenuItem<String>(
-                                      value: mechanic.id.toString(),
-                                      child: Text(mechanic.nama ?? ''),
-                                    );
-                                  }).toList(),
-                                  isExpanded: true,
-                                  hint: selectedMechanic == null
-                                      ? const Text("Mekanik belum dipilih", style: TextStyle(color: Colors.grey))
-                                      : null,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () async {
-                              if (selectedMechanic != null) {
-                                String kodejasa = selectedItemKodeJasa ?? '';
-                                String kodesvc = args['kode_svc'] ?? '';
-                                String idmekanik = selectedMechanic!.id.toString();
-                                await _saveSelectedMechanic(idmekanik);
-                                await fetchPromekData(kodesvc, kodejasa, idmekanik);
-                                setState(() {
-                                  final mechanicId = selectedMechanic!.id.toString();
-                                  final mechanicName = selectedMechanic!.nama!;
-                                  selectedItems[mechanicId] = mechanicName;
-                                  isStartedMap[mechanicName] = false;
-                                  additionalInputControllers[mechanicName] = TextEditingController();
-                                  mechanics.removeWhere((mechanic) => mechanic.id.toString() == mechanicId);
-                                  selectedMechanic = null;
-                                });
-                              } else {
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Pilih Mekanik',
-                                  text: 'Silakan pilih mekanik terlebih dahulu.',
-                                  confirmBtnText: 'Oke',
-                                  confirmBtnColor: Colors.green,
-                                );
-                              }
-                            },
-                            child: const Text('Tambah', style: TextStyle(color: Colors.white)),
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.blue,
-                            ),
-                          ),
-                          SizedBox(height: 10,),
-                          if (showDetails)
-                          const Text('Mekanik yang dipilih', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ...selectedItems.keys.map((item) => buildMechanicCard(item)).toList(),
-                        ]
-                      ],
-                    );
-                  }
-                },
+                  },
+                ),
               ),
-            ),
-            if (showDetails)
-              Column(
-                children: idmekanikList.map((id) {
-                  if (!additionalInputControllers.containsKey(id)) {
-                    additionalInputControllers[id] = TextEditingController();
-                  }
-                  return FutureBuilder(
-                    future: API.PromekProsesPKBID(
-                      kodesvc: args['kode_svc'] ?? '',
-                      kodejasa: selectedItemKodeJasa ?? '',
-                      idmekanik: id,
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox();
-                      } else if (snapshot.hasData && snapshot.data != null) {
-                        ProsesPromex getDataAcc = snapshot.data ?? ProsesPromex();
-                        List<Proses> prosesList = getDataAcc.dataProsesMekanik?.proses ?? [];
+              if (showDetails)
+                Column(
+                  children: idmekanikList.map((id) {
+                    if (!additionalInputControllers.containsKey(id)) {
+                      additionalInputControllers[id] = TextEditingController();
+                    }
+                    return FutureBuilder(
+                      future: API.PromekProsesPKBID(
+                        kodesvc: args['kode_svc'] ?? '',
+                        kodejasa: selectedItemKodeJasa ?? '',
+                        idmekanik: id,
+                      ),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return SizedBox();
+                        } else if (snapshot.hasData && snapshot.data != null) {
+                          ProsesPromex getDataAcc = snapshot.data ?? ProsesPromex();
+                          List<Proses> prosesList = getDataAcc.dataProsesMekanik?.proses ?? [];
 
-                        if (prosesList.isEmpty) {
-                          return SizedBox(height: 10);
-                        }
+                          if (prosesList.isEmpty) {
+                            return SizedBox(height: 10);
+                          }
 
-                        Proses specificItem = prosesList[0];  // Use the first item for displaying the mechanic name and history header
-                        bool isStopped = specificItem.stopPromek == null || specificItem.stopPromek == 'N/A';
+                          Proses specificItem = prosesList[0];  // Use the first item for displaying the mechanic name and history header
+                          bool isStopped = specificItem.stopPromek == null || specificItem.stopPromek == 'N/A';
 
-                        return
+                          return
                             Container(
                               padding: const EdgeInsets.all(10),
                               margin: EdgeInsets.only(right: 20, left: 20, bottom: 20),
@@ -443,17 +452,18 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                                 ],
                               ),
 
-                        );
-                      } else {
-                        return Center(
-                          child: Text("Error loading data"),
-                        );
-                      }
-                    },
-                  );
-                }).toList(),
-              ),
-          ],
+                            );
+                        } else {
+                          return Center(
+                            child: Text("Error loading data"),
+                          );
+                        }
+                      },
+                    );
+                  }).toList(),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -500,19 +510,19 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                     const SizedBox(height: 10),
 
                     const Text('History :', style: TextStyle(fontWeight: FontWeight.bold),),
-                    if (historyData.containsKey(id))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: historyData[id]!.map((proses) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Start Promek: ${proses.startPromek ?? 'N/A'}'),
-                              Text('Stop Promek: ${proses.stopPromek ?? 'N/A'}'),
-                            ],
-                          );
-                        }).toList(),
-                      ),
+                    // if (historyData.containsKey(id))
+                    //   Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: historyData[id]!.map((proses) {
+                    //       return Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text('Start Promek: ${proses.startPromek ?? 'N/A'}'),
+                    //           Text('Stop Promek: ${proses.stopPromek ?? 'N/A'}'),
+                    //         ],
+                    //       );
+                    //     }).toList(),
+                    //   ),
                     const SizedBox(height: 10,),
                     if (isStartedMap[id] == true)
                       Container(
@@ -625,6 +635,17 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
       )
     ]);
   }
+  _onLoading() {
+    _refreshController.loadComplete();
+  }
+
+  _onRefresh() {
+    HapticFeedback.lightImpact();
+    setState(() {
+      const StartStopView();
+      _refreshController.refreshCompleted();
+    });
+  }
 
 }
 
@@ -664,29 +685,27 @@ class HistoryPKBStartStopDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(left: 10, right: 10),
-    decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(10),
-    ),
-    child:
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 10, right: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child:
       Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [
-          Text('Start ',style: TextStyle(color: Colors.green),),
-          Text('Promek: ',),
-          Text('${items.startPromek ?? 'N/A'}',),
-        ],),
-        Row(children: [
-          Text('Stop ',style: TextStyle(color: Colors.red),),
-          Text('Promek: ',),
-          Text('${items.stopPromek ?? 'N/A'}',),
-        ],),
-        Text('Keterangan: ${items.keterangan ?? 'kosong'}', style: TextStyle(color: Colors.black),),
-        Divider()
-      ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text('Start ',style: TextStyle(color: Colors.green),),
+            Text('${items.startPromek ?? 'N/A'}',),
+          ],),
+          Row(children: [
+            Text('Stop ',style: TextStyle(color: Colors.red),),
+            Text('${items.stopPromek ?? 'N/A'}',),
+          ],),
+          Text('Keterangan: ${items.keterangan ?? 'kosong'}', style: TextStyle(color: Colors.black),),
+          Divider()
+        ],
       ),
     );
   }

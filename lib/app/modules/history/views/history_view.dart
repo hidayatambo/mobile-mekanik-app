@@ -90,7 +90,14 @@ class _HistoryView2State extends State<HistoryView2>
       selectedServicegc = _getTabService(_tabController.index);
     });
   }
-
+  Future<void> handleBookingTap(DataHistory e) async {
+    Get.toNamed(
+      Routes.DETAIL_HISTORY,
+      arguments: {
+        'kode_svc': e.kodeSvc ?? '',
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     controller.checkForUpdate();
@@ -176,7 +183,10 @@ class _HistoryView2State extends State<HistoryView2>
                             booking.tipeSvc,
                           ],
                           builder: (items) =>
-                              HistoryList(items: items, onTap: () {}),
+                              HistoryList(items: items,
+                                  onTap: () {
+                                    handleBookingTap(items);
+                                  }),
                         ),
                       ),
                       child: Icon(

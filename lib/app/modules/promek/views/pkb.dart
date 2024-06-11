@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mekanik/app/componen/color.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:search_page/search_page.dart';
 import '../../../componen/loading_cabang_shimmer.dart';
+import '../../../componen/loading_search_shimmer.dart';
 import '../../../componen/loading_shammer_booking.dart';
 import '../../../data/data_endpoint/pkb.dart';
 import '../../../data/data_endpoint/profile.dart';
@@ -31,7 +34,23 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
 
   @override
   bool get wantKeepAlive => true;
-
+  Future<void> handleBookingTap(DataPKB e) async {
+    Get.toNamed(
+      Routes.STARTSTOPPKB,
+      arguments: {
+        'kode_pkb': e.kodePkb ?? '',
+        'no_polisi': e.noPolisi ?? '',
+        'tahun': e.tahun ?? '',
+        'warna': e.warna ?? '',
+        'nama': e.nama ?? '',
+        'alamat': e.alamat ?? '',
+        'hp': e.hp ?? '',
+        'transmisi': e.transmisi ?? '',
+        'tipe_svc': e.tipeSvc ?? '',
+        'kode_svc': e.kodeSvc ?? '',
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -74,9 +93,66 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
           ],
         ),
         actions: [
-          Icon(
-            Icons.search_rounded,
-            color: MyColors.appPrimaryColor,
+          FutureBuilder(
+            future: API.PKBID(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: loadsearch(),
+                );
+              } else if (snapshot.hasData && snapshot.data != null) {
+                final data = snapshot.data!.dataPKB;
+
+                if (data != null && data.isNotEmpty) {
+                  return InkWell(
+                    onTap: () => showSearch(
+                      context: context,
+                      delegate: SearchPage<DataPKB>(
+                        items: data,
+                        searchLabel: 'Cari PKB Service',
+                        searchStyle: GoogleFonts.nunito(color: Colors.black),
+                        showItemsOnEmpty: true,
+                        failure: Center(
+                          child: Text(
+                            'History Tidak Dtemukan :(',
+                            style: GoogleFonts.nunito(),
+                          ),
+                        ),
+                        filter: (booking) => [
+                          booking.nama,
+                          booking.noPolisi,
+                          booking.status,
+                          booking.createdByPkb,
+                          booking.createdBy,
+                          booking.tglEstimasi,
+                          booking.tipeSvc,
+                        ],
+                        builder: (items) =>
+                            pkblist(items: items,
+                                onTap: () {
+                                  handleBookingTap(items);
+                                }),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.search_rounded,
+                      color: MyColors.appPrimaryColor,
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Text(
+                      'Pencarian',
+                      style: GoogleFonts.nunito(fontSize: 16),
+                    ),
+                  );
+                }
+              } else {
+                return Center(
+                  child: loadsearch(),
+                );
+              }
+            },
           ),
           SizedBox(width: 20),
         ],

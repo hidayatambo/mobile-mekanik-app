@@ -58,6 +58,161 @@ class _BokingView2State extends State<BokingView2> {
     _refreshControllers = List.generate(13, (index) => RefreshController());
     super.initState();
   }
+  Future<void> handleBookingTap(DataBooking e) async {
+    HapticFeedback.lightImpact();
+    if (kDebugMode) {
+      print('Nilai e.namaJenissvc: ${e.namaService ?? ''}');
+    }
+    if (e.bookingStatus != null && e.namaService != null) {
+      if (e.bookingStatus!.toLowerCase() == 'booking' &&
+          e.namaService!.toLowerCase() != 'repair & maintenance') {
+        Get.toNamed(
+          Routes.APPROVE,
+          arguments: {
+            'tgl_booking': e.tglBooking ?? '',
+            'jam_booking': e.jamBooking ?? '',
+            'nama': e.nama ?? '',
+            'kode_kendaraan': e.kodeKendaraan ?? '',
+            'kode_pelanggan': e.kodePelanggan ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'nama_jenissvc': e.namaService ?? '',
+            'no_polisi': e.noPolisi ?? '',
+            'nama_merk': e.namaMerk ?? '',
+            'keluhan': e.keluhan ?? '',
+            'perintah_kerja': e.perintahkerja ?? '',
+            'tahun': e.tahun ?? '',
+            'warna': e.warna ?? '',
+            'booking_id': e.tglBooking ?? '',
+            'nama_tipe': e.namaTipe ?? '',
+            'alamat': e.alamat ?? '',
+            'hp': e.hp ?? '',
+            'hp_pic': e.hpPic ?? '',
+            'kode_pelanggan': e.kodePelanggan ?? '',
+            'kategori_kendaraan': e.kategoriKendaraan ?? '',
+          },
+        );
+      } else if (e.bookingStatus!.toLowerCase() == 'booking' &&
+          e.namaService!.toLowerCase() != 'general check up/p2h') {
+        Get.toNamed(
+          Routes.APPROVE,
+          arguments: {
+            'tgl_booking': e.tglBooking ?? '',
+            'booking_id': e.tglBooking ?? '',
+            'jam_booking': e.jamBooking ?? '',
+            'nama': e.nama ?? '',
+            'keluhan': e.keluhan ?? '',
+            'kode_kendaraan': e.kodeKendaraan ?? '',
+            'kode_pelanggan': e.kodePelanggan ?? '',
+            'nama_jenissvc': e.namaService ?? '',
+            'no_polisi': e.noPolisi ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'tahun': e.tahun ?? '',
+            'warna': e.warna ?? '',
+            'perintah_kerja': e.perintahkerja ?? '',
+            'ho': e.hp ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'nama_merk': e.namaMerk ?? '',
+            'transmisi': e.transmisi ?? '',
+            'nama_tipe': e.namaTipe ?? '',
+            'alamat': e.alamat ?? '',
+            'status': e.bookingStatus ?? '',
+          },
+        );
+      }
+    } else {
+      print('Status atau namaJenissvc bernilai null');
+    }
+
+    if (e.bookingStatus != null && e.namaService != null) {
+      if (e.bookingStatus!.toLowerCase() == 'approve' &&
+          e.namaService!.toLowerCase() != 'repair & maintenance') {
+        final generalData = await API.kategoriID();
+        String kategoriKendaraanId = '';
+        if (generalData != null) {
+          final matchingKategori = generalData
+              .dataKategoriKendaraan
+              ?.where((kategori) =>
+          kategori.kategoriKendaraan == e.kategoriKendaraan)
+              .firstOrNull;
+          if (matchingKategori != null &&
+              matchingKategori is DataKategoriKendaraan) {
+            kategoriKendaraanId =
+                matchingKategori.kategoriKendaraanId ?? '';
+          }
+        }
+        Get.toNamed(
+            Routes.GENERAL_CHECKUP,
+            arguments: {
+            'tgl_booking': e.tglBooking ?? '',
+            'booking_id': e.bookingId.toString(),
+            'jam_booking': e.jamBooking ?? '',
+            'nama': e.nama ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'kode_kendaraan': e.kodeKendaraan ?? '',
+            'kode_pelanggan': e.kodePelanggan ?? '',
+            'nama_jenissvc': e.namaService ?? '',
+            'no_polisi': e.noPolisi ?? '',
+            'tahun': e.tahun ?? '',
+            'keluhan': e.keluhan ?? '',
+            'perintah_kerja': e.perintahkerja ?? '',
+            'kategori_kendaraan': e.kategoriKendaraan ?? '',
+            'kategori_kendaraan_id': kategoriKendaraanId,
+            'warna': e.warna ?? '',
+            'ho': e.hp ?? '',
+              'kode_booking': e.kodeBooking ?? '',
+              'nama_merk': e.namaMerk ?? '',
+              'transmisi': e.transmisi ?? '',
+              'nama_tipe': e.namaTipe ?? '',
+              'alamat': e.alamat ?? '',
+              'status': e.bookingStatus ?? '',
+            },
+        );
+      } else if (e.bookingStatus!.toLowerCase() == 'approve' &&
+          e.namaService!.toLowerCase() != 'general check up/p2h') {
+        final generalData = await API.kategoriID();
+        String kategoriKendaraanId = '';
+        if (generalData != null) {
+          final matchingKategori = generalData.dataKategoriKendaraan?.firstWhere(
+                (kategori) => kategori.kategoriKendaraan == e.kategoriKendaraan,
+            orElse: () => DataKategoriKendaraan(kategoriKendaraanId: '', kategoriKendaraan: ''),
+          );
+          if (matchingKategori != null && matchingKategori is DataKategoriKendaraan) {
+            kategoriKendaraanId = matchingKategori.kategoriKendaraanId ?? '';
+          }
+        }
+        Get.toNamed(
+          Routes.REPAIR_MAINTENEN,
+          arguments: {
+            'tgl_booking': e.tglBooking ?? '',
+            'booking_id': e.bookingId.toString(),
+            'jam_booking': e.jamBooking ?? '',
+            'nama': e.nama ?? '',
+            'kategori_kendaraan_id': kategoriKendaraanId,
+            'kategori_kendaraan': e.kategoriKendaraan ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'nama_jenissvc': e.namaService ?? '',
+            'no_polisi': e.noPolisi ?? '',
+            'tahun': e.tahun ?? '',
+            'warna': e.warna ?? '',
+            'keluhan': e.keluhan ?? '',
+            'perintah_kerja': e.perintahkerja ?? '',
+            'kode_kendaraan': e.kodeKendaraan ?? '',
+            'kode_pelanggan': e.kodePelanggan ?? '',
+            'ho': e.nama ?? '',
+            'kode_booking': e.kodeBooking ?? '',
+            'nama_merk': e.namaMerk ?? '',
+            'transmisi': e.transmisi ?? '',
+            'nama_tipe': e.namaTipe ?? '',
+            'alamat': e.alamat ?? '',
+            'status': e.bookingStatus ?? '',
+          },
+        );
+      }
+    } else {
+      print('Status atau namaJenissvc bernilai null');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -110,64 +265,66 @@ class _BokingView2State extends State<BokingView2> {
           ),
           actions: [
             FutureBuilder(
-              future: API.bokingid(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: loadsearch(),
-                  );
-                } else if (snapshot.hasData && snapshot.data != null) {
-                  final data = snapshot.data!.dataBooking;
+            future: API.bokingid(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: loadsearch(),
+            );
+          } else if (snapshot.hasData && snapshot.data != null) {
+            final data = snapshot.data!.dataBooking;
 
-                  if (data != null && data.isNotEmpty) {
-                    return InkWell(
-                      onTap: () => showSearch(
-                        context: context,
-                        delegate: SearchPage<DataBooking>(
-                          items: data,
-                          searchLabel: 'Cari Booking',
-                          searchStyle: GoogleFonts.nunito(color: Colors.black),
-                          showItemsOnEmpty: true,
-                          failure: Center(
-                            child: Text(
-                              'Booking Tidak Dtemukan :(',
-                              style: GoogleFonts.nunito(),
-                            ),
-                          ),
-                          filter: (booking) => [
-                            booking.nama,
-                            booking.noPolisi,
-                            booking.bookingStatus,
-                            booking.namaMerk,
-                            booking.namaTipe,
-                          ],
-                          builder: (items) => BokingList(
-                            items: items,
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.search_rounded,
-                        color: MyColors.appPrimaryColor,
-                      ),
-                    );
-                  } else {
-                    return Center(
+            if (data != null && data.isNotEmpty) {
+              return InkWell(
+                onTap: () => showSearch(
+                  context: context,
+                  delegate: SearchPage<DataBooking>(
+                    items: data,
+                    searchLabel: 'Cari Booking',
+                    searchStyle: GoogleFonts.nunito(color: Colors.black),
+                    showItemsOnEmpty: true,
+                    failure: Center(
                       child: Text(
-                        'Pencarian',
-                        style: GoogleFonts.nunito(fontSize: 16),
+                        'Booking Tidak Ditemukan :(',
+                        style: GoogleFonts.nunito(),
                       ),
-                    );
-                  }
-                } else {
-                  return const Center(
-                    child: loadsearch(),
-                  );
-                }
-              },
-            ),
-            const SizedBox(width: 20)
+                    ),
+                    filter: (booking) => [
+                      booking.nama,
+                      booking.noPolisi,
+                      booking.bookingStatus,
+                      booking.namaMerk,
+                      booking.namaTipe,
+                    ],
+                    builder: (booking) => BokingList(
+                      items: booking,
+                      onTap: () {
+                        handleBookingTap(booking);
+                      },
+                    ),
+                  ),
+                ),
+                child: Icon(
+                  Icons.search_rounded,
+                  color: MyColors.appPrimaryColor,
+                ),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  'Pencarian',
+                  style: GoogleFonts.nunito(fontSize: 16),
+                ),
+              );
+            }
+          } else {
+            return const Center(
+              child: loadsearch(),
+            );
+          }
+        },
+      ),
+        const SizedBox(width: 20)
           ],
           bottom: TabBar(
             isScrollable: true,

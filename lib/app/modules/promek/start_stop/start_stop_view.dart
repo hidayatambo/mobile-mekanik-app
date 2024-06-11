@@ -105,9 +105,9 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
           statusBarBrightness: Brightness.light,
           systemNavigationBarColor: Colors.white,
         ),
-        title: const Text(
+        title: Text(
           'Mekanik',
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+          style: TextStyle(color: MyColors.appPrimaryColor, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -198,9 +198,9 @@ class _StartStopViewState extends State<StartStopView> with AutomaticKeepAliveCl
                                         offset: const Offset(0, 3),
                                       ),
                                     ],
-                                    color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.white,
+                                    color: selectedItemKodeJasa == jasa.kodeJasa ? MyColors.appPrimaryColor : Colors.white,
                                     border: Border.all(
-                                      color: selectedItemKodeJasa == jasa.kodeJasa ? Colors.blue : Colors.transparent,
+                                      color: selectedItemKodeJasa == jasa.kodeJasa ? MyColors.appPrimaryColor : Colors.transparent,
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),

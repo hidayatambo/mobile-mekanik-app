@@ -181,6 +181,7 @@ class _HistoryView2State extends State<HistoryView2>
                             booking.createdBy,
                             booking.tglEstimasi,
                             booking.tipeSvc,
+                            booking.kodeEstimasi,
                           ],
                           builder: (items) =>
                               HistoryList(items: items,

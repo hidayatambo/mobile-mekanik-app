@@ -460,22 +460,18 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           } else {
                             final mechanics = snapshot.data?.dataMekanik ?? [];
                             final services = snapshot.data?.dataJasa ?? [];
-
                             if (kDebugMode) {
                               print("Mechanics: ${mechanics.map((m) => m.toJson()).toList()}");
                             }
                             if (kDebugMode) {
                               print("Services: ${services.map((s) => s.toJson()).toList()}");
                             }
-
-                            // Set default values if mechanics and services are not empty and selectedItem is empty
                             if (mechanics.isNotEmpty && selectedItem == null && services.isNotEmpty) {
                               selectedItem = mechanics.first.nama!;
                               selectedIdMekanik = mechanics.first.idMekanik.toString();
                               selectedKodeJasa = services.first.kodeJasa;
                               print("First Mechanic ID: ${mechanics.first.idMekanik}, First Service Code: ${services.first.kodeJasa}");
                             }
-
                             return DropdownButton<String>(
                               value: selectedItem,
                               onChanged: (String? newValue) {
@@ -484,9 +480,7 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                       (mechanic) => mechanic.nama == newValue,
                                   orElse: () => DataMekanik(),
                                 );
-
                                 var matchingService = services.isNotEmpty ? services.first : DataJasa();
-
                                 setState(() {
                                   selectedItem = newValue!;
                                   selectedIdMekanik = selectedMechanic.idMekanik.toString();
@@ -494,12 +488,10 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                                 });
                               },
                               items: [
-                                // Tambahkan ini sebagai item pertama untuk 'Pilih Mekanik'
                                 DropdownMenuItem<String>(
                                   value: 'Pilih Mekanik',
                                   child: Text('Pilih Mekanik'),
                                 ),
-                                // Tambahkan item mekanik dari list
                                 ...mechanics.map<DropdownMenuItem<String>>((mechanic) {
                                   return DropdownMenuItem<String>(
                                     value: mechanic.nama,
@@ -511,7 +503,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                           }
                         },
                       ),
-
                       Container(
                         width: double.infinity,
                         child:
@@ -613,7 +604,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
     if (!stopControllers.containsKey(item)) {
       stopControllers[item] = TextEditingController();
     }
-    // Initialize history logs if they don't exist
     startHistoryLogs[item] ??= [];
     stopHistoryLogs[item] ??= [];
     promekId[item] ??= [].toString();
@@ -734,8 +724,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
                     children: [
                       const Text("Start History:", style: TextStyle(fontWeight: FontWeight.bold)),
                       Text('$startPromekText'),
-                      // const Text("Deskripsi", style: TextStyle(fontWeight: FontWeight.bold)),
-                      // ...startHistoryLogs[item]!.map((log) => Text(log)).toList(),
                     ],
                   ),
                 ),
@@ -773,10 +761,6 @@ class _GeneralCheckupViewState extends State<GeneralCheckupView> {
       ],
     );
   }
-
-
-
-
 }
 
 class DropdownItem {

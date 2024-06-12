@@ -55,7 +55,9 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,6 +128,8 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                           booking.createdBy,
                           booking.tglEstimasi,
                           booking.tipeSvc,
+                          booking.kodePkb,
+                          booking.kodePelanggan,
                         ],
                         builder: (items) =>
                             pkblist(items: items,
@@ -171,6 +175,24 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.connectionState != ConnectionState.waiting && snapshot.data != null) {
                     PKB getDataAcc = snapshot.data ?? PKB();
+
+                    // Sort the data based on the last number in kodePkb in descending order
+                    List<DataPKB> sortedDataPKB = getDataAcc.dataPKB != null && getDataAcc.dataPKB!.isNotEmpty
+                        ? getDataAcc.dataPKB!.toList()
+                        : [];
+                    sortedDataPKB.sort((a, b) {
+                      int extractNumber(String kodePkb) {
+                        RegExp regex = RegExp(r'(\d+)$');
+                        Match? match = regex.firstMatch(kodePkb);
+                        return match != null ? int.parse(match.group(0)!) : 0;
+                      }
+
+                      int aNumber = extractNumber(a.kodePkb ?? '');
+                      int bNumber = extractNumber(b.kodePkb ?? '');
+
+                      return bNumber.compareTo(aNumber); // Descending order
+                    });
+
                     return Column(
                       children: AnimationConfiguration.toStaggeredList(
                         duration: const Duration(milliseconds: 475),
@@ -179,8 +201,8 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                             child: widget,
                           ),
                         ),
-                        children: getDataAcc.dataPKB != null && getDataAcc.dataPKB!.isNotEmpty
-                            ? getDataAcc.dataPKB!.map((e) {
+                        children: sortedDataPKB.isNotEmpty
+                            ? sortedDataPKB.map((e) {
                           return pkblist(
                             items: e,
                             onTap: () {
@@ -202,30 +224,33 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                             },
                           );
                         }).toList()
-                            : [Container(
-                        height: 500,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/booking.png',
-                              width: 100.0,
-                              height: 100.0,
-                              fit: BoxFit.cover,
+                            : [
+                          Container(
+                            height: 500,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/booking.png',
+                                  width: 100.0,
+                                  height: 100.0,
+                                  fit: BoxFit.cover,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  'Belum ada data PKB Service',
+                                  style: TextStyle(
+                                    color: MyColors.appPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Belum ada data PKB Service',
-                              style: TextStyle(
-                                  color: MyColors.appPrimaryColor,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),],
+                          ),
+                        ],
                       ),
                     );
                   } else {

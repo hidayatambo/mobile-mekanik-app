@@ -243,8 +243,7 @@ class _HistoryView2State extends State<HistoryView2>
 
   Widget _buildTabContent(String tabService) {
     return SmartRefresher(
-      controller: _refreshControllers[_getTabIndex(
-          tabService)], // Use _getTabIndex to get the appropriate RefreshController index
+      controller: _refreshControllers[_getTabIndex(tabService)],
       enablePullDown: true,
       header: const WaterDropHeader(),
       onRefresh: () => _onRefresh(tabService),
@@ -264,7 +263,6 @@ class _HistoryView2State extends State<HistoryView2>
                 ],
                 onChanged: (selectedValues) {
                   setState(() {
-                    // Filtered status options based on the selected service
                     if (tabService == 'Repair & Maintenance') {
                       selectedStatus = selectedValues;
                     } else if (tabService == 'General Check UP/P2H' &&
@@ -287,9 +285,7 @@ class _HistoryView2State extends State<HistoryView2>
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const LoadingshammerHistory();
                   } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
+                    return _buildNoDataUI(); // Method to build no data UI
                   } else if (snapshot.hasData) {
                     final data = snapshot.data!.dataHistory ?? [];
                     List<DataHistory> filteredData = [];
@@ -300,48 +296,40 @@ class _HistoryView2State extends State<HistoryView2>
                     } else {
                       filteredData = data
                           .where((item) =>
-                              item.status == selectedStatus &&
-                              item.tipeSvc == tabService)
+                      item.status == selectedStatus &&
+                          item.tipeSvc == tabService)
                           .toList();
                     }
                     return filteredData.isEmpty
-                        ? const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // No queues
-                            ],
-                          )
+                        ? _buildNoDataUI() // Method to build no data UI
                         : Column(
-                            children: AnimationConfiguration.toStaggeredList(
-                              duration: const Duration(milliseconds: 475),
-                              childAnimationBuilder: (widget) => SlideAnimation(
-                                child: FadeInAnimation(
-                                  child: widget,
-                                ),
-                              ),
-                              children: filteredData
-                                  .map(
-                                    (e) => HistoryList(
-                                      items: e,
-                                      onTap: () {
-                                        HapticFeedback.lightImpact();
-                                        Get.toNamed(
-                                          Routes.DETAIL_HISTORY,
-                                          arguments: {
-                                            'kode_svc': e.kodeSvc ?? '',
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          );
-                  } else {
-                    return const Column(
-                      children: [],
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 475),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: filteredData
+                            .map(
+                              (e) => HistoryList(
+                            items: e,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Get.toNamed(
+                                Routes.DETAIL_HISTORY,
+                                arguments: {
+                                  'kode_svc': e.kodeSvc ?? '',
+                                },
+                              );
+                            },
+                          ),
+                        )
+                            .toList(),
+                      ),
                     );
+                  } else {
+                    return _buildNoDataUI(); // Method to build no data UI
                   }
                 },
               ),
@@ -351,6 +339,35 @@ class _HistoryView2State extends State<HistoryView2>
       ),
     );
   }
+
+  Widget _buildNoDataUI() {
+    return Container(
+      height: 500,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/icons/booking.png',
+            width: 100.0,
+            height: 100.0,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            'Belum ada data PKB Service',
+            style: TextStyle(
+              color: MyColors.appPrimaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void _onLoading(String status) {
     _refreshControllers[_getTabIndex(status)]

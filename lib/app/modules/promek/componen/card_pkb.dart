@@ -201,7 +201,7 @@ class pkblist extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Merek :'),
-                    Text(items.namamerk??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaMerk??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('Warna :'),
                     Text(items.warna??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],
@@ -211,7 +211,7 @@ class pkblist extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Type :'),
-                    Text(items.namatipe??'', style: const TextStyle(fontWeight: FontWeight.bold),),
+                    Text(items.namaTipe??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                     const Text('NoPol :'),
                     Text(items.noPolisi??'', style: const TextStyle(fontWeight: FontWeight.bold),),
                   ],

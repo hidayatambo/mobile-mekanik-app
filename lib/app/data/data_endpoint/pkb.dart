@@ -56,7 +56,6 @@ class DataPKB {
   String? pergantianPart;
   String? saran;
   String? ppn;
-  String? namamerk;
   String? penanggungJawab;
   String? tglEstimasi;
   String? tglPkb;
@@ -68,6 +67,7 @@ class DataPKB {
   int? faktur;
   int? deleted;
   int? notab;
+  String? statusApproval;
   String? createdBy;
   String? createdByPkb;
   String? createdAt;
@@ -105,13 +105,14 @@ class DataPKB {
   String? npwpTagihan;
   String? picTagihan;
   String? password;
-  String? namatipe;
   String? rememberToken;
   String? emailVerifiedAt;
   String? otp;
   String? otpExpiry;
   String? gambar;
   String? namaCabang;
+  String? namaMerk;
+  String? namaTipe;
   String? status;
 
   DataPKB(
@@ -154,6 +155,7 @@ class DataPKB {
         this.faktur,
         this.deleted,
         this.notab,
+        this.statusApproval,
         this.createdBy,
         this.createdByPkb,
         this.createdAt,
@@ -191,14 +193,14 @@ class DataPKB {
         this.npwpTagihan,
         this.picTagihan,
         this.password,
-        this.namatipe,
         this.rememberToken,
         this.emailVerifiedAt,
         this.otp,
-        this.namamerk,
         this.otpExpiry,
         this.gambar,
         this.namaCabang,
+        this.namaMerk,
+        this.namaTipe,
         this.status});
 
   DataPKB.fromJson(Map<String, dynamic> json) {
@@ -241,6 +243,7 @@ class DataPKB {
     faktur = json['faktur'];
     deleted = json['deleted'];
     notab = json['notab'];
+    statusApproval = json['status_approval'];
     createdBy = json['created_by'];
     createdByPkb = json['created_by_pkb'];
     createdAt = json['created_at'];
@@ -270,8 +273,6 @@ class DataPKB {
     hp = json['hp'];
     email = json['email'];
     kontak = json['kontak'];
-    namamerk = json['nama_merk'];
-    namatipe = json['nama_tipe'];
     due = json['due'];
     jenisKontrakX = json['jenis_kontrak_x'];
     namaTagihan = json['nama_tagihan'];
@@ -286,6 +287,8 @@ class DataPKB {
     otpExpiry = json['otp_expiry'];
     gambar = json['gambar'];
     namaCabang = json['nama_cabang'];
+    namaMerk = json['nama_merk'];
+    namaTipe = json['nama_tipe'];
     status = json['status'];
   }
 
@@ -318,8 +321,6 @@ class DataPKB {
     data['perintah_kerja'] = this.perintahKerja;
     data['pergantian_part'] = this.pergantianPart;
     data['saran'] = this.saran;
-    data['nama_merk'] = this.namamerk;
-    data['nama_tipe'] = this.namatipe;
     data['ppn'] = this.ppn;
     data['penanggung_jawab'] = this.penanggungJawab;
     data['tgl_estimasi'] = this.tglEstimasi;
@@ -332,6 +333,7 @@ class DataPKB {
     data['faktur'] = this.faktur;
     data['deleted'] = this.deleted;
     data['notab'] = this.notab;
+    data['status_approval'] = this.statusApproval;
     data['created_by'] = this.createdBy;
     data['created_by_pkb'] = this.createdByPkb;
     data['created_at'] = this.createdAt;
@@ -375,6 +377,8 @@ class DataPKB {
     data['otp_expiry'] = this.otpExpiry;
     data['gambar'] = this.gambar;
     data['nama_cabang'] = this.namaCabang;
+    data['nama_merk'] = this.namaMerk;
+    data['nama_tipe'] = this.namaTipe;
     data['status'] = this.status;
     return data;
   }

@@ -80,19 +80,9 @@ class _DetailPKBState extends State<DetailPKB> {
         ),
       ),
       body: const SingleChildScrollView(
-        child: Padding(
+        child:  Padding(
           padding: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              CardDetailPKB(),
-              SizedBox(
-                width: 10,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
+          child: CardDetailPKB(),
         ),
       ),
     );

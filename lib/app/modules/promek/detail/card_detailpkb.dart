@@ -85,17 +85,6 @@ class CardDetailPKB extends StatelessWidget {
             const Divider(color: Colors.grey),
             const SizedBox(height: 10),
             Text(
-              'Jasa',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _buildJasaList(jasa?.cast<Jasa>()),
-            const SizedBox(height: 10),
-            Text(
               'Parts',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -105,6 +94,17 @@ class CardDetailPKB extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _buildPartsList(parts?.cast<Parts>()),
+            const SizedBox(height: 10),
+            Text(
+              'Jasa',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildJasaList(jasa?.cast<Jasa>()),
           ],
         ),
       ),
@@ -243,6 +243,7 @@ class CardDetailPKB extends StatelessWidget {
         ),
         Container(
           padding: const EdgeInsets.all(5),
+          width: double.infinity,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(5),
@@ -250,7 +251,7 @@ class CardDetailPKB extends StatelessWidget {
           child: Text(
             value,
             style: TextStyle(
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

@@ -62,6 +62,7 @@ class DataPKB {
   String? tglTutup;
   String? jamEstimasiSelesai;
   String? jamSelesai;
+  String? datetimeSelesai;
   int? pkb;
   int? tutup;
   int? faktur;
@@ -114,6 +115,8 @@ class DataPKB {
   String? namaMerk;
   String? namaTipe;
   String? status;
+  List<Parts>? parts;
+  List<Jasa>? jasa;
 
   DataPKB(
       {this.id,
@@ -150,6 +153,7 @@ class DataPKB {
         this.tglTutup,
         this.jamEstimasiSelesai,
         this.jamSelesai,
+        this.datetimeSelesai,
         this.pkb,
         this.tutup,
         this.faktur,
@@ -201,7 +205,9 @@ class DataPKB {
         this.namaCabang,
         this.namaMerk,
         this.namaTipe,
-        this.status});
+        this.status,
+        this.parts,
+        this.jasa});
 
   DataPKB.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -238,6 +244,7 @@ class DataPKB {
     tglTutup = json['tgl_tutup'];
     jamEstimasiSelesai = json['jam_estimasi_selesai'];
     jamSelesai = json['jam_selesai'];
+    datetimeSelesai = json['datetime_selesai'];
     pkb = json['pkb'];
     tutup = json['tutup'];
     faktur = json['faktur'];
@@ -290,6 +297,18 @@ class DataPKB {
     namaMerk = json['nama_merk'];
     namaTipe = json['nama_tipe'];
     status = json['status'];
+    if (json['parts'] != null) {
+      parts = <Parts>[];
+      json['parts'].forEach((v) {
+        parts!.add(new Parts.fromJson(v));
+      });
+    }
+    if (json['jasa'] != null) {
+      jasa = <Jasa>[];
+      json['jasa'].forEach((v) {
+        jasa!.add(new Jasa.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -328,6 +347,7 @@ class DataPKB {
     data['tgl_tutup'] = this.tglTutup;
     data['jam_estimasi_selesai'] = this.jamEstimasiSelesai;
     data['jam_selesai'] = this.jamSelesai;
+    data['datetime_selesai'] = this.datetimeSelesai;
     data['pkb'] = this.pkb;
     data['tutup'] = this.tutup;
     data['faktur'] = this.faktur;
@@ -380,6 +400,250 @@ class DataPKB {
     data['nama_merk'] = this.namaMerk;
     data['nama_tipe'] = this.namaTipe;
     data['status'] = this.status;
+    if (this.parts != null) {
+      data['parts'] = this.parts!.map((v) => v.toJson()).toList();
+    }
+    if (this.jasa != null) {
+      data['jasa'] = this.jasa!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Parts {
+  int? id;
+  String? kodeSvc;
+  String? kodeSparepart;
+  String? namaSparepart;
+  int? qtySparepart;
+  int? hargaSparepart;
+  int? diskonSparepart;
+  String? hidSparepart;
+  String? nota;
+  String? createdAt;
+  String? updatedAt;
+  String? kodeMaster;
+  String? kode;
+  String? kode2;
+  String? nama;
+  String? divisi;
+  String? brand;
+  int? qty;
+  int? hargaBeli;
+  int? hargaJual;
+  String? barcode;
+  String? satuan;
+  String? noStock;
+  String? lokasi;
+  String? note;
+  String? tipe;
+  String? kodeSupplier;
+  String? qtyMin;
+  String? qtyMax;
+  String? ukuran;
+  String? kualitas;
+  int? demandBulanan;
+  String? emergency;
+  String? jenis;
+  int? deleted;
+  String? createdBy;
+  String? gudang;
+  int? cabangId;
+
+  Parts(
+      {this.id,
+        this.kodeSvc,
+        this.kodeSparepart,
+        this.namaSparepart,
+        this.qtySparepart,
+        this.hargaSparepart,
+        this.diskonSparepart,
+        this.hidSparepart,
+        this.nota,
+        this.createdAt,
+        this.updatedAt,
+        this.kodeMaster,
+        this.kode,
+        this.kode2,
+        this.nama,
+        this.divisi,
+        this.brand,
+        this.qty,
+        this.hargaBeli,
+        this.hargaJual,
+        this.barcode,
+        this.satuan,
+        this.noStock,
+        this.lokasi,
+        this.note,
+        this.tipe,
+        this.kodeSupplier,
+        this.qtyMin,
+        this.qtyMax,
+        this.ukuran,
+        this.kualitas,
+        this.demandBulanan,
+        this.emergency,
+        this.jenis,
+        this.deleted,
+        this.createdBy,
+        this.gudang,
+        this.cabangId});
+
+  Parts.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    kodeSvc = json['kode_svc'];
+    kodeSparepart = json['kode_sparepart'];
+    namaSparepart = json['nama_sparepart'];
+    qtySparepart = json['qty_sparepart'];
+    hargaSparepart = json['harga_sparepart'];
+    diskonSparepart = json['diskon_sparepart'];
+    hidSparepart = json['hid_sparepart'];
+    nota = json['nota'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    kodeMaster = json['kode_master'];
+    kode = json['kode'];
+    kode2 = json['kode_2'];
+    nama = json['nama'];
+    divisi = json['divisi'];
+    brand = json['brand'];
+    qty = json['qty'];
+    hargaBeli = json['harga_beli'];
+    hargaJual = json['harga_jual'];
+    barcode = json['barcode'];
+    satuan = json['satuan'];
+    noStock = json['no_stock'];
+    lokasi = json['lokasi'];
+    note = json['note'];
+    tipe = json['tipe'];
+    kodeSupplier = json['kode_supplier'];
+    qtyMin = json['qty_min'];
+    qtyMax = json['qty_max'];
+    ukuran = json['ukuran'];
+    kualitas = json['kualitas'];
+    demandBulanan = json['demand_bulanan'];
+    emergency = json['emergency'];
+    jenis = json['jenis'];
+    deleted = json['deleted'];
+    createdBy = json['created_by'];
+    gudang = json['gudang'];
+    cabangId = json['cabang_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['kode_svc'] = this.kodeSvc;
+    data['kode_sparepart'] = this.kodeSparepart;
+    data['nama_sparepart'] = this.namaSparepart;
+    data['qty_sparepart'] = this.qtySparepart;
+    data['harga_sparepart'] = this.hargaSparepart;
+    data['diskon_sparepart'] = this.diskonSparepart;
+    data['hid_sparepart'] = this.hidSparepart;
+    data['nota'] = this.nota;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['kode_master'] = this.kodeMaster;
+    data['kode'] = this.kode;
+    data['kode_2'] = this.kode2;
+    data['nama'] = this.nama;
+    data['divisi'] = this.divisi;
+    data['brand'] = this.brand;
+    data['qty'] = this.qty;
+    data['harga_beli'] = this.hargaBeli;
+    data['harga_jual'] = this.hargaJual;
+    data['barcode'] = this.barcode;
+    data['satuan'] = this.satuan;
+    data['no_stock'] = this.noStock;
+    data['lokasi'] = this.lokasi;
+    data['note'] = this.note;
+    data['tipe'] = this.tipe;
+    data['kode_supplier'] = this.kodeSupplier;
+    data['qty_min'] = this.qtyMin;
+    data['qty_max'] = this.qtyMax;
+    data['ukuran'] = this.ukuran;
+    data['kualitas'] = this.kualitas;
+    data['demand_bulanan'] = this.demandBulanan;
+    data['emergency'] = this.emergency;
+    data['jenis'] = this.jenis;
+    data['deleted'] = this.deleted;
+    data['created_by'] = this.createdBy;
+    data['gudang'] = this.gudang;
+    data['cabang_id'] = this.cabangId;
+    return data;
+  }
+}
+
+class Jasa {
+  int? id;
+  String? kodeSvc;
+  String? kodeJasa;
+  String? namaJasa;
+  int? qtyJasa;
+  int? hargaJasa;
+  int? diskonJasa;
+  String? hidJasa;
+  String? createdAt;
+  String? updatedAt;
+  int? biaya;
+  int? jam;
+  String? divisiJasa;
+  int? deleted;
+  String? createdBy;
+
+  Jasa(
+      {this.id,
+        this.kodeSvc,
+        this.kodeJasa,
+        this.namaJasa,
+        this.qtyJasa,
+        this.hargaJasa,
+        this.diskonJasa,
+        this.hidJasa,
+        this.createdAt,
+        this.updatedAt,
+        this.biaya,
+        this.jam,
+        this.divisiJasa,
+        this.deleted,
+        this.createdBy});
+
+  Jasa.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    kodeSvc = json['kode_svc'];
+    kodeJasa = json['kode_jasa'];
+    namaJasa = json['nama_jasa'];
+    qtyJasa = json['qty_jasa'];
+    hargaJasa = json['harga_jasa'];
+    diskonJasa = json['diskon_jasa'];
+    hidJasa = json['hid_jasa'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    biaya = json['biaya'];
+    jam = json['jam'];
+    divisiJasa = json['divisi_jasa'];
+    deleted = json['deleted'];
+    createdBy = json['created_by'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['kode_svc'] = this.kodeSvc;
+    data['kode_jasa'] = this.kodeJasa;
+    data['nama_jasa'] = this.namaJasa;
+    data['qty_jasa'] = this.qtyJasa;
+    data['harga_jasa'] = this.hargaJasa;
+    data['diskon_jasa'] = this.diskonJasa;
+    data['hid_jasa'] = this.hidJasa;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['biaya'] = this.biaya;
+    data['jam'] = this.jam;
+    data['divisi_jasa'] = this.divisiJasa;
+    data['deleted'] = this.deleted;
+    data['created_by'] = this.createdBy;
     return data;
   }
 }

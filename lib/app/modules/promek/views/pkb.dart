@@ -206,6 +206,7 @@ class _PKBlistState extends State<PKBlist> with AutomaticKeepAliveClientMixin<PK
                           return pkblist(
                             items: e,
                             onTap: () {
+                              HapticFeedback.lightImpact();
                               Get.toNamed(
                                 Routes.DETAILPKB,
                                 arguments: {
